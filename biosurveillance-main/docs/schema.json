@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/product.schema.json",
+  "title": "OD2A Biosurveillance",
+  "description": "An analytical result",
+  "type": "object",
+  "properties": {
+    "Activity_Type": {
+        "description": "Type of Activity",
+        "type": "string"
+    }
+  },
+  "required": []
+}

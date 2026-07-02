@@ -1,0 +1,7 @@
+Activity_Type,Specimen_ID,Patient_ID,Sample_Type,Received_dt,Collection_dt,Sample_ID,Run_ID,Run_Create_dt,Analyte_LOINC,Test_dt,Result_CODED,Result_NUMERIC,Unit_Of_Measure,Analyte_Result_Comment,Instrument_Type,Patient_State,Patient_County ,Patient_Zip,Patient_DOB,Patient_Age,Age_Unit,Patient_Sex,Patient_Race,Patient_Ethnicity,Analyst,Reviewing_Official
+OD2A,Example_Data_1,PD8790,Urine,6/15/2024 11:04,,,,,61039-4,6/17/2024 12:56,260373001,,,,LC/MS/MS ,,,,,,,,Black or African American,,,
+OD2A,Example_Data_1,PD8790,Urine,6/15/2024 11:04,,,,,LRNT152,6/17/2024 12:56,260415000,,,,LC/MS/MS ,,,,,,,,Black or African American,,,
+OD2A,Example_Data_2,PT-77890,Serum,6/15/2024 11:04,6/15/2024 11:04,,,,LRNT163,6/18/2024 2:34,280414007,,,,GC/MSD,,Lincoln,,,36,Year,M,,Not-Hispanic,,
+OD2A,Example_Data_3,ID90-234,Plasma,6/15/2024 14:32,,,,,61042-8,6/15/2024 21:56,419984006,,,Additional test pending,LC/HRMS,,,43215,5/6/1964,,,F,White,,,
+OD2A,Example_Data_4,PID-4537,Blood,6/15/2024 10:02,,,,,40625-6,6/16/2024 18:24,373121007,,,,LC/ICP/MS,NJ,,"""07003""",,,,,,,,
+OD2A,Example_Data_5,"""2581933074156""",Blood,6/15/2024 18:56,,,,,LRNT189,6/15/2024 16:45,260415000,,,,GC/MS/MS,,,,,,,,,,,
