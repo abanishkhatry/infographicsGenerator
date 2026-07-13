@@ -1,0 +1,770 @@
+record_id,redcap_repeat_instrument,redcap_repeat_instance,spec_name,spec_date,location,age,sex,race___1,race___2,race___3,race___4,race___5,race___6,ethnicity___1,ethnicity___2,ethnicity___3,bac,od_manner,wslh_matrix,qtof_pos,qtof_neg,discharge_status___1,discharge_status___2,discharge_status___3,discharge_status___4,discharge_status___5,discharge_status___6,discharge_status___7,discharge_status___8,discharge_status___9,discharge_status___10,hospital_stay_length
+1,specimen_form,1,uw22-1001,,1,19,1,0,0,1,0,0,0,0,0,1,,1,,,,0,0,0,0,0,0,0,0,0,0,
+1,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, 4-ANPP, amphetamine, meta-methyl acetyl fentanyl, methamphetamine, beta-hydroxyfentanyl, acetaminophen, norfentanyl, ","THC-M (carboxy THC-glucuronide), Acetaminophen, THC-M (THC carboxy metabolite), ",,,,,,,,,,,
+2,specimen_form,1,Uw22-1002,,1,17,1,0,0,0,0,1,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,
+2,qtof_screen,1,,,,,,,,,,,,,,,,,,"Caffeine, ","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+3,specimen_form,1,1031,,4,45,2,0,0,0,0,1,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,2022-08-09
+3,qtof_screen,1,,,,,,,,,,,,,,,,,,"Duloxetine, meta-methyl acetyl fentanyl, benzoylecgonine, tramadol, tramadol-precursor, cyclobenzaprine, norfentanyl, cocaine, 4-ANPP, caffeine","Acetaminophen, THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite) ",,,,,,,,,,,
+4,specimen_form,1,1032,,4,57,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,
+4,qtof_screen,1,,,,,,,,,,,,,,,,,,"Prazepam, benzoylecgonine, cocaine, midazolam, lidocaine, caffeine, meta-methyl acetyl fentanyl, ","THC-M (carboxy THC-glucuronide), acetaminophen",,,,,,,,,,,
+5,specimen_form,1,1033,,4,64,2,0,0,0,0,1,0,0,1,0,"<10 mg/dL",1,,,,0,0,0,0,1,0,0,0,0,0,
+5,qtof_screen,1,,,,,,,,,,,,,,,,,,"Carvedilol, benzoylecgonine, citalopram-M (desmethyl metabolite), caffeine, methamphetamine, norfentanyl, meta-methyl acetyl fentanyl, cocaine, fentanyl, 4-ANPP, ","None detected.",,,,,,,,,,,
+6,specimen_form,1,1034,,4,20,2,0,0,1,0,0,0,1,0,0,"85 mg/dL",2,,,,0,0,0,0,0,0,0,1,0,0,
+6,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, oxycodone, oxycodone-nor, ","Acetaminophen, THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+7,specimen_form,1,1035,,4,66,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,
+7,qtof_screen,1,,,,,,,,,,,,,,,,,,"Cocaethylene, meta-methyl acetyl fentanyl, caffeine, benzoylecgonine, papaverine, fentanyl, lidocaine, cocaine, norfentanyl, quinine, 4-ANPP",Acetaminophen,,,,,,,,,,,
+8,specimen_form,1,1036,,4,66,2,0,0,0,0,1,0,0,1,0,"174 mg/dL",2,,,,0,0,0,0,1,0,0,0,0,0,
+8,qtof_screen,1,,,,,,,,,,,,,,,,,,"Topiramate, 1-(3-chlorophenyl)piperazine (mCPP), Quinine, Midazolam, Tramadol, diphenhydramine, duloxetine, caffeine, O-desmethyl tramadol, naloxone, trazodone",Topiramate,,,,,,,,,,,
+10,specimen_form,1,UW22-1003,,1,42,2,0,0,0,0,1,0,0,1,0,<5,2,,,,1,0,0,0,0,0,0,0,0,0,
+10,qtof_screen,1,,,,,,,,,,,,,,,,,,"cocaine, methamphetamine, risperidone, diphenhydramine, benzoylecgonine, amphetamine, naltrexone, paliperidone (9-hydroxyrisperidone), quinine, topiramate, caffeine, cocaethylene, cocaine-M (hydroxy metabolite), Pholedrine (4-hydroxymethamphetamine)","topiramate, THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite) ",,,,,,,,,,,
+11,specimen_form,1,Uw22-1004,,1,18,2,0,0,1,0,0,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,
+11,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, amphetamine, methamphetamine, ","Acetaminophen, THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+12,specimen_form,1,Uw22-1005,,1,29,1,0,0,0,0,0,1,1,0,0,,4,,,,1,0,0,0,0,0,0,0,0,0,
+12,qtof_screen,1,,,,,,,,,,,,,,,,,,Acetaminophen,"Acetaminophen, THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+13,specimen_form,1,UW22-1006,,1,35,2,0,0,0,0,1,0,0,1,0,<5,1,,,,1,0,0,0,0,0,0,0,0,0,N/A
+13,qtof_screen,1,,,,,,,,,,,,,,,,,,"Gabapentin, Quinine, Fentanyl, Bupropion, Norfentanyl, Caffeine, hydroxybupropion","Naproxen, Acetaminophen",,,,,,,,,,,
+14,specimen_form,1,UW22-1008,,1,46,1,1,0,0,0,0,0,0,1,0,.251,4,,,,0,0,0,0,0,0,1,0,0,0,
+14,qtof_screen,1,,,,,,,,,,,,,,,,,,"Nordiazepam, gabapentin, caffeine, demoxepam,  theophyline/aminophylline, quinine, ","THC-M (carboxy THC metabolite), THC-M (carboxy THC-metabolite), Theophylline, ",,,,,,,,,,,
+15,specimen_form,1,Uw22-0016,,1,14,2,0,0,0,0,1,0,0,1,0,<5,2,,,,0,0,0,0,0,0,0,0,0,0,
+15,qtof_screen,1,,,,,,,,,,,,,,,,,,"Caffeine, acetaminophen",Acetaminophen,,,,,,,,,,,
+16,specimen_form,1,1020,,1,38,1,0,0,0,0,1,0,0,1,0,<5mg/dl,1,,,,0,0,0,0,0,0,0,0,1,0,
+16,qtof_screen,1,,,,,,,,,,,,,,,,,,"Methamphetamine, ephedrine/pseudoephedrine, amphetamine",Acetaminophen,,,,,,,,,,,
+17,specimen_form,1,1037,,4,32,2,0,0,0,0,1,0,0,1,0,"85 mg/dL",2,,,,1,0,0,0,0,0,0,0,0,0,3
+17,qtof_screen,1,,,,,,,,,,,,,,,,,,"Naloxone, Caffeine, Ketamine-nor, bupropion, gabapentin, ketamine, hydroxybupropion, ondansetron, ondansteron-M (7-hydroxy), ketamine-dehydronor, ondansteron-M (8-hydroxy)","None detected",,,,,,,,,,,
+18,specimen_form,1,1038,,4,3,1,0,0,1,0,0,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+18,qtof_screen,1,,,,,,,,,,,,,,,,,,"Naloxone, beta-hydroxyfentanyl, meta-methyl acetyl fentanyl, fentanyl, acetaminophen, 4-ANPP/despropionylfentanyl, fentanyl-nor, ",Acetaminophen,,,,,,,,,,,
+19,specimen_form,1,1039,,4,20,2,0,0,1,0,0,0,1,0,0,"85 mg/dL",2,,,,0,0,0,0,0,0,0,1,0,0,1
+19,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen ","Acetaminophen, THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+20,specimen_form,1,1040,,4,16,1,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,3
+20,qtof_screen,1,,,,,,,,,,,,,,,,,,"Papaverine, meta-methyl acetyle fentanyl, midazolam, beta-hydroxyfentanyl, fluoxetine, fluoxetine-nor, fentanyl, ketamine, ketamine-nor, gabapentin, fentanyl-nor, lidocaine, Glycinexylidide (GX), ketamine-dehydronor, lidocaine-M (MEGX, N deethylated metabolite) ","None detected",,,,,,,,,,,
+21,specimen_form,1,1041,,4,23,1,0,0,0,0,1,0,0,1,0,"23 mg/dL",1,,,,0,0,0,0,1,0,0,0,0,0,
+21,qtof_screen,1,,,,,,,,,,,,,,,,,,"Tramadol, lidocaine, tramadol-o-desmethyl","None detected",,,,,,,,,,,
+22,specimen_form,1,1042,,4,60,2,0,0,0,0,1,0,0,1,0,"231 mg/dL",2,,,,0,0,0,0,1,0,0,0,0,0,9
+22,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, citalopram/escitalopram, midazolam, atenolol, caffeine, trazodone, 1-(3-chlorophenyl)piperazine (mCPP), theophyline/aminophylline, ","Acetaminophen, aspirin-M (salicyclic acid), aspirin (acetylsalicylic acid), THC-M (carboxy THC-glucuronide), theophylline, ",,,,,,,,,,,
+23,specimen_form,1,1043,,4,3,1,0,0,0,0,1,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+23,qtof_screen,1,,,,,,,,,,,,,,,,,,Amphetamine,"None detected",,,,,,,,,,,
+24,specimen_form,1,1044,,4,16,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,3
+24,qtof_screen,1,,,,,,,,,,,,,,,,,,"Theophyline/aminophylline, Lorazepam, Olanzapine","Acetaminophen, THC-M (carboxy THC-metabolite), Theophylline, THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+25,specimen_form,1,1045,,4,38,2,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,5
+25,qtof_screen,1,,,,,,,,,,,,,,,,,,"Caffeine, acetaminophen, theophyline/aminophylline, ","Acetaminophen, theophylline, aspirin-M (salicylic acid), ",,,,,,,,,,,
+26,specimen_form,1,1046,,4,29,2,0,0,1,0,0,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,2
+26,qtof_screen,1,,,,,,,,,,,,,,,,,,"Levetiracetam, dextromethorphan (DXM), doxylamine, disulfiram, ","Phenytoin, THC-M (carboxy THC-glucronide), zonisamide, THC-M (carboxy THC metabolite), ",,,,,,,,,,,
+27,specimen_form,1,UW22-1063,,1,32,2,0,0,0,0,1,0,0,1,0,<5,2,,,,0,0,0,0,1,0,0,0,0,0,
+27,qtof_screen,1,,,,,,,,,,,,,,,,,,Zolpidem,"THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+29,specimen_form,1,Uw22-1089,,1,26,1,0,0,0,0,0,1,0,0,1,0,1,,,,0,0,0,0,0,0,0,0,0,0,
+29,qtof_screen,1,,,,,,,,,,,,,,,,,,"Bupropion, hydroxybupropion","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+31,specimen_form,1,Uw22-1085,,1,34,1,0,0,0,0,0,1,1,0,0,N/A,1,,,,1,0,0,0,0,0,0,0,0,0,1
+31,qtof_screen,1,,,,,,,,,,,,,,,,,,Caffeine,"THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+32,specimen_form,1,1047,,4,4,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,4
+32,qtof_screen,1,,,,,,,,,,,,,,,,,,"Lidocaine, midazolam, midazolam-alpha-hydroxy","None detected",,,,,,,,,,,
+33,specimen_form,1,1048,,4,17,2,0,0,1,0,0,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,4
+33,qtof_screen,1,,,,,,,,,,,,,,,,,,"Hydroxyzine, fluoxetine-nor, acetaminophen, fluoxetine, ondansetron, ondansteron-M (7-hydroxy)","Naproxen, Acetaminophen",,,,,,,,,,,
+34,specimen_form,1,1049,,4,16,2,0,0,0,0,0,1,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,2
+34,qtof_screen,1,,,,,,,,,,,,,,,,,,"Lidocaine, fluoxetine-nor, fluoxetine, ","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+35,specimen_form,1,1050,,4,19,1,0,0,0,0,1,0,0,1,0,Negative,2,,,,0,0,0,0,1,0,0,0,0,0,2
+35,qtof_screen,1,,,,,,,,,,,,,,,,,,"Citalopram-M (desmethyl metabolite), citalopram/escitalopram, modafanil, bupropion, hydroxybupropion","None detected.",,,,,,,,,,,
+36,specimen_form,1,1051,,4,33,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,3
+36,qtof_screen,1,,,,,,,,,,,,,,,,,,"Buprenorphine, Norbuprenorphine, sertraline, sertraline-nor, Buprenorphine-M (6-glucuronide metabolite), norbuprenorphine-6-glucuronide  ","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+37,specimen_form,1,1052,,4,30,1,0,0,0,0,1,0,0,1,0,Negative,2,,,,0,0,0,0,1,0,0,0,0,0,4
+37,qtof_screen,1,,,,,,,,,,,,,,,,,,"Bromazolam, acetaminophen, diphenhydramine","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+38,specimen_form,1,1053,,4,17,2,0,0,0,0,1,0,0,1,0,Negative,2,,,,0,0,0,0,0,1,0,0,0,0,5
+38,qtof_screen,1,,,,,,,,,,,,,,,,,,"Dextromethorphan, amitriptyline, nortriptyline, amitriptyline-M (N-oxide), amitriptyline-M (trans-10-hydroxy metabolite)","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+39,specimen_form,1,Uw22-1088,,1,18,1,0,0,0,0,0,1,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,0.4
+39,qtof_screen,1,,,,,,,,,,,,,,,,,,"Meta-methyl acetyl fentanyl, fentanyl, beta-hydroxyfentanyl, fentanyl-nor, acetaminophen, 4-ANPP/despropionylfentanyl","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+40,specimen_form,1,UW22-1064,,1,31,1,0,0,0,0,1,0,0,1,0,0,2,,,,0,0,0,0,1,0,0,0,0,0,
+40,qtof_screen,1,,,,,,,,,,,,,,,,,,"Aripiprazole, benztropine, quetiapine, Acetaminophen, Aripiprazole-M (dehydro)","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), meloxicam",,,,,,,,,,,
+42,specimen_form,1,UW22-1081,,1,23,1,0,0,0,0,1,0,0,1,0,36,2,,,,0,0,0,0,0,0,1,0,0,0,1
+42,qtof_screen,1,,,,,,,,,,,,,,,,,,"caffeine, dicyclomine (dicycloverine), promethazine-sulphoxide, ","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+43,specimen_form,1,UW22-1084,,1,"29 yo",1,0,0,0,0,1,0,0,1,0,"92 mg/dl",1,,,,0,0,0,0,1,0,0,0,0,0,
+43,qtof_screen,1,,,,,,,,,,,,,,,,,,Caffeine,"THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+44,specimen_form,1,UW22-1087,,1,32,1,0,0,1,0,0,0,0,0,1,,1,,,,1,0,0,0,0,0,0,0,0,0,0
+44,qtof_screen,1,,,,,,,,,,,,,,,,,,"eta-methyl acetyle fentanyl, caffeine, fentanyl-nor, beta-hydroxyfentanyl, aceteaminophen, 4-ANPP (despropionylfentanyl), ","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+45,specimen_form,1,1054,,4,34,1,0,0,0,0,1,0,0,1,0,Negative,4,,,,0,0,0,0,1,0,0,0,0,0,3
+45,qtof_screen,1,,,,,,,,,,,,,,,,,,Quetiapine,Ibuprofen,,,,,,,,,,,
+46,specimen_form,1,1055,,4,17,2,0,0,1,0,0,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,3
+46,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, naproxen, diphenhydramine","Acetaminophen, Naproxen",,,,,,,,,,,
+47,specimen_form,1,1056,,4,62,1,0,0,0,0,1,0,0,1,0,Negative,4,,,,0,0,0,0,1,0,0,0,0,0,7
+47,qtof_screen,1,,,,,,,,,,,,,,,,,,"Oxycodone, metoprolol, cocaine, benzoylecgonine, caffeine, cocaethylene, bupropion, oxycodone-nor, ","None detected",,,,,,,,,,,
+48,specimen_form,1,1057,,4,47,2,0,0,0,0,1,0,0,1,0,Negative,4,,,,0,0,0,0,1,0,0,0,0,0,2
+48,qtof_screen,1,,,,,,,,,,,,,,,,,,"Hydroxyzine, EDDP, Dextromethorphan, fluoxetine, pregabalin, fluoxetine-nor, methadone, lisinopril, baclofen","Ibuprofen, ",,,,,,,,,,,
+49,specimen_form,1,1058,,4,29,2,0,0,0,0,1,0,0,1,0,Negative,4,,,,0,0,0,0,1,0,0,0,0,0,2
+49,qtof_screen,1,,,,,,,,,,,,,,,,,,"Diphenhydramine, acetaminophen","Acetaminophen, Ibuprofen",,,,,,,,,,,
+50,specimen_form,1,1059,,4,56,2,0,0,0,0,1,0,0,1,0,Negative,1,,,,0,0,0,0,1,0,0,0,0,0,3
+50,qtof_screen,1,,,,,,,,,,,,,,,,,,"Temazepam, Fluoxetine-nor, fluoxetine, promethazine, hydrocodone, acetaminophen, gabapentin, ropinirole, oxycodone, diazepam, nordiazepam, naproxen, bupropion, amphetamine, oxycodone-nor","THC-M (carboxy THC-glucuronide), naproxen, THC-M (carboxy THC metabolite)",,,,,,,,,,,
+51,specimen_form,1,1060,,4,26,1,0,0,0,0,1,0,0,1,0,Negative,2,,,,0,0,0,0,1,0,0,0,0,0,6
+51,qtof_screen,1,,,,,,,,,,,,,,,,,,"Caffeine, Citalopram/escitalopram, Acetaminophen, Diphenhydramine, amphetamine, Citalopram-M (desmethyl metabolite), amphetamine-hydroxy","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), acetaminophen",,,,,,,,,,,
+52,specimen_form,1,UW22-1065,,1,47,2,0,0,0,0,1,0,0,1,0,<5,2,,,,0,0,0,0,0,0,1,0,0,0,1
+52,qtof_screen,1,,,,,,,,,,,,,,,,,,"dihydrocodeine, hydromorphone, cyclobenzaprine, hydrocodone, desmethyl metabolite of citalopram, citalopram/escitalopram, acetaminophen",,,,,,,,,,,,
+53,specimen_form,1,1091,,4,1,1,1,0,0,0,0,0,0,1,0,Negative,1,,,,1,0,0,0,0,0,0,0,0,0,1
+53,qtof_screen,1,,,,,,,,,,,,,,,,,,"Temazepam, diazepam, methamphetamine, amphetamine","Ibuprofen, aspirin-M (salicylic acid)",,,,,,,,,,,
+54,specimen_form,1,UW22-1071,,1,17,2,0,0,0,0,1,0,0,1,0,<5,1,,,,1,0,0,0,0,0,0,0,0,0,1
+54,qtof_screen,1,,,,,,,,,,,,,,,,,,"Ephedrine/pseudoephedrine, diphenhydramine, methamphetamine, amphetamine, quinine, cathine (phenylpropanolamphetamine), 4-hydroxymethamphetamine","THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+55,specimen_form,1,UW22-1074,,1,26,1,0,0,0,0,0,1,0,0,1,0.0,1,,,,1,0,0,0,0,0,0,0,0,0,1
+55,qtof_screen,1,,,,,,,,,,,,,,,,,,"Metoprolol, levamisole/tetramisole, methamphetamine, cocaine, benzoylecgonine, amphetamine, cocaethylene, sildenafil, desmethyl sildenafil, ","THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+56,specimen_form,1,UW221075,,1,31,1,0,0,0,0,1,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,
+56,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, beta-hydroxyfentanyl, norfentanyl, risperidone, meta-methyl acetyl fentanyl, diphenhydramine, methocarbamol, O-desmethyl venlafaxine, methamphetamine, 4-ANPP/despropionylfentanyl, benzoylecgonine, amphetamine, hydroxyzine, metoprolol, acetaminophen, venlafaxine, gabapentin, methadone, naloxone, lamotrigine, ",acetaminophen,,,,,,,,,,,
+57,specimen_form,1,UW22-1068,,1,31,1,0,0,0,0,1,0,0,1,0,"Unknown ",1,,,,1,0,0,0,0,0,0,0,0,0,1
+57,qtof_screen,1,,,,,,,,,,,,,,,,,,"beta-hydroxyfentanyl, fentanyl, risperidone, 4-ANPP/despropionylfentanyl, meta-methyl acetyl fentanyl, quinine, O-desmethylvenlafaxine, hydroxyzine, 2/3/4-methyl-alpha-pyrrolidinopropiophenone, alprazolam, diphenhydramine, N-desmethylvenlafaxine, venlafaxine, methamphetamine, acetaminophen, methadone, o/m/o-fluorofentanyl, amphetamine, cathine, hydroxyamphetamine",,,,,,,,,,,,
+59,specimen_form,1,UW22-1082,,1,43,2,1,0,0,0,0,0,0,1,0,<10,1,,,,1,0,0,0,0,0,0,0,0,0,1
+59,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, 4-ANPP/despropionylfentanyl, meta-methyl acetyl fentanyl, diphenhydramine, oxycarbazepine, carbamazepine, dicyclomine, ",,,,,,,,,,,,
+60,specimen_form,1,1092,,4,30,1,0,0,0,0,1,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+60,qtof_screen,1,,,,,,,,,,,,,,,,,,"Cocaethylene, meta-methyl acetyl fentanyl, cocaine, amphetamine, methamphetamine, benzoylecgonine, norfentanyl, caffeine, beta-hydroxyfentanyl, fentanyl, 4-ANPP/despropionylfentanyl","THC-M (carboxy THC metabolite), THC-M (carboxy-THC glucuronide",,,,,,,,,,,
+61,specimen_form,1,1093,,4,53,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,14
+61,qtof_screen,1,,,,,,,,,,,,,,,,,,"1-(3-Chlorophenyl)piperazine (mCPP), metaprolol, Trazodone, diphenhydramine, venlafaxine, norvenlafaxine (N-desmethyl), Venlafaxine-M (O-desmethyl metabolite), Lamotrigine, metaprolol-hydroxy, ","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+62,specimen_form,1,1094,,4,38,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,6
+62,qtof_screen,1,,,,,,,,,,,,,,,,,,"1-(3-Chlorophenyl)piperazine (mCPP), EDDP, meta-methyl acetyl fentanyl, Trazodone, Fentanyl-nor, fentanyl","None detected",,,,,,,,,,,
+63,specimen_form,1,1095,,4,67,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,8
+63,qtof_screen,1,,,,,,,,,,,,,,,,,,"Carvedilol, Fluoxetine-nor, diphenhydramine, gabapentin, bupropion, lidocaine, fluoxetine, hydroxybupropion, triamterene, prochlorperazine","None detected",,,,,,,,,,,
+64,specimen_form,1,1096,,4,52,2,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,2
+64,qtof_screen,1,,,,,,,,,,,,,,,,,,"Temazepam, ephedrine/pseudoephedrine, oxycodone, diazepam, diphenhydramine, nordiazepam, loperamide, topiramate, oxycodone-nor, codeine, codeine-nor, codeine-glucuronide, loperamide-dimethyl","Topiramate, naproxen",,,,,,,,,,,
+65,specimen_form,1,UW22-1086,,1,44,1,0,0,0,0,1,0,0,1,0,<5,1,,,,0,0,0,0,0,0,0,0,0,1,1
+65,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, 4-ANPP/despropionylfentanyl, meta-methyl acetyl fentanyl, naloxone, methamphetamine, norfentanyl, ondansetron",,,,,,,,,,,,
+66,specimen_form,1,UW22-1072,,1,29,1,0,0,0,0,1,0,0,1,0,<5,1,,,,1,0,0,0,0,0,0,0,0,0,0
+66,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, norfentanyl, 4-ANPP/despropionylfentanyl, meta-methyl acetyl fentanyl, methamphetamine, beta-hydroxyfentanyl, naloxone, amphetamine, benzoylecgonine, cocaine, propranolol","THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+67,specimen_form,1,UW22-1078,,1,43,1,0,0,0,0,1,0,0,1,0,N/A,4,,,,0,0,0,0,0,1,0,0,0,0,
+67,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, meta-methyl acetyl fentanyl, norfentanyl, 4-ANPP/despropionylfentanyl, methamphetamine, amphetamine",,,,,,,,,,,,
+68,specimen_form,1,Uw22-1080,,1,42,1,0,0,0,0,1,0,0,1,0,0,1,,,,1,0,0,0,0,0,0,0,0,0,0
+68,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, meta-methyl acetyl fentanyl, norfentanyl, diphenhydramine, naloxone, 4-ANPP/despropionylfentanyl, methamphetamine, lidocaine, amphetamine,","THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+69,specimen_form,1,UW22-1069,,1,41,1,0,0,0,0,1,0,0,1,0,<5,2,,,,0,0,0,0,0,1,0,0,0,0,
+69,qtof_screen,1,,,,,,,,,,,,,,,,,,"beta-hydroxyfentanyl, fentanyl, 4-ANPP/despropionylfentanyl, ziprasidone, meta-methyl acetyle fentanyl, O-desmethyl-venlafaxine, methylphenidate, N-desmethyl-venlafaxine (norvenlafaxine), venlafaxine, norfentanyl, acetaminophen, gabapentin, naloxone, benzhexol/trihexyphenidyl, ritalinic acid, ","Naproxen, acetaminophen",,,,,,,,,,,
+70,specimen_form,1,1097,,4,29,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,4
+70,qtof_screen,1,,,,,,,,,,,,,,,,,,"Naloxone, meta-methyl acetyl fentanyl, midazolam, fentanyl, ketamine, methamphetamine, caffeine, fentanyl-nor, beta-hydroxyfentanyl, ketamine-nor, amphetamine, midazolam-alpha-hydroxy, ","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+71,specimen_form,1,1098,,4,13,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,0,0,0,1,0,0,1
+71,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, sertraline","Acetaminophen, ",,,,,,,,,,,
+72,specimen_form,1,1099,,4,32,2,0,0,0,0,1,0,0,1,0,"69 mg/dL",2,,,,0,0,0,0,1,0,0,0,0,0,4
+72,qtof_screen,1,,,,,,,,,,,,,,,,,,"Cocaethylene, fentanyl, oxycodone, benzoylecgonine, cocaine, metoprolol, ketamine, ketamine-nor, acetaminophen, codeine, fentanyl-nor, labetalol, betamethasone/dexamethasone, cocaine-M (hydroxy metabolite), oxycodone-nor, formoterol","Acetaminophen, losartan",,,,,,,,,,,
+73,specimen_form,1,1100,,4,17,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,24
+73,qtof_screen,1,,,,,,,,,,,,,,,,,,"Naloxone, midazolam, meta-methyl acetyl fentanyl, beta-hydroxyfentanyl, acetaminophen, fentanyl-nor, 4-ANPP/despropionylfentanyl, midazolam-alpha-hydroxy","None detected",,,,,,,,,,,
+74,specimen_form,1,1101,,4,23,1,0,0,0,0,1,0,0,1,0,"252 mg/dL",2,,,,0,0,0,0,0,1,0,0,0,0,2
+74,qtof_screen,1,,,,,,,,,,,,,,,,,,"Cocaine, midazolam, benzoylecgonine, cocaethylene, caffeine, ketamine-nor, ketamine, quinine, cocaine-M (hydroxy metabolite), midazolam-alpha-hydroxy, ","None detected",,,,,,,,,,,
+75,specimen_form,1,1102,,4,53,2,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,2
+75,qtof_screen,1,,,,,,,,,,,,,,,,,,"Caffeine, diphenhydramine, Amitriptyline, nortriptyline, amitripyline-M (N-oxide), nortriptyline-M (trans-10-hydroxy)",Topiramate,,,,,,,,,,,
+76,specimen_form,1,1103,,4,59,1,0,0,0,0,1,0,1,0,0,"150 mg/dL",1,,,,0,0,0,0,1,0,0,0,0,0,2
+76,qtof_screen,1,,,,,,,,,,,,,,,,,,"Caffeine, metaprolol, metaprolol-hydroxy","None detected",,,,,,,,,,,
+77,specimen_form,1,1104,,4,29,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,3
+77,qtof_screen,1,,,,,,,,,,,,,,,,,,"Methamphetamine, ketamine-nor, fentanyl-nor, amphetamine, ketamine, fentanyl, amphetamine-hydroxy, 4-hydroxymethamphetamine","Carvedilol, THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+78,specimen_form,1,1105,,4,47,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,3
+78,qtof_screen,1,,,,,,,,,,,,,,,,,,"meta-methyl acetyl fentanyl, methamphetamine, gabapentin, beta-hydroxyfentanyl, acetaminophen, benzoylecgonine, cocaine, fentanyl-nor, amphetamine, 4-ANPP/despropionylfentanyl, 4-hydroxymethamphetamine, amphetamine-hydroxy, ketorolac","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite), ketorolac",,,,,,,,,,,
+79,specimen_form,1,UW22-1066,,1,53,2,0,0,1,0,0,0,0,1,0,"<5 mg/dl ",1,,,,0,0,0,0,0,0,1,0,0,0,">1 day "
+79,qtof_screen,1,,,,,,,,,,,,,,,,,,"Quetiapine, norfluoxetine, cyclobenzaprine, caffeine, acetaminophen, benzoylecgonine, cocaine, cocaethylene, norquetiapine, fluoxetine",,,,,,,,,,,,
+80,specimen_form,1,UW22-1077,,1,33,1,0,0,1,0,0,0,0,1,0,"Unknown ",1,,,,1,0,0,0,0,0,0,0,0,0,0
+80,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, norfentanyl, methamphetamine, amphetamine, naloxone","THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+81,specimen_form,1,1106,,4,38,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,0,1,0,0,0,0,8
+81,qtof_screen,1,,,,,,,,,,,,,,,,,,"None observed","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), Phenytoin, Phenobarbital",,,,,,,,,,,
+82,specimen_form,1,1107,,4,56,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,23
+82,qtof_screen,1,,,,,,,,,,,,,,,,,,"Oxycodone, caffeine, benzoylecgonine, methamphetamine, ketamine, cocaine, beta-hydroxyfentanyl, ketamine-nor, amphetamine, fentanyl-nor, meta-methyl acetyl fentanyl, N-methyl norfentanyl, 4-ANPP/despropionylfentanyl, cocaine-M (hydroxy metabolite), Oxycodone-nor, ","Aspirin (acetylsalicyclic acid), Aspirin-M (salicylic acid)",,,,,,,,,,,
+83,specimen_form,1,1108,,4,18,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,7
+83,qtof_screen,1,,,,,,,,,,,,,,,,,,"Naloxone, Caffeine, midazolam, ketamine, ketamine-nor, amiodarone, midazolam-alpha-hydroxy, ketamine-dehydronor","None observed",,,,,,,,,,,
+84,specimen_form,1,1109,,4,59,1,0,0,0,0,1,0,0,1,0,,4,,,,1,0,0,0,0,0,0,0,0,0,1
+84,qtof_screen,1,,,,,,,,,,,,,,,,,,"Cocaethylene, cocaine, citalopram-m (desmethyl metabolite), zolpidem, dextromethorphan, citalopram/escitalopram, cyclobenzaprine, benzoylecgonine, caffeine, diphenhydramine, cocaine-M (hydroxy metabolite), cyclobenzaprine-M (desmethyl metabolite), citalopram-M (didesmethyl metabolite)","None detected",,,,,,,,,,,
+85,specimen_form,1,1110,,4,46,1,0,0,0,0,1,0,0,1,0,"132 mg/dL",4,,,,0,0,0,0,1,0,0,0,0,0,8
+85,qtof_screen,1,,,,,,,,,,,,,,,,,,"Norbuprenorphine, acetaminophen, gabapentin, norbuprenorphine-6-glucuronide, ","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+86,specimen_form,1,1111,,4,1,1,0,0,1,0,0,0,0,1,0,,1,,,,0,0,0,0,0,1,0,0,0,0,2
+86,qtof_screen,1,,,,,,,,,,,,,,,,,,"Naloxone, meta-methyl acetyl fentanyl, caffeine, fentanyl, beta-hydroxyfentanyl, fentanyl-nor, alpha'-methoxy fentanyl, 4-ANPP/despropionylfentanyl, ","None detected",,,,,,,,,,,
+87,specimen_form,1,1112,,4,35,2,0,0,1,0,0,0,0,1,0,,4,,,,1,0,0,0,0,0,0,0,0,0,1
+87,qtof_screen,1,,,,,,,,,,,,,,,,,,"Norbuprenorphine, buprenorphine, bromazolam, acetaminophen, gabapentin,  dextromethorphan, benzoylecgonine, cocaine, buprenorphine-M (6-glucuronide metabolite), norbuprenorphine-6-glucuronide","Naproxen, THC-M (carboxy THC metabolite), THC-M (carboxy-THC glucuronide)",,,,,,,,,,,
+88,specimen_form,1,1113,,4,40,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,3
+88,qtof_screen,1,,,,,,,,,,,,,,,,,,"Temazepam, diazepam, nortriptyline, EDDP, amitriptyline, cocaethylene, cocaine, ropinirole, fluconazole, benzoylecgonine, nordiazepam, clonidine, methamphetamine, amphetamine, amitriptyline-M (N-oxide), nortriptyline-M (desmethyl), amitriptyline-M (trans-10-hydroxy metabolite)","None detected",,,,,,,,,,,
+89,specimen_form,1,1114,,4,66,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,2
+89,qtof_screen,1,,,,,,,,,,,,,,,,,,"Cocaethylene, alprazolam, meta-methyl acetyl fentanyl, temazepam, diazepam, methadone, fluoxetine, fluoxetine-nor, beta-hydroxyfentanyl, EDDP, benzoylecgonine, caffeine, fentanyl-nor, 4-ANPP/despropionylfentanyl, cocaine, cocaine-M (hydroxy metabolite)","Pravastatin  ",,,,,,,,,,,
+90,specimen_form,1,1115,,4,13,2,0,0,1,0,0,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,3
+90,qtof_screen,1,,,,,,,,,,,,,,,,,,"Losartan, carvedilol, caffeine, gabapentin, nortriptyline, ketamine, amitriptyline, acetaminophen, modafanil, ketamine-nor, atorvastatin, amitriptyline-M (N-oxide)",Losartan,,,,,,,,,,,
+91,specimen_form,1,1116,,4,62,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,3
+91,qtof_screen,1,,,,,,,,,,,,,,,,,,"morphine-6-monoacetyl, norbuprenorphine, meta-methyl acetyl fentanyl, buprenorphine, beta-hydroxyfentanyl, diphenhydramine, caffeine, benzoylecgonine, fentanyl-nor, xylazine, cocaine, naloxone, 4-ANPP/despropionylfentanyl, quinine, morphine-6-glucuronide, morphine-3-glucuronide, norbuprenorphine-6-glucuronide, burprenorphine-M (6-glucuronide metabolite)  N-desethyl metonitazene, protonitazene, N-pyrrolidino protonitazene",Negative,,,,,,,,,,,
+92,specimen_form,1,1117,,4,29,1,0,0,0,0,1,0,0,1,0,"146 mg/dL",2,,,,0,0,0,0,1,0,0,0,0,0,6
+92,qtof_screen,1,,,,,,,,,,,,,,,,,,"Benzoylecgonine, cocaethylene, cocaine, ketamine, ketamine-nor, cocaine-M (hydroxy metabolite), ketamine-dehydronor","None detected",,,,,,,,,,,
+93,specimen_form,1,1118,,4,21,1,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,2
+93,qtof_screen,1,,,,,,,,,,,,,,,,,,"Hydroxyzine, Bromazolam, ketamine-nor, ketamine, 1-(3-Chlorophenyl)piperazine (mCPP), Benzoylecgonine, fentanyl-nor, methamphetamine, acetaminophen, amphetamine, gabapentin, trazodone, ketamine-dehydronor","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+94,specimen_form,1,1119,,4,70,1,0,0,1,0,0,0,0,1,0,,1,,,,0,1,0,0,0,0,0,0,0,0,1
+94,qtof_screen,1,,,,,,,,,,,,,,,,,,"Cocaine, dextromethorphan, benzoylecgonine, venlafaxine, cocaethylene, norvenlafaxine (N-desmethyl), Venlafaxine-M (O-desmethyl metabolite), caffeine, diphenhydramine, prazosine, cocaine-M (hydroxy metabolite)","None detected",,,,,,,,,,,
+95,specimen_form,1,1120,,4,61,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,0,1,0,0,0,0,10
+95,qtof_screen,1,,,,,,,,,,,,,,,,,,"Diphenhydramine, Ketamine, Ketamine-nor, acetaminophen, gabapentin, famotidine","None detected",,,,,,,,,,,
+96,specimen_form,1,1121,,4,43,2,0,0,1,0,0,0,0,1,0,,2,,,,1,0,0,0,0,0,0,0,0,0,1
+96,qtof_screen,1,,,,,,,,,,,,,,,,,,"Haloperidol, bupropion, duloxetine, propranolol, caffeine, acetaminophen, gabapentin, famotidine, phentermine, quentiapine, hydroxybupropion","None detected",,,,,,,,,,,
+97,specimen_form,1,1122,,4,34,1,0,0,1,0,0,0,0,1,0,"84 mg/dL",1,,,,0,0,0,0,0,1,0,0,0,0,4
+97,qtof_screen,1,,,,,,,,,,,,,,,,,,"Haloperidol, midazolam, benzoylecgonine, cocaine, nor-mephedrone, haloperidol-dihydro, midazolam-alpha-hydroxy, cocaine-M (hydroxy metabolite), lacosamide","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+98,specimen_form,1,1123,,4,60,2,0,0,0,0,1,0,0,1,0,"211 mg/dL",1,,,,0,0,0,0,1,0,0,0,0,0,3
+98,qtof_screen,1,,,,,,,,,,,,,,,,,,"Citalopram/escitalopram, desmethylcitalopram, demoxepam, gabapentin, acetaminophen, 7-OH-ondansteron, 8-OH-ondansteron, ondansteron",,,,,,,,,,,,
+99,specimen_form,1,1124,,4,50,2,0,0,0,0,1,0,0,1,0,,1,,,,0,1,0,0,0,0,0,0,0,0,6
+99,qtof_screen,1,,,,,,,,,,,,,,,,,,"meta-methyl acetyl fentanyl, fentanyl, diphenhydramine, midazolam, alpha-OH-midazolam, ondansetron, 7-OH-ondansetron",,,,,,,,,,,,
+100,specimen_form,1,1125,,4,30,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,0,1,0,0,0,0,14
+100,qtof_screen,1,,,,,,,,,,,,,,,,,,"Methadone, acetaminophen, lidocaine, midazolam, norketamine, EDDP, fentanyl, ketamine, alpha-OH-midazolam, metronidazole, 7-OH-ondanstron, 8-OH-ondanstron, ondanstron, dehydronorketamine, chlorhexidine","Acetaminophen, THC-M (COOH THC-gluc), THC-M (COOH-THC metab)",,,,,,,,,,,
+101,specimen_form,1,1126,,4,34,1,0,0,0,0,1,0,1,0,0,,1,,,,0,0,0,0,1,0,0,0,0,0,2
+101,qtof_screen,1,,,,,,,,,,,,,,,,,,"meta-methyl acetyl fentanyl, beta-OH-fentanyl, fentanyl, methoxyacetylfentanyl, nerfentanyl, 4-ANPP/despropionylfentanyl, azithromycin, noroxycodone, methandienone",,,,,,,,,,,,
+102,specimen_form,1,1127,,4,18,1,0,0,1,0,0,0,0,1,0,,1,,,,0,0,0,0,0,1,0,0,0,0,5
+102,qtof_screen,1,,,,,,,,,,,,,,,,,,"Hydromorphone, meta-methyl acetyl fentanyl, midazolam, fenatnyl, norfentanyl, beta-OH-fentanyl, 4-ANPP/despropionylfentanyl, para-methoxy methoxy acetyl fentanyl, alpha-OH-midazolam",Hydrocortisone,,,,,,,,,,,
+103,specimen_form,1,1128,,4,45,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,0,1,0,0,0,0,5
+103,qtof_screen,1,,,,,,,,,,,,,,,,,,"Midazolam, benzoylecgonine, diphenhydramine, meta-methyl acetyl fentanyl, xylazine, 4-ANPP/despropionylfentanyl, beta-OH-fentanyl, methamphetamine, acetaminophen, dextromethorphan, norfentanyl, miconazole, cocaine-M (OH metabolite), alpha-OH-midazolam","THC-M (carboxy THC-gluc), THC-M (COOH-THC metab), acetaminophen",,,,,,,,,,,
+104,specimen_form,1,1129,,4,8,1,0,0,0,0,0,1,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,1
+104,qtof_screen,1,,,,,,,,,,,,,,,,,,"Metoclopramide, benzoylecgonine, acetaminophen",,,,,,,,,,,,
+105,specimen_form,1,1130,,4,73,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,4
+105,qtof_screen,1,,,,,,,,,,,,,,,,,,"levofloxacin, noroxymorphone, noroxycodone, apixaban, oxycodone",Acetaminophen,,,,,,,,,,,
+106,specimen_form,1,1131,,4,45,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,5
+106,qtof_screen,1,,,,,,,,,,,,,,,,,,"Gabapentin, methadone",,,,,,,,,,,,
+107,specimen_form,1,1132,,4,12,2,0,0,1,0,1,0,0,1,0,,2,,,,0,0,0,0,0,1,0,0,0,0,2
+107,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, diphenhydramine, naproxen","Naproxen, acetaminophen",,,,,,,,,,,
+108,specimen_form,1,1133,,4,47,2,0,0,1,0,0,0,0,0,1,Negative,1,,,,0,0,0,0,1,0,0,0,0,0,2
+108,qtof_screen,1,,,,,,,,,,,,,,,,,,"1-(3-chlorophenyl)piperazine (mCPP), methadone, gabapentin, theophyline/aminophylline, EDDP, diphenhydramine, caffeine, trazodone, ondansetron, 7-OH-ondansetron",,,,,,,,,,,,
+109,specimen_form,1,1134,,4,43,2,0,0,0,0,1,0,0,1,0,Negative,2,,,,0,0,0,0,1,0,0,0,0,0,4
+109,qtof_screen,1,,,,,,,,,,,,,,,,,,"Cocaine, risperidone, lidocaine, meta-methyl acetyl fentanyl, hydroxyzine, citalopram/escitalopram, benzoylecgonine, clonidine, fentanyl, acetaminophen, norfentanyl","Acetaminophen, THC-M (COOH-THC-gluc), THC-M (COOH-THC metab)",,,,,,,,,,,
+110,specimen_form,1,1135,,4,36,1,0,0,0,0,1,0,0,1,0,Negative,4,,,,0,0,0,0,1,0,0,0,0,0,2
+110,qtof_screen,1,,,,,,,,,,,,,,,,,,"para-methoxy acetyl fentanyl, methamphetamine, MDMA, amphetamine, xylazine, norfentanyl, meta-methyl acetyl fentanyl, beta-OH-fentanyl, 4-ANPP/despropionylfentanyl, fentanyl","THC-M (COOH-THC gluc), Acetaminophen, THC-M (COOH_THC metab)",,,,,,,,,,,
+111,specimen_form,1,1136,,4,16,1,0,0,1,0,0,0,1,0,0,,1,,,,0,0,0,0,0,1,0,0,0,0,2
+111,qtof_screen,1,,,,,,,,,,,,,,,,,,"Ketamine, Naloxone, Norketamine",,,,,,,,,,,,
+112,specimen_form,1,1137,,4,60,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,2
+112,qtof_screen,1,,,,,,,,,,,,,,,,,,"Diphenhydramine, n-desmethylvenlafaxine, ephedrine, pseudoephedrine, benzoylecgonine, venlafaxine, cyclobenzaprine, acetaminophen, primidone","Furosemide, meloxicam",,,,,,,,,,,
+113,specimen_form,1,1138,,4,11,1,0,0,0,0,1,0,1,0,0,,1,,,,0,0,0,0,0,1,0,0,0,0,1
+113,qtof_screen,1,,,,,,,,,,,,,,,,,,"Gabapentin, diphenhydramine, 8-OH-ondansteron, 7-OH-ondansteron, ondansteron","Acetaminophen, THC-M (COOH-THC gluc), THC-M (COOH-THC metab)",,,,,,,,,,,
+114,specimen_form,1,1139,,4,80,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,0,0,0,1,0,0,1
+114,qtof_screen,1,,,,,,,,,,,,,,,,,,"Haloperidol, midazolam, benzoylecgonine, diphenhydramine, alpha-OH-midazolam, ondansteron, 7-OH-ondansteron","THC-M (COOH-THC gluc), THC-M (COOH-THC metab)",,,,,,,,,,,
+115,specimen_form,1,1140,,4,47,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,3
+115,qtof_screen,1,,,,,,,,,,,,,,,,,,Diphenhydramine,"THC-M (COOH-THC gluc)",,,,,,,,,,,
+116,specimen_form,1,1141,,4,18,1,0,0,0,0,1,0,0,0,1,,4,,,,0,0,0,0,0,1,0,0,0,0,9
+116,qtof_screen,1,,,,,,,,,,,,,,,,,,"meta-methyl acetyl fentanyl, midazolam, fentanyl, methamphetamine, benzoylecgonine, theophyline/aminophylline, norketamine, amphetamine, ketamine, norfentanyl, alpha-OH-midazolam, dehydronorketamine","THC-M (COOH-THC metab), THC-M (COOH-THC gluc)",,,,,,,,,,,
+117,specimen_form,1,1142,,4,14,2,0,0,0,0,1,0,1,0,0,,2,,,,0,0,0,0,1,0,0,0,0,0,3
+117,qtof_screen,1,,,,,,,,,,,,,,,,,,Acetaminophen,"Acetaminophen, THC-M (COOH-THC gluc), THC-M (COOH-THC metab)",,,,,,,,,,,
+118,specimen_form,1,1143,,4,69,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,4
+118,qtof_screen,1,,,,,,,,,,,,,,,,,,"Lidocaine, duloxetine, diphenhydramine, acetaminophen, atenolol","Acetaminophen, furosemide, acipimox",,,,,,,,,,,
+119,specimen_form,1,1144,,4,41,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,5
+119,qtof_screen,1,,,,,,,,,,,,,,,,,,"Risperidone, 1-(3-chlorophenyl)piperazine (mCPP), trazodone, gabapentin, cetrizine","Acetaminophen, THC-M (COOH-THC gluc), THC-M (COOH-THC metab)",,,,,,,,,,,
+120,specimen_form,1,1145,,4,68,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,4
+120,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, venlafaxine, N-desmethylvenlafaxine, bupropion, primidone, O-desmethyl-venlafaxine, atorvastatin, irbesartan, hydroxybupropion",Acetaminophen,,,,,,,,,,,
+121,specimen_form,1,1146,,4,29,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,6
+121,qtof_screen,1,,,,,,,,,,,,,,,,,,"8-aminoclonazolam, EDDP, methadone, beta-OH-fentanyl, meta-methyl acetyl fentanyl, xylazine, diphenhydramine, methoxyacetylfentanyl, gabapentin, acetaminophen, methamphetamine, benzoylecgonine, amphetamine, 4-ANPP/despropionylfentanyl, norfentanyl","Acetaminophen, THC-M (COOH_THC gluc)",,,,,,,,,,,
+122,specimen_form,1,1147,,4,64,1,0,0,0,0,1,0,0,1,0,,4,,,,1,0,0,0,0,0,0,0,0,0,0
+122,qtof_screen,1,,,,,,,,,,,,,,,,,,"Psilocin, naproxen, sildenafil, desmethylsildenafil","Naproxen, Acetaminophen",,,,,,,,,,,
+123,specimen_form,1,1148,,4,44,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,3
+123,qtof_screen,1,,,,,,,,,,,,,,,,,,"Hydroxyzine, loperamide, metoclopramide, fluoxetine, lidocaine, acetaminophen, norfluoxetine, gabapentin, propranolol, 7-OH-ondansteron, 8-OH-ondansteron, ondansteron, dimethylloperamide","Acetaminophen, THC-M (COOH-THC gluc), furosemide",,,,,,,,,,,
+124,specimen_form,1,1149,,4,18,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,10
+124,qtof_screen,1,,,,,,,,,,,,,,,,,,"meta-methyl acetyl fentanyl, norfluoxetine, dextromethorphan, ketamine, fentanyl, norketamine, guaiphenesin, norfentanyl, dobutamine, dehydronorketamine, levorphanol/dextrorphan",Furosemide,,,,,,,,,,,
+125,specimen_form,1,1150,,4,16,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,0,1,0,0,0,0,2
+125,qtof_screen,1,,,,,,,,,,,,,,,,,,"Ketamine, midazolam, norketamine, diphenhydramine, alpha-OH-midazolam, dehydronorketamine",,,,,,,,,,,,
+126,specimen_form,1,1151,,4,56,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,4
+126,qtof_screen,1,,,,,,,,,,,,,,,,,,"Quetiapine, methadone, venlafaxine, losartan, O-desmethyl venlafaxine, N-desmethyl venlafaxine, EDDP, norquetiapine",Acetaminophen,,,,,,,,,,,
+128,specimen_form,1,1153,,4,56,1,0,0,0,0,1,0,0,1,0,"230 mg/dL",1,,,,0,0,0,0,0,1,0,0,0,0,3
+128,qtof_screen,1,,,,,,,,,,,,,,,,,,"lorsartan, hydroxyzine, N-desmethyl venlafaxine, venlafaxine, nordiazepam, levetiracetam",Lorsartan,,,,,,,,,,,
+129,specimen_form,1,1154,,4,15,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,0,1,0,0,0,0,6
+129,qtof_screen,1,,,,,,,,,,,,,,,,,,"Quinine, meta methyl acetyl fentanyl, beta-hydroxyfentanyl, fentanyl, cocaine, benzoylecgonine, 4-ANPP/despropionylfentanyl, norfentanyl, quinidine, naloxone, hydroquinidine","THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+130,specimen_form,1,1155,,4,29,1,0,0,0,0,1,0,0,1,0,,,,,,0,0,0,0,0,1,0,0,0,0,5
+130,qtof_screen,1,,,,,,,,,,,,,,,,,,"meta-methyl acetyl fentanyl, fentanyl, alprazolam, tramadol, trazodone, beta-hydroxy fentanyl, xylazine, norfentanyl, O-desmethyl venlafaxine, ","THC-carboxy-glucuronide, tHC-carboxy, acetaminophen",,,,,,,,,,,
+131,specimen_form,1,1156,,4,15,2,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,3
+131,qtof_screen,1,,,,,,,,,,,,,,,,,,"Hydroxyzine, sertraline, midazolam, hydromorphone, alpha-hydroxy midazolam","THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+132,specimen_form,1,1157,,4,34,1,0,0,0,0,1,0,0,1,0,,4,,,,1,0,0,0,0,0,0,0,0,0,0
+132,qtof_screen,1,,,,,,,,,,,,,,,,,,"6-monoacetyl-morphine, meta methyl acetyl fentanyl, methoxyacetyl fentanyl, fentanyl, beta-hydroxy fentanyl, noscapine, quinine, nordoxepin, 4-ANPP/despropionylfentanyl, despropionyl para-fluorofentanyl, o/m/p-fluorofentanyl, tramadol, benzoylecgonine, norfentanyl, acetaminophen, codeine, ","THC-carboxy-glucuronide, THC-carboxy, acetaminophen",,,,,,,,,,,
+133,specimen_form,1,1158,,4,68,1,0,0,1,0,0,0,0,1,0,,,,,,0,1,0,0,0,0,0,0,0,0,8
+133,qtof_screen,1,,,,,,,,,,,,,,,,,,"Naloxone, fentanyl, midazolam, benzoylecgonine, ketamine, atorvastatin, amlodipine, apixaban, dehydronorketamine",None,,,,,,,,,,,
+134,specimen_form,1,1159,,4,54,2,0,0,0,0,1,0,0,1,0,,,,,,0,0,0,0,1,0,0,0,0,0,11
+134,qtof_screen,1,,,,,,,,,,,,,,,,,,"9-hydroxyrisperidone, hydroxyrisperidone, ","THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+135,specimen_form,1,1160,,4,2,1,0,0,1,0,0,0,0,1,0,,1,,,,0,0,0,0,0,1,0,0,0,0,5
+135,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, norfentanyl, benzoylecgonine",,,,,,,,,,,,
+136,specimen_form,1,1161,,4,34,2,0,0,0,0,1,0,0,1,0,"218 mg/dL",2,,,,0,0,0,0,1,0,0,0,0,0,2
+136,qtof_screen,1,,,,,,,,,,,,,,,,,,"Caffeine, gabapentin, trazodone",,,,,,,,,,,,
+137,specimen_form,1,1162,,4,10,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,0,0,0,1,0,0,1
+137,qtof_screen,1,,,,,,,,,,,,,,,,,,"Amphetamine, cathine (hydroxy-amphetamine)",,,,,,,,,,,,
+138,specimen_form,1,1163,,4,"7 month",2,0,0,1,0,0,0,0,1,0,,1,,,,0,0,0,0,0,1,0,0,0,0,2
+138,qtof_screen,1,,,,,,,,,,,,,,,,,,"Norfentanyl, fentanyl, norketamine, ketamine, acetaminophen, benzoylecgonine, EDDP, o/m/p-fluorofentanyl",,,,,,,,,,,,
+139,specimen_form,1,1164,,4,3,1,0,0,1,0,0,0,0,1,0,,1,,,,0,0,0,0,0,1,0,0,0,0,1
+139,qtof_screen,1,,,,,,,,,,,,,,,,,,Lidocaine,"THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+140,specimen_form,1,1165,,4,46,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,3
+140,qtof_screen,1,,,,,,,,,,,,,,,,,,"N-desmethyl venlafaxine, venlafaxine, O-desmethyl venlafaxine, midazolam","THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+141,specimen_form,1,1166,,4,3,2,0,0,0,0,0,1,1,0,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+141,qtof_screen,1,,,,,,,,,,,,,,,,,,None,"THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+142,specimen_form,1,1167,,4,16,2,0,1,0,0,0,0,0,1,0,,4,,,,0,0,0,0,0,1,0,0,0,0,19
+142,qtof_screen,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+143,specimen_form,1,1168,,4,3,1,0,0,1,0,0,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,4
+143,qtof_screen,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+144,specimen_form,1,1169,,4,5,2,0,0,1,0,0,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,6
+144,qtof_screen,1,,,,,,,,,,,,,,,,,,"clobazam, norclobazam","valproic acid",,,,,,,,,,,
+145,specimen_form,1,1170,,4,67,2,0,0,0,0,1,0,0,1,0,0,1,,,,0,0,0,0,0,1,0,0,0,0,11
+145,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, meta-methyl fentanyl  Haloperidol, olanzapine, norfentanyl, diphenhydramine, gabapentin, azithromycin",Naproxen,,,,,,,,,,,
+146,specimen_form,1,1171,,4,37,1,0,0,0,0,1,0,0,1,0,0,1,,,,0,1,0,0,0,0,0,0,0,0,18
+146,qtof_screen,1,,,,,,,,,,,,,,,,,,"Haloperidol, diphenhydramine, lidocaine, acetaminophen, bupropion, chlorhexidine, ondansetron, ondansteron-7-hydroxy, lidocaine-N-deethylated metabolite, ","THC-carboxy-glucuronide, THC-carboxy, acetaminophen",,,,,,,,,,,
+147,specimen_form,1,1172,,4,44,2,0,0,0,0,1,0,0,1,0,"255 mg/dL",1,,,,0,0,0,0,1,0,0,0,0,0,2
+147,qtof_screen,1,,,,,,,,,,,,,,,,,,"Olanzapine, diphenhydramine, dextromethorphan, doxylamine, norketamine, metoprolol, ketamine, ketamine-dehydronor, metoprolol-hydroxy, lecorphanol/dextrorphan","lorsartan, acetaminophen",,,,,,,,,,,
+148,specimen_form,1,1173,,4,36,2,0,0,0,0,1,0,0,1,0,0,2,,,,0,0,0,0,1,0,0,0,0,0,6
+148,qtof_screen,1,,,,,,,,,,,,,,,,,,"Olanzapine, dextromethorphan, 1-(3-chlorophenyl)piperazine (mCPP), bupropion, trazodone, olanzapine-N-desmethyl",topiramate,,,,,,,,,,,
+149,specimen_form,1,1174,,4,18,1,0,0,0,0,1,0,1,0,0,,4,,,,1,0,0,0,0,0,0,0,0,0,1
+149,qtof_screen,1,,,,,,,,,,,,,,,,,,"Naproxen, trazodone, ","THC-carboxy-glucuronide, THC-carboxy, naproxen",,,,,,,,,,,
+150,specimen_form,1,1175,,4,26,2,0,0,0,0,1,0,1,0,0,,2,,,,0,0,0,0,0,1,0,0,0,0,7
+150,qtof_screen,1,,,,,,,,,,,,,,,,,,"Sertraline, Citalopram-desmethyl metabolite, midazolam, citalopram/escitalopram, gabapentin",,,,,,,,,,,,
+151,specimen_form,1,1176,,4,17,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,2
+151,qtof_screen,1,,,,,,,,,,,,,,,,,,"None  ","THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+152,specimen_form,1,1177,,4,60,1,0,0,0,0,1,0,0,1,0,"183 mg/dL",2,,,,0,0,0,0,1,0,0,0,0,0,7
+152,qtof_screen,1,,,,,,,,,,,,,,,,,,"Quetiapine, norquetiapine, ",Phenobarbital,,,,,,,,,,,
+153,specimen_form,1,1178,,4,21,1,0,0,0,0,1,0,1,0,0,,1,,,,0,0,0,0,0,0,0,1,0,0,1
+153,qtof_screen,1,,,,,,,,,,,,,,,,,,Lidocaine,,,,,,,,,,,,
+154,specimen_form,1,1179,,4,45,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,1,0,0,0,0,0,0,1
+154,qtof_screen,1,,,,,,,,,,,,,,,,,,"Naproxen, cocaine, benzoylecgonine",Naproxen,,,,,,,,,,,
+155,specimen_form,1,1180,,4,44,1,0,0,0,0,1,0,0,1,0,"128 mg/dL",4,,,,0,0,0,0,1,0,0,0,0,0,4
+155,qtof_screen,1,,,,,,,,,,,,,,,,,,"Oxycodone, mirtazepine, O-desmethyl-venlafaxine, codeine, propranolol, noroxycodone, apixaban","Acetaminophen, phenobarbital, THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+156,specimen_form,1,1181,,4,75,2,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,3
+156,qtof_screen,1,,,,,,,,,,,,,,,,,,"Loperamide, carvedilol, trazodone, hydroxyzine, citalopram/escitalopram, desmethyl-citalopram, diphenhydramine, naproxen, lidocaine, 7-amino clonazepam, acetaminophen, hydromorphone","Acetaminophen, naproxen",,,,,,,,,,,
+157,specimen_form,1,1182,,4,"1 month",2,0,0,0,0,1,0,0,1,0,,4,,,,0,1,0,0,0,0,0,0,0,0,1
+157,qtof_screen,1,,,,,,,,,,,,,,,,,,"Papaverine, benzoylecgonine, cocaine, ",None,,,,,,,,,,,
+158,specimen_form,1,1183,,4,32,1,0,0,1,0,0,0,0,1,0,,1,,,,0,0,0,0,0,1,0,0,0,0,10
+158,qtof_screen,1,,,,,,,,,,,,,,,,,,"beta-hydroxyfentanyl, 8-amino-clonazolam, quinine, meta methyl acetyl fentanyl, EDDP, fentanyl, primidone, diphenhydramine, norfentanyl, benzoylecgonine, ",None,,,,,,,,,,,
+159,specimen_form,1,1184,,4,16,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,3
+159,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fluoxetine, norfluoxetine, lorazepam, acetaminophen, levetiracetam","THC-carboxy-glucuronide, THC-carboxy-THC-OH, acetaminophen",,,,,,,,,,,
+160,specimen_form,1,1185,,4,56,1,0,0,0,0,1,0,0,1,0,,4,,,,1,0,0,0,0,0,0,0,0,0,1
+160,qtof_screen,1,,,,,,,,,,,,,,,,,,"Quinine, 8-amino-clonazolam, fentanyl, naproxen, norfentanyl","Acetaminophen, naproxen, THC-carboxy-glucuronide, THC-carboxy, salicyclic acid",,,,,,,,,,,
+161,specimen_form,1,1186,,4,16,1,0,0,0,0,1,0,1,0,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+161,qtof_screen,1,,,,,,,,,,,,,,,,,,Lidocaine,None,,,,,,,,,,,
+162,specimen_form,1,1187,,4,60,1,0,0,0,0,1,0,0,1,0,"183 mg/dL",1,,,,0,0,0,0,1,0,0,0,0,0,7
+162,qtof_screen,1,,,,,,,,,,,,,,,,,,"Hydroxyzine, quetiapine, naltrexone","Phenobarbital, acetaminophen",,,,,,,,,,,
+163,specimen_form,1,1188,,4,43,1,0,0,1,0,0,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,8
+163,qtof_screen,1,,,,,,,,,,,,,,,,,,"Haloperidol, dextromethorphan, benzoylecgonine, lidocaine","THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+164,specimen_form,1,1189,,4,17,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,7
+164,qtof_screen,1,,,,,,,,,,,,,,,,,,"dihydrocodeine, fluoxetine, norfluoxetine, hydrocodone, acetaminophen, ",Acetaminophen,,,,,,,,,,,
+165,specimen_form,1,1190,,4,28,2,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,7
+165,qtof_screen,1,,,,,,,,,,,,,,,,,,"fentanyl, quinine, beta-hydroxyfentanyl, diphenhydramine, 4-ANPP/despropionylfentanyl, norfentanyl, buprenorphine, norbuprenorphine, ",carvedilol,,,,,,,,,,,
+166,specimen_form,1,1191,,4,68,2,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,0,1,0,0,0,0,11
+166,qtof_screen,1,,,,,,,,,,,,,,,,,,"meta-methyl acetyl fentanyl, fentanyl, cyclobenzaprine, metaprolol, 4-ANPP/despropionylfentanyl, beta-hydroxyfentanyl, norfentanyl, ketamine, norketamine","THC-carboxy-glucuronide, THC-carboxy, furosemide, ",,,,,,,,,,,
+167,specimen_form,1,1192,,4,48,2,0,0,1,0,0,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+167,qtof_screen,1,,,,,,,,,,,,,,,,,,"desmethyl-citalopram, metoclopramide, citalopram/escitalopram, cocaine, benzoylecgonine, hydromorphone, ","THC-carboxy-glucuronide, THC-carboxy, acetaminophen, furosemide",,,,,,,,,,,
+168,specimen_form,1,1193,,4,11,2,0,0,0,0,1,0,1,0,0,,1,,,,0,0,0,0,0,1,0,0,0,0,1
+168,qtof_screen,1,,,,,,,,,,,,,,,,,,None,"THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+169,specimen_form,1,1194,,4,37,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,15
+169,qtof_screen,1,,,,,,,,,,,,,,,,,,"Methamphetamine, amphetamine","THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+170,specimen_form,1,1195,,4,28,2,0,0,0,0,1,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+170,qtof_screen,1,,,,,,,,,,,,,,,,,,"para-methoxy acetyl fentanyl, metonitazene, N-desethyl metonitazene, dextromethorphan, 8-amino-clonazolam, meta-methyl acetyl fentanyl, noscapine, diphenhydramine, fentanyl, cocaine, quinine, benzoylecgonine, o/m/p-fluorofentanyl, doxylamine, 4-ANPP/despropionylfentanyl, acetylfentanyl, beta-hydroxyfentanyl, norfentanyl, xylazine, morphine-6-glucuronide","Acetaminophen, ",,,,,,,,,,,
+171,specimen_form,1,1196,,4,38,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,7
+171,qtof_screen,1,,,,,,,,,,,,,,,,,,"demoxepam, acetaminophen",Acetaminophen,,,,,,,,,,,
+172,specimen_form,1,1197,,4,65,2,0,0,1,0,0,0,0,1,0,"320 mg/dL",1,,,,0,0,0,0,1,0,0,0,0,0,3
+172,qtof_screen,1,,,,,,,,,,,,,,,,,,None,"THC-carboxy-glucuronide, THC-carboxy, acetaminophen",,,,,,,,,,,
+173,specimen_form,1,1198,,4,39,1,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,2
+173,qtof_screen,1,,,,,,,,,,,,,,,,,,"Naproxen, methamphetamine, venlafaxine-O-desmethyl metabolite, dextromethorphan, gabapentin, guaiphenesin",Naproxen,,,,,,,,,,,
+174,specimen_form,1,1199,,4,44,1,0,0,0,0,1,0,0,1,0,"147 mg/dL",2,,,,0,0,0,0,1,0,0,0,0,0,7
+174,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, meta-methyl acetyl fentanyl, 4-ANPP/despropionylfentanyl, norfentanyl, beta-hydroxyfentanyl, oxycodone, methamphetamine, amphetamine, codeine, oxymorphone",,,,,,,,,,,,
+175,specimen_form,1,1200,,4,38,1,0,0,1,0,0,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,1
+175,qtof_screen,1,,,,,,,,,,,,,,,,,,"diphenhydramine, norfentanyl, naproxen, metoclopramide, acetaminophen, doxylamine, fentanyl","THC-carboxy-glucuronide, THC-carboxy, naproxen",,,,,,,,,,,
+176,specimen_form,1,1201,,4,65,1,0,0,0,0,1,0,0,1,0,"260 mg/dL",1,,,,0,0,0,0,1,0,0,0,0,0,3
+176,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, fentanyl, norfentanyl, lidocaine, guaiphenesin, ondansetron, 7-hydroxy-ondansteron","THC-carboxy-glucuronide, THC-carboxy, acetaminophen. phenobarbital",,,,,,,,,,,
+177,specimen_form,1,1202,,4,16,2,0,0,0,0,1,0,1,0,0,,2,,,,0,0,0,0,1,0,0,0,0,0,6
+177,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, caffeine, cocaine, benzoylecgonine","Acetaminophen, aspirin",,,,,,,,,,,
+178,specimen_form,1,1203,,4,20,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,1
+178,qtof_screen,1,,,,,,,,,,,,,,,,,,"Ketamine, MDMA, cocaethylene, MDA. cocaine, nerketamine, flualprazolam, methedrone, dehydronorketamine, naloxone","THC-carboxy-glucuronide, THC-carboxy",,,,,,,,,,,
+179,specimen_form,1,1204,,4,76,2,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,6
+179,qtof_screen,1,,,,,,,,,,,,,,,,,,"Tramadol, lidocaine, bupivacaine/levobupivacaine, nortriptyline, amitriptyline, lorsartan, norfluoxetine, loperamide, acetaminophen, metoprolol, propranolol, fentanyl, norfentanyl, baclofen ","Lorsartan, acetaminophen, hydrochlorothiazide",,,,,,,,,,,
+180,specimen_form,1,1205,,4,15,2,0,0,0,0,1,0,1,0,0,,4,,,,0,0,0,0,1,0,0,0,0,0,3
+180,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, morphine-6-glucuronide, morphine-3-glucuronide",Acetaminophen,,,,,,,,,,,
+181,specimen_form,1,1206,,4,16,1,0,0,1,0,0,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+181,qtof_screen,1,,,,,,,,,,,,,,,,,,Metoprolol,Meloxicam,,,,,,,,,,,
+182,specimen_form,1,1207,,4,49,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,2
+182,qtof_screen,1,,,,,,,,,,,,,,,,,,"Hydrocodone, baclofen, diphenhydramine, acetaminophen, gabapentin","THC-carboxy-glucuronide, THC-carboxy, acetaminophen",,,,,,,,,,,
+183,specimen_form,1,1208,,4,65,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,0,1,0,0,0,0,2
+183,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, meta-methyl acetyl fentanyl, metoprolol, cyclobenzaprine, warfarin, acetaminophen, codeine, prazepam","Warfarin, acetaminophen",,,,,,,,,,,
+184,specimen_form,1,1209,,4,14,1,0,0,1,0,0,0,0,0,1,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+184,qtof_screen,1,,,,,,,,,,,,,,,,,,None,Acetaminophen,,,,,,,,,,,
+185,specimen_form,1,1210,,4,23,1,0,0,1,0,0,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,3
+185,qtof_screen,1,,,,,,,,,,,,,,,,,,"oxycodone, oxymorphone, codeine","THC-carboxy-glucuronide, THC-carboxy, acetaminophen",,,,,,,,,,,
+186,specimen_form,1,1211,,4,32,1,0,0,1,0,0,0,0,1,0,,1,,,,0,0,0,0,0,0,0,1,0,0,1
+186,qtof_screen,1,,,,,,,,,,,,,,,,,,"meta-methyl acetyl fentanyl, quinine, 8-amino-clonazolam, beta-hydroxyfentanyl, fentanyl, alpha-methoxy-fentanyl, doxylamine, xylazine, norfentanyl,  ",Acetaminophen,,,,,,,,,,,
+187,specimen_form,1,1212,,4,46,2,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,2
+187,qtof_screen,1,,,,,,,,,,,,,,,,,,"Quinine, lidocaine, fentanyl, norfentanyl, 8-amino-clonazolam, xylazine, midazolam, ondansetron","THC-carboxy-glucuronide, THC-carboxy, THC-OH",,,,,,,,,,,
+188,specimen_form,1,1213,,4,15,1,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,3
+188,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, hydroxybupropion, ","Acetaminophen, ibuprofen",,,,,,,,,,,
+189,specimen_form,1,1214,,4,65,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,2
+189,qtof_screen,1,,,,,,,,,,,,,,,,,,"Benzoylecgonine, cocaine, ","THC-carboxy-glucuronide, THC-carboxy, acetaminophen",,,,,,,,,,,
+190,specimen_form,1,1215,,4,6,2,0,1,0,0,0,0,0,1,0,,4,,,,1,0,0,0,0,0,0,0,0,0,1
+190,qtof_screen,1,,,,,,,,,,,,,,,,,,None,None,,,,,,,,,,,
+191,specimen_form,1,1216,,4,62,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,14
+191,qtof_screen,1,,,,,,,,,,,,,,,,,,"Hydromorphone, Lidocaine, 7-hydroxy-ondansteron, ondansetron",Acetaminophen,,,,,,,,,,,
+200,specimen_form,1,1225,,4,14,2,0,0,0,0,1,0,1,0,0,,2,,,,1,0,0,0,0,0,0,0,0,0,1
+200,qtof_screen,1,,,,,,,,,,,,,,,,,,,Naloxone,,,,,,,,,,,
+201,specimen_form,1,1226,,4,31,2,1,0,0,0,0,0,0,1,0,,2,,,,0,0,0,0,0,1,0,0,0,0,9
+201,qtof_screen,1,,,,,,,,,,,,,,,,,,"Hydroxyzine, naloxone, clonazepam-M (7-amino metabolite), trazodone, morphine, venlafaxine, chlorpheniramine, diphenhydramine, doxylamine, clonidine, norvenlafaxine (N-desmethyl), methocarbamol, 1-(3-chlorophenyl)piperazine (mCPP), venlafaxine-M (O-desmethyl metabolite), naproxen, amphetamine, morphine-3-glucuronide, morphine-6-glucuronide, desmethylchlorpheniramine, N-oxide-chlorpheniramine",Naproxen,,,,,,,,,,,
+202,specimen_form,1,1227,,4,21,1,0,1,0,0,0,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,5
+202,qtof_screen,1,,,,,,,,,,,,,,,,,,"methylphenidate, acetaminophen, ritalinic acid","Acetaminophen, THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+203,specimen_form,1,1228,,4,41,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,3
+203,qtof_screen,1,,,,,,,,,,,,,,,,,,"benzoylecgonine, oxycodone, acetaminophen, methamphetamine, gabapentin, fentanyl, noroxycodone, ","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), acetaminophen, tianeptine",,,,,,,,,,,
+204,specimen_form,1,1229,,4,49,2,1,0,0,0,0,0,1,0,0,,4,,,,0,0,0,0,0,0,1,0,0,0,5
+204,qtof_screen,1,,,,,,,,,,,,,,,,,,"naltrexone, risperidone, hydroxyzine, trazodone, norfluxetine, dextromethorphan, doxylamine, gabapentin, 1-(3-chlorophenyl)piperazine (mCPP), fluoxetine, ","Naproxen, acetaminophen, THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+205,specimen_form,1,1230,,4,63,2,0,0,1,0,0,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,10
+205,qtof_screen,1,,,,,,,,,,,,,,,,,,"Loperamide, clozapine, bupropion, hydroxy-risperidone, hydrocodone, demethyl-loperamide, hydroxybupropion, N-oxide-clozapine"," ",,,,,,,,,,,
+206,specimen_form,1,1231,,4,63,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,6
+206,qtof_screen,1,,,,,,,,,,,,,,,,,,"benzoylecgonine, olanzapine, levetiracetam, cocaine, naloxone, hydroxy-chloroquine, apixaban","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+207,specimen_form,1,1232,,4,34,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,0,1,0,0,0,0,7
+207,qtof_screen,1,,,,,,,,,,,,,,,,,,"ondansetron, 7-hydroxy-ondansetron","Acetaminophen, ibuprofen",,,,,,,,,,,
+208,specimen_form,1,1233,,4,57,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,3
+208,qtof_screen,1,,,,,,,,,,,,,,,,,,"lorsartan, haloperidol, trazodone, olanzapine, oxycodone, sertraline, lidocaine, acetaminophen, norsertravline, codeine, noroxycodone, ","Acetaminophen, losartan",,,,,,,,,,,
+209,specimen_form,1,1234,,4,66,2,0,0,1,0,0,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,40
+209,qtof_screen,1,,,,,,,,,,,,,,,,,,"Haloperidol, midazolam, ketamine, naloxone, 7-hydroxy-ondansteron, ondansetron, ",,,,,,,,,,,,
+210,specimen_form,1,1235,,4,32,1,0,0,0,0,1,0,0,1,0,"258 mg/dL",1,,,,1,0,0,0,0,0,0,0,0,0,1
+210,qtof_screen,1,,,,,,,,,,,,,,,,,,"risperidone, cocaethylene, cocaine, 7-amino-clonazepam, benzoylecgonine, ","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite), acetaminophen, EtG (ethyl-glucuronide), EtS (ethyl-sulphate)",,,,,,,,,,,
+211,specimen_form,1,1236,,4,24,2,0,0,0,0,1,0,0,1,0,"240 mg/dL",1,,,,0,0,0,0,1,0,0,0,0,0,4
+211,qtof_screen,1,,,,,,,,,,,,,,,,,,"cocaine, cocaethylene, benzoylecgonine, lidocaine, ","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite), acetaminophen, EtS (ethyl-sulphate), EtG (ethyl-glucuronide)",,,,,,,,,,,
+212,specimen_form,1,1237,,4,33,1,0,0,1,0,0,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,7
+212,qtof_screen,1,,,,,,,,,,,,,,,,,,"beta-hydroxyfentanyl, fentanyl, norfentanyl, buprenorphine, norbuprenorphine, 6-glucuronide-buprenorphine, ondansetron, 8-hydroxy-ondansteron",ketorolac,,,,,,,,,,,
+213,specimen_form,1,1238,,4,62,1,0,0,0,0,1,0,0,1,0,,1,,,,0,1,0,0,0,0,0,0,0,0,32
+213,qtof_screen,1,,,,,,,,,,,,,,,,,,"lidocaine, gabapentin, carvedilol, oxycodone, naloxone, noroxycodone, trimethoprim, ondansetron, sulfamethoxazole, canrenoic acid, canrenone","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite), carvedilol, canrenoic acid",,,,,,,,,,,
+214,specimen_form,1,1239,,4,32,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,1,0,0,0,0,0,0,1
+214,qtof_screen,1,,,,,,,,,,,,,,,,,,"diphenhydramine, methamphetamine, naloxone, benzoylecgonine","THC-M (carboxy THC metabolite), acetaminophen, THC-M (carboxy THC metabolite)",,,,,,,,,,,
+215,specimen_form,1,1240,,4,15,2,0,0,1,0,0,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,3
+215,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fluoxetine, norfluoxetine, acetaminophen, norbuprenorphine, buprenorphine, naloxone, 6-glucuronide-burprenorphine, lorazepam-M (glucuronide), 7-hydroxy ondansetron, ondansetron, 8-hydroxy ondansetron","THC-M (carboxy THC-glucuronide), acetaminophen",,,,,,,,,,,
+216,specimen_form,1,1241,,4,14,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,0,0,0,1,0,0,1
+216,qtof_screen,1,,,,,,,,,,,,,,,,,,"diphenhydramine, dextromethorphan, bupropion, propranolol, methylphenidate, naloxone, hydroxybupropion, ritalinic acid","aspirin-M (salicylic acid), ibuprofen, THC-M (carboxy THC-glucuronide), EtG (ethyl glucuronide), ",,,,,,,,,,,
+217,specimen_form,1,1242,,4,53,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,24
+217,qtof_screen,1,,,,,,,,,,,,,,,,,,"diphenhydramine, lidocaine, gabapentin, ketamine, oxycodone, fentanyl, naloxone, noroxycodone, 8-hydroxy ondansetron, ondansetron, dehydronorketamine, ","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), ",,,,,,,,,,,
+218,specimen_form,1,1243,,4,12,2,0,0,0,0,1,0,1,0,0,,2,,,,0,0,0,0,1,0,0,0,0,0,3
+218,qtof_screen,1,,,,,,,,,,,,,,,,,,"citalopram/escitalopram, naloxone, desmethyl citalopram, fentanyl, baclofen","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite), ",,,,,,,,,,,
+219,specimen_form,1,1244,,4,48,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,3
+219,qtof_screen,1,,,,,,,,,,,,,,,,,,"loperamide, diphenhydramine, norfentanyl, o/m/p-fluorofentanyl, naloxone, demethyl loperamide, morphine-6-glucuronide, lorazepam glucuronide, temazepam glucuronide, ketorolac","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite), acetaminophen, ibuprofen, ketorolac, EtS (ethyl sulphate)",,,,,,,,,,,
+220,specimen_form,1,1245,,4,16,1,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,3
+220,qtof_screen,1,,,,,,,,,,,,,,,,,,"citalopram/escitalopram, desmethyl citalopram, naloxone, cetirizine, N-desalkyl cetirizine",,,,,,,,,,,,
+221,specimen_form,1,1246,,4,15,2,0,0,1,0,0,0,0,1,0,,2,,,,1,0,0,0,0,0,0,0,0,0,1
+221,qtof_screen,1,,,,,,,,,,,,,,,,,,"norfluoxetine, acetaminophen, methylphenidate, naloxone, lorazepam glucuronide, ritalinic acid, ","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite), acetaminophen",,,,,,,,,,,
+222,specimen_form,1,1247,,4,4,1,0,0,0,0,1,0,1,0,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+222,qtof_screen,1,,,,,,,,,,,,,,,,,,"midazolam, diphenhydramine, norfentanyl, fentanyl, naloxone, lorazepam glucuronide, temazepam glucuronide, 7-hydroxy ondansteron, ondansteron, ketorolac","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), THC-M (hydroxy THC metabolite), acetaminophen, hydroflumethiazide, levetiracetam",,,,,,,,,,,
+223,specimen_form,1,1248,,4,42,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,3
+223,qtof_screen,1,,,,,,,,,,,,,,,,,,"Midazolam, diphenhydramine, norfentanyl, fentanyl, naloxone, lorazepam glucuronide, temazepam glucuronide, 7-hydroxy ondansteron, ketorolac, ondansetron, ","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite), acetaminophen, ketorolac, EtS (ethyl-sulphate) ",,,,,,,,,,,
+224,specimen_form,1,1249,,4,6,1,0,0,0,0,1,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+224,qtof_screen,1,,,,,,,,,,,,,,,,,,,"THC-M (carboxy THC-glucuronide), acetaminophen, carvedilol, THC-M (carboxy THC metabolite)",,,,,,,,,,,
+225,specimen_form,1,1250,,4,15,1,0,0,0,0,1,0,1,0,0,"122 mg/dL",1,,,,0,0,0,0,1,0,0,0,0,0,
+225,qtof_screen,1,,,,,,,,,,,,,,,,,,"fentanyl, norketamine, ketamine, norfentanyl, ","THC-M (carboxy THC-glucuronide), acetaminophen,THC-M (carboxy THC metabolite)",,,,,,,,,,,
+226,specimen_form,1,1251,,4,15,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,4
+226,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, caffeine, lidocaine, sertraline, diphenhydramine",Acetaminophen,,,,,,,,,,,
+227,specimen_form,1,1252,,4,66,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,1
+227,qtof_screen,1,,,,,,,,,,,,,,,,,,"Pregabalin, disulfiram","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), aspirin-M (salicylic acid), furosemide,",,,,,,,,,,,
+228,specimen_form,1,1253,,4,44,1,0,0,0,0,1,0,0,1,0,14,4,,,,0,0,0,0,1,0,0,0,0,0,11
+228,qtof_screen,1,,,,,,,,,,,,,,,,,,"atenolol, doxylamine, disulfiram, nortriptyline, gabapentin, citalopram/escitalopram","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+229,specimen_form,1,1254,,4,62,2,0,0,1,0,0,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,1
+229,qtof_screen,1,,,,,,,,,,,,,,,,,,"4-ANPP/despropionylfentanyl, fentanyl, norfentanyl, disulfiram, naloxone, benzoylecgonine",,,,,,,,,,,,
+230,specimen_form,1,1255,,4,1,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,1
+230,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen,  ","THC-M (carboxy THC metabolite), acetaminophen, THC-M (carboxy THC-glucuronide), THC-M (hydroxy THC metabolite), THC-A, THC (tetrahydrocannabinol)",,,,,,,,,,,
+231,specimen_form,1,1256,,4,48,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,5
+231,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, citalopram-M (desmethyl metabolite), disulfiram, gabapentin, diphenhydramine, metoclopramide, hydroxyzine, cyclobenzaprine, citalopram/escitalopram, ondansetron    ",Acetaminophen,,,,,,,,,,,
+232,specimen_form,1,1257,,4,36,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,1,0,0,0,0,0,0,1
+232,qtof_screen,1,,,,,,,,,,,,,,,,,,"Amphetamine, caffeine, ephedrine/pseudoephedrine, norfentanyl, acetaminophen, methamphetamine, disulfiram, gabapentin, benzoylecgonine, fentanyl","THC-M (carboxy THC-glucuronide), acetaminophen",,,,,,,,,,,
+233,specimen_form,1,1258,,4,54,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,2
+233,qtof_screen,1,,,,,,,,,,,,,,,,,,"2-fluorofentanyl (o/m/p-FF), pregabalin, fentanyl, beta-hydroxyfentanyl, caffeine, norquetiapine, xylazine, quetiapine,   meta-methyl acetyl fentanyl, sertraline, diphenhydramine, 4-ANPP, methadone, EDDP, norfentanyl, dextromethorphan",,,,,,,,,,,,
+234,specimen_form,1,1259,2025-07-24,4,16,1,0,0,0,0,1,0,1,0,0,"122 mg/dL",4,,,,0,0,0,0,0,1,0,0,0,0,5
+234,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, caffeine, meta-methyl acetyl fentanyl, norketamine, ketamine, disulfiram, ","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite),",,,,,,,,,,,
+235,specimen_form,1,1260,2025-07-24,4,33,1,0,0,1,0,0,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,5
+235,qtof_screen,1,,,,,,,,,,,,,,,,,,"beta-hydroxyfentanyl, 4-ANPP/despropionylfentanyl, tramadol, fentanyl, norfentanyl, quinidine, disulfiram, clonazolam-M (8-amino metabolite), codeine, meta-methyl acetyl fentanyl,   xylazine, quinine, methamphetamine, diphenhydramine, amphetamine ",,,,,,,,,,,,
+236,specimen_form,1,1261,2025-07-24,4,62,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,9
+236,qtof_screen,1,,,,,,,,,,,,,,,,,,"Caffeine, disulfiram, benzoylecgonine, fentanyl, cocaine, cocaethyline  ","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+237,specimen_form,1,1262,2025-07-24,4,78,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,4
+237,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, norvenlafaxine (N-desmethyl), disulfiram, venlafaxine, O-desmethyl venlafaxine, propanolol",,,,,,,,,,,,
+238,specimen_form,1,1263,2025-07-24,4,18,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,0,1,0,0,0,0,2
+238,qtof_screen,1,,,,,,,,,,,,,,,,,,"norfentanyl, fentanyl 1-(3-chlorophenyl)piperazine (mCPP), olanzapine, trazodone, meta-methyl acetyl fentanyl, norfluoxetine, fluoxetine, etomidate",Propofol,,,,,,,,,,,
+239,specimen_form,1,1264,2025-07-24,4,17,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,2
+239,qtof_screen,1,,,,,,,,,,,,,,,,,,"Naproxen, acetaminophen, caffeine, disulfiram, citalopram-M (desmethyl metabolite)  eslicarbazepine, oxycarbazepine,  citalopram/escitalopram,","Naproxen, acetaminophen",,,,,,,,,,,
+240,specimen_form,1,1265,2025-07-24,4,47,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,29
+240,qtof_screen,1,,,,,,,,,,,,,,,,,,"metoprolol, lidocaine, acetaminophen, trazodone, norketamine, amiodarone-M (N-desethyl metabolite), glycinexylidide","Aspirin-M (salicylic acid), THC-M (carboxy THC metabolite), furosemide, THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+241,specimen_form,1,1266,2025-07-24,4,1,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,3
+241,qtof_screen,1,,,,,,,,,,,,,,,,,,"acetaminophen, benzoylecgonine, cocaine, ",Furosemide,,,,,,,,,,,
+242,specimen_form,1,1267,2025-07-24,4,34,1,0,0,0,0,1,0,1,0,0,,2,,,,1,0,0,0,0,0,0,0,0,0,1
+242,qtof_screen,1,,,,,,,,,,,,,,,,,,"beta-hydroxyfentanyl, norketamine, fentanyl, 4-ANPP, ketamine, diphenhydramine, norfentanyl, meta-methyl acetyl fentanyl, mitragynine, benzoylecgonine, cocaethylene, cocaine, ","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite), ibuprofen, furosemide, ",,,,,,,,,,,
+243,specimen_form,1,1268,2025-08-27,4,2,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,2
+243,qtof_screen,1,,,,,,,,,,,,,,,,,,"nalaxone, midazolam, levetiracetam","ibuprofen, THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), THC-M (hydroxy THC metabolite), cannabinol",,,,,,,,,,,
+244,specimen_form,1,1269,2025-08-27,4,23,1,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,2
+244,qtof_screen,1,,,,,,,,,,,,,,,,,,"9-hydroxy-risperidone, fluoxetine, famotidine, ondansetron, ",,,,,,,,,,,,
+245,specimen_form,1,1270,2025-08-27,4,13,2,0,0,0,0,1,0,1,0,0,,2,,,,1,0,0,0,0,0,0,0,0,0,1
+245,qtof_screen,1,,,,,,,,,,,,,,,,,,"lurasidone, sertraline, cyclobenzaprine, acetaminophen, fluoxetine, tramadol, nor-sertraline, lamotrigine, ",Acetaminophen,,,,,,,,,,,
+246,specimen_form,1,1271,2025-08-27,4,20,1,0,0,0,0,1,0,0,1,0,,,,,,0,0,0,0,1,0,0,0,0,0,5
+246,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, morphine, hydromorphone, oxycodone, naloxone, ",,,,,,,,,,,,
+247,specimen_form,1,1272,2025-08-27,4,6,2,0,0,0,0,1,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+247,qtof_screen,1,,,,,,,,,,,,,,,,,,,"THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), THC-M (hydroxy THC metabolite), cannabinol",,,,,,,,,,,
+248,specimen_form,1,1273,2025-08-27,4,31,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,6
+248,qtof_screen,1,,,,,,,,,,,,,,,,,,"Ketamine, methamphetamine, amphetamine, lorazepam, dolutegravir, lamivudine",,,,,,,,,,,,
+249,specimen_form,1,1274,2025-08-27,4,15,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,6
+249,qtof_screen,1,,,,,,,,,,,,,,,,,,"Acetaminophen, ","Naproxen, THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), THC-M (hydroxy THC metabolite)",,,,,,,,,,,
+250,specimen_form,1,1275,2025-08-27,4,16,2,0,0,0,0,1,0,1,0,0,,2,,,,0,0,0,0,1,0,0,0,0,0,2
+250,qtof_screen,1,,,,,,,,,,,,,,,,,,"diphenhydramine, lorazepam, naloxone, ",,,,,,,,,,,,
+251,specimen_form,1,1276,2025-08-27,4,59,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,5
+251,qtof_screen,1,,,,,,,,,,,,,,,,,,"Naloxone, methadone, EDDP, fentanyl, lidocaine, chlorhexidine, N-desmethyl-amiodarone, amiodarone, benzoylecgonine","Acetaminophen, THC-M (carboxy THC-glucuronide), THC-M (carboxy THC-metabolite) ",,,,,,,,,,,
+252,specimen_form,1,1277,2025-10-09,4,57,2,0,0,0,0,1,0,0,1,0,"294 mg/dL",1,,,,1,0,0,0,0,0,0,0,0,0,1
+252,qtof_screen,1,,,,,,,,,,,,,,,,,,"Oxycodone, diphenhydramine, lidocaine, pregabalin, acetaminophen, caffeine, trazodone, noroxycodone","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite), acetaminophen, gentisic acid, ketorolac",,,,,,,,,,,
+253,specimen_form,1,1278,2025-10-09,4,66,1,0,0,0,0,1,0,0,1,0,,4,,,,0,1,0,0,0,0,0,0,0,0,10
+253,qtof_screen,1,,,,,,,,,,,,,,,,,,"Oxycodone, acetaminophen, levetiracetam, metoclopramide, lidocaine, metoprolol, ondansetron, nicardipine, labetalol, noroxycodone","Acetaminophen, furosemide",,,,,,,,,,,
+254,specimen_form,1,1279,2025-10-09,4,2,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,0,1,0,0,0,0,3
+254,qtof_screen,1,,,,,,,,,,,,,,,,,,"fentanyl, lidocaine, diphenhydramine, levetiracetam","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), phenobarbital",,,,,,,,,,,
+255,specimen_form,1,1280,2025-10-09,4,94,1,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,0,1,0,0,0,0,3
+255,qtof_screen,1,,,,,,,,,,,,,,,,,,"Fentanyl, meta-methyl acetyl fentanyl, acetaminophen, hydrocodone, norketamine, tamsulosin, ketamine, ephedrine/pseudoephedrine, lidocaine, oxycodone, naloxone, noroxycodone",Acetaminophen,,,,,,,,,,,
+256,specimen_form,1,1281,2025-10-09,4,25,1,0,0,0,0,1,0,0,1,0,,4,,,,1,0,0,0,0,0,0,0,0,0,2
+256,qtof_screen,1,,,,,,,,,,,,,,,,,,Midazolam,"Acetaminophen, THC-M (carboxy THC glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+257,specimen_form,1,1282,2025-10-09,4,40,1,0,0,1,0,0,0,0,1,0,"154 mg/dL",1,,,,1,0,0,0,0,0,0,0,0,0,1
+257,qtof_screen,1,,,,,,,,,,,,,,,,,,"Norfentanyl, quinidine, acetaminophen, methamphetamine, citalopram/escitalopram, benzoylecgonine, amphetamine, citalopram-desmethyl metabolite","Topiramate, acetaminophen",,,,,,,,,,,
+258,specimen_form,1,1283,2025-10-09,4,8,2,0,0,0,0,1,0,0,1,0,,4,,,,1,0,0,0,0,0,0,0,0,0,1
+258,qtof_screen,1,,,,,,,,,,,,,,,,,,"Clonidine,",Acetaminophen,,,,,,,,,,,
+259,specimen_form,1,1284,2025-10-09,4,31,1,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,2
+259,qtof_screen,1,,,,,,,,,,,,,,,,,,"Sertraline, norsertraline, amphetamine, methamphetamine, olazapine, N-desmethyl olanzapine",Acetaminophen,,,,,,,,,,,
+260,specimen_form,1,1285,2025-10-09,4,49,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,9
+260,qtof_screen,1,,,,,,,,,,,,,,,,,,"beta-hydroxyfentanyl, quinidine, methamphetamine, fentanyl, amphetamine, acetaminophen, 4-ANPP, norfentanyl, diphenhydramine, oxycodone, quinine, benzoylecgonine, buprenorphine, methadone,  EDDP, hydromorphone, norbuprenorphine","Acetaminophen, THC (carboxy THC glucuronide), THC (carboxy THC metabolite), ibuprofen,",,,,,,,,,,,
+261,specimen_form,1,1286,2025-10-09,4,38,2,0,0,1,0,0,0,0,1,0,,,,,,0,0,0,0,0,1,0,0,0,0,21
+261,qtof_screen,1,,,,,,,,,,,,,,,,,,"Norketamine, gabapentin, ketamine, citalopram/escitalopram, desmethyl citalopram, dehydronorketamine, ",Phenobarbital,,,,,,,,,,,
+262,specimen_form,1,MCW-OD2A-001-U,2025-11-11,5,41,2,0,0,0,0,1,0,0,1,0,0.190,2,,,,0,0,0,0,0,0,1,0,0,0,
+262,qtof_screen,1,,,,,,,,,,,,,,,,,0,"topiramate, hydroxyzine, gabapentin, cyclobenzaprine, disulfiram, lamotrigine","THC-M (carboxy THC-glucuronide), EtG (ethyl glucuronide), EtS (ethyl sulphate), topiramate",,,,,,,,,,,
+262,qtof_screen,2,,,,,,,,,,,,,,,,,0,"topiramate, hydroxyzine, cyclobenzaprine, gabapentin, disulfram, lamotrigine, cetrizine, nortriptyline","THC-M (carboxy THC-glucuronide), EtG (ethyl-glucuronide), topiramate",,,,,,,,,,,
+263,specimen_form,1," MCW-OD2A-001-B",2025-11-11,5,41,2,0,0,0,0,1,0,0,1,0,0.190,2,,,,0,0,0,0,0,0,1,0,0,0,
+263,qtof_screen,1,,,,,,,,,,,,,,,,,1,"topiramate, hydroxyzine, quetiapine, cyclobenzaprine, gabapentin, atomoxetine, norquetiapine, lamotrigine, certirizine, cetirizine-M","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), topiramate",,,,,,,,,,,
+264,specimen_form,1," MCW-OD2A-002-B",2025-11-11,5,40,1,0,0,0,0,1,0,0,1,0,<0.010,2,,,,0,0,0,0,0,0,1,0,0,0,
+264,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Nordiazepam, benzoylecgonine, diazepam",,,,,,,,,,,,
+265,specimen_form,1," MCW-OD2A-002-U",2025-11-11,5,40,1,0,0,0,0,1,0,0,1,0,<0.010,2,,,,0,0,0,0,0,0,1,0,0,0,
+265,qtof_screen,1,,,,,,,,,,,,,,,,,0,"disulfiram, oxazepam (glucuronide), temazepam-M (glucuronide), benserazide","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+265,qtof_screen,2,,,,,,,,,,,,,,,,,0,"acetaminophen, oxazepam (glucuronide), temazepam-M (glucuronide)","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+266,specimen_form,1,MCW-OD2A-003-B,2025-11-11,5,26,2,0,0,1,0,0,0,0,1,0,0.036,2,,,,0,0,0,0,0,0,1,0,0,0,
+266,qtof_screen,1,,,,,,,,,,,,,,,,,1,"lamotrigine, sertraline","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+267,specimen_form,1,MCW-OD2A-003-U,2025-11-11,5,26,2,0,0,1,0,0,0,0,1,0,,2,,,,0,0,0,0,0,0,1,0,0,0,
+267,qtof_screen,1,,,,,,,,,,,,,,,,,0,"disulfiram, buspirone, lamotrigine","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+267,qtof_screen,2,,,,,,,,,,,,,,,,,0,"sertraline, lamotrigine, amphetamine, methamphetamine, disulfiram","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+268,specimen_form,1,MCW-OD2A-004-B,2025-11-12,5,39,1,0,0,0,0,1,0,0,1,0,"<0.010 ",,,,,1,0,0,0,0,0,0,0,0,0,<1
+268,qtof_screen,1,,,,,,,,,,,,,,,,,1,"meta-methyl acetyl fentanyl, beta-hydroxyfentanyl, 4-ANPP/despropionylfentanyl, fentanyl, dephenhydramine (fragment)","THC-M (carboxy THC metabolite)",,,,,,,,,,,
+269,specimen_form,1,MCW-OD2A-004-U,2025-11-12,5,39,1,0,0,0,0,1,0,0,1,0,,,,,,1,0,0,0,0,0,0,0,0,0,<1
+269,qtof_screen,1,,,,,,,,,,,,,,,,,0,"4-ANPP/despropionylfentanyl, meta methyl acetyl fentanyl, Benzoylecgonine, acetaminophen, Fentanyl, beta-hydroxyfentanyl, disulfiram, acetaminophen, norfentanyl, diphenhydramine","THC-M (carboxy THC glucuronide)",,,,,,,,,,,
+269,qtof_screen,2,,,,,,,,,,,,,,,,,0,"Disulfiram, meta-methyl acetyl fentanyl, 4-ANPP/despropionylfentanyl, acetaminophen, benzoylecgonine,  fentanyl, beta-hydroxyfentanyl, norfentanyl,  diphenhydramine","THC-M (carboxy THC-glucuronide), acetaminophen",,,,,,,,,,,
+270,specimen_form,1,MCW-OD2A-005-B,2025-11-12,5,56,2,0,0,1,0,0,0,0,1,0,,4,,,,1,0,0,0,0,0,0,0,0,0,<1
+270,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Oxycodone, gabapentin, losartan, montelukast, amlodipine, oxycodone (nor),","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), THC-A",,,,,,,,,,,
+275,specimen_form,1,MCW-OD2A-008-B,2025-11-19,5,49,2,0,0,1,0,0,0,0,1,0,0.058,1,,,,0,0,0,0,1,0,0,0,0,0,
+275,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Naloxone, cocaine, meta-methyl acetyl fentanyl, fentanyl, benzoylecgonine, cocaethylene",,,,,,,,,,,,
+276,specimen_form,1,MCW-OD2A-008-U,2025-11-19,5,49,2,0,0,1,0,0,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,
+276,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Naloxone, levamisole/tetramisole, cocaine, cocaethylene, benzoylecgonine, meta-methyl acetyl fentanyl, fentanyl, norfentanyl"," -",,,,,,,,,,,
+276,qtof_screen,2,,,,,,,,,,,,,,,,,0,"naloxone, levamisole/tetramisole, cocaethylene, cocaine, meta-methyl acetyl fentanyl, Fentanyl, norfentanyl, benzoylecgonine",,,,,,,,,,,,
+277,specimen_form,1,1287,2025-11-20,4,6,2,0,0,1,0,0,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+277,qtof_screen,1,,,,,,,,,,,,,,,,,0,Melatonin,"THC-M (carboxy THC metabolite)",,,,,,,,,,,
+278,specimen_form,1,1288,2025-11-20,4,20,2,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,0,1,0,0,0,0,1
+278,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Naloxone, Methamphetamine, Dextromethorphan, amphetamine, dimethylamphetamine",Acetaminophen,,,,,,,,,,,
+279,specimen_form,1,1289,2025-11-20,4,59,1,0,0,1,0,0,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,3
+279,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Caffeine, 4-ANPP/despropionylfentanyl, Demoxepam, Citalopram-M (desmethyl metabolite), Levamisole/tetramisole, xylazine, Cocaine, Benzoylecgonine, diphenhydramine, meta-methyl acetyl fentanyl, norfentanyl, Amphetamine, Citalopram/Escitalopram, gabapentin, Naloxone, noscapine, Methamphetamine, Fentanyl, beta-hydroxyfentanyl, oxazepam-glucuronide",,,,,,,,,,,,
+280,specimen_form,1,1290,2025-11-20,4,15,2,0,0,0,0,1,0,0,1,0,,2,,,,1,0,0,0,0,0,0,0,0,0,1
+280,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Caffeine, Fluoxetine-Desmethyl, Fluoxetine, ",,,,,,,,,,,,
+281,specimen_form,1,1291,2025-11-20,4,58,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,2
+281,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Citalopram-M (desmethyl metabolite), Caffeine, citalopram/escitalopram, gabapentin","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), THC-M (hydroxy THC metabolite)",,,,,,,,,,,
+282,specimen_form,1,1292,2025-11-20,4,45,1,0,0,0,0,1,0,0,1,0,"489 mg/dL",1,,,,0,1,0,0,0,0,0,0,0,0,16
+282,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Trazodone, Citalopram/Escitalopram, citalopram-M (desmethyl metabolite), 1-(3-chlorophenyl)piperazone (mCPP), Oxycodone, gabapentin","Phenobarbital, butalbital",,,,,,,,,,,
+283,specimen_form,1,1293,2025-11-20,4,52,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,4
+283,qtof_screen,1,,,,,,,,,,,,,,,,,0,Naproxen,Naproxen,,,,,,,,,,,
+284,specimen_form,1,1294,2025-11-20,4,18,2,0,0,0,0,1,0,0,1,0,337,4,,,,1,0,0,0,0,0,0,0,0,0,1
+284,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Caffeine, Fluoxetine (Desmethyl), amphetamine (fragment), Amphetamine",,,,,,,,,,,,
+285,specimen_form,1,1295,2025-11-20,4,18,1,0,0,0,1,1,0,0,1,0,,2,,,,0,0,0,0,0,1,0,0,0,0,3
+285,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Caffeine, fluoxetine-desmethyl, Fluoxetine, dextromethorphan, temazepam-glucuronide,",,,,,,,,,,,,
+286,specimen_form,1,5002,2025-11-24,1,58,1,0,0,0,0,1,0,0,1,0,0,2,,,,0,0,0,0,0,0,0,0,0,0,1
+286,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Pregablin, diphenhydramine, Sertraline, Trazodone, Benzoylecgonine, carbamazepine, ditiazem","THC-M (carboxy THC glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+294,specimen_form,1,MCW-OD2A-013-B,2025-12-03,5,40,2,0,0,0,0,0,1,0,1,0," <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,1
+294,qtof_screen,1,,,,,,,,,,,,,,,,,1,"hydrocodone, venlafaxine, diphenhyramine, bupropion, hydroxybupropion, meloxicam","acetaminophen, ibuprofen, meloxicam",,,,,,,,,,,
+295,specimen_form,1,MCW-OD2A-013-U,2025-12-03,5,40,2,0,0,0,0,0,1,0,1,0," <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,1
+295,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Norvenlafaxine (N-desmethyl), Dihydrocodeine, acetaminophen,  Diphenhydramine, Bupropion, Venlafaxine, Oxycodone, Hydrocodone","acetaminophen, ibuprofen",,,,,,,,,,,
+295,qtof_screen,2,,,,,,,,,,,,,,,,,0,"Norvenlafaxine (N-desmethyl), dihydrocodeine, disulfiram, hydrocodone, venlafaxine, bupropion, diphenhydramine","Acetaminophen, ibuprofen",,,,,,,,,,,
+296,specimen_form,1,MCW-OD2A-014-B,2025-12-03,5,41,1,0,0,1,0,0,0,0,1,0,<0.010,2,,,,0,0,0,0,0,0,0,0,0,1,0
+296,qtof_screen,1,,,,,,,,,,,,,,,,,1,"bupropion, acetaminophen, hydroxybupropion",,,,,,,,,,,,
+297,specimen_form,1,MCW-OD2A-015-B,2025-12-08,5,26,2,0,0,1,0,0,0,0,1,0,<0.010,2,,,,1,0,0,0,0,0,0,0,0,0,0
+297,qtof_screen,1,,,,,,,,,,,,,,,,,1,"meta-methyl acetyl fentanyl, fentanyl, demoxepam, temazepam, chlordiazepoxide-M (desmethyl metabolite), gabapentin, nordiazepam"," -",,,,,,,,,,,
+298,specimen_form,1,MCW-OD2A-015-U,2025-12-08,5,26,2,0,0,1,0,0,0,0,1,0,<0.010,2,,,,1,0,0,0,0,0,0,0,0,0,0
+298,qtof_screen,1,,,,,,,,,,,,,,,,,0,"hydroxyzine, benzoylecgonine, meta-methyl acetyl fentanyl, fentanyl, olanzapine,  beta-hydroxyfentanyl,  4-ANPP/despropionylfentanyl, temazepam, xylazine, demoxepam, methoxyacetylfentanyl, norfentanyl, gabapentin",acetaminophen,,,,,,,,,,,
+298,qtof_screen,2,,,,,,,,,,,,,,,,,0,"Hydroxyzine, meta-methyl acetyl fentanyl, beta-hydroxyfentanyl, fentanyl, olanzapine, disulfiram,  4-ANPP/despropionylfentanyl, demoxepam, temazepam, norfentanyl,  xylazine, gabapentin, norbuprenorphine, ",,,,,,,,,,,,
+299,specimen_form,1,MCW-OD2A-016-B,2025-12-08,5,38,1,0,0,1,0,0,0,0,1,0,"Ethanol <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,0
+299,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Benzoylecgonine, Cocaine, acetaminophen","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), THC-A",,,,,,,,,,,
+300,specimen_form,1,MCW-OD2A-016-U,2025-12-08,5,38,1,0,0,1,0,0,0,0,1,0,"Ethanol <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,0
+300,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Cocaine, disulfiram,  benzoylecgonine, ","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+300,qtof_screen,2,,,,,,,,,,,,,,,,,0,"Cocaine, disulfiram, benzoylecgonine","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+301,specimen_form,1,MCW-OD2A-017-B,2025-12-10,5,43,2,1,0,0,0,0,0,0,1,0,"<0.010 ",4,,,,0,0,0,0,0,0,0,1,0,0,<1
+301,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Lorazepam, cyclobenzaprine, DL-cathinone, gabapentin, levetiracetam (fragment)",,,,,,,,,,,,
+302,specimen_form,1,MCW-OD2Z-017-U,2025-12-10,5,43,2,1,0,0,0,0,0,0,1,0,,4,,,,0,0,0,0,0,0,0,1,0,0,<1
+302,qtof_screen,1,,,,,,,,,,,,,,,,,0,"naloxone, cyclobenzaprine, gabapentin, DL-Cathinone, cathine"," -",,,,,,,,,,,
+302,qtof_screen,2,,,,,,,,,,,,,,,,,0,"gabapentin, DL-cathinone, cyclobenzaprine,  ",Acetaminophen,,,,,,,,,,,
+303,specimen_form,1,Emplify-5040,2025-12-10,1,23,2,0,0,0,0,0,1,1,0,0,Negative,2,,,,0,0,0,0,0,0,0,0,1,0,
+303,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Hydroxyzine, acetaminophen, quentiapine,  norquentiapine","THC-M (carboxy THC glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+318,specimen_form,1,MCW-OD2A-018-B,2025-12-15,5,47,1,0,0,0,0,1,0,0,1,0," <0.010",2,,,,0,0,0,0,0,0,0,0,0,1,"2 days"
+318,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Citalopram/escitalopram, citalopram-M (desmethyl metabolite), diphenhydramine ",,,,,,,,,,,,
+319,specimen_form,1,"MCW-OD2A-019 B",2025-12-15,5,71,2,0,0,0,0,1,0,0,1,0,<0.01,2,,,,0,0,0,0,0,1,0,0,0,0,"3 days"
+319,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Alprazolam, diphenhydramine, metoprolol"," -",,,,,,,,,,,
+320,specimen_form,1,MCW-OD2A-020-B,2025-12-15,5,19,2,0,0,1,0,0,0,0,1,0," <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,"1 day"
+320,qtof_screen,1,,,,,,,,,,,,,,,,,1,acetaminophen,,,,,,,,,,,,
+321,specimen_form,1,MCW-OD2A-021-B,2025-12-18,5,23,1,0,0,1,0,0,0,0,1,0," <0.010",2,,,,0,0,0,0,1,0,0,0,0,0,
+321,qtof_screen,1,,,,,,,,,,,,,,,,,1,"risperidone (hydroxy), diphenhydramine, acetaminophen, aripiprazole",acetaminophen,,,,,,,,,,,
+322,specimen_form,1,MCW-OD2A-021-U,2025-12-18,5,23,1,0,0,1,0,0,0,0,1,0," <0.010",2,,,,0,0,0,0,1,0,0,0,0,0,
+322,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Cariprazine, risperidone (hydroxy), diphenhydramine, propranolol, dextromethorphan, n-piperidinyl etonitazene, risperidone, acetaminophen, ",Acetaminophen,,,,,,,,,,,
+322,qtof_screen,2,,,,,,,,,,,,,,,,,0,"Cariprazine, diphenhydramine, olanzapine, risperidone, propranolol, dextromethorphan, N-piperidinyl etonitazene",acetaminophen,,,,,,,,,,,
+323,specimen_form,1,MCW-OD2A-018-U,2025-12-15,5,47,1,0,0,0,0,1,0,0,1,0," <0.010",2,,,,0,0,0,0,0,0,0,0,0,1,"2 days"
+323,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Citalopram/escitalopram, Diphenhydramine",,,,,,,,,,,,
+323,qtof_screen,2,,,,,,,,,,,,,,,,,0,"Citalopram/Escitalopram, citalopram-M (desmethyl metabolite), diphenhydramine",,,,,,,,,,,,
+324,specimen_form,1,"MCW-OD2A-019 U",2025-12-15,5,71,2,0,0,0,0,1,0,0,1,0," <0.010",2,,,,0,0,0,0,0,1,0,0,0,0,"3 days"
+324,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Alprazolam, metoprolol, citalopram/escitalopram, diphenhydramine ",,,,,,,,,,,,
+324,qtof_screen,2,,,,,,,,,,,,,,,,,0,"Alprazolam, diphenhydramine, metoprolol",,,,,,,,,,,,
+325,specimen_form,1,MCW-OD2A-022-B,2025-12-19,5,60,1,0,0,1,0,0,0,0,1,0,0.154,2,,,,0,0,0,0,1,0,0,0,0,0,"1 day"
+325,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Benzoylecgonine, Dextromethorphan, acetaminophen",acetaminophen,,,,,,,,,,,
+326,specimen_form,1,MCW-OD2A-022-U,2025-12-19,5,60,1,0,0,1,0,0,0,0,1,0,0.154,2,,,,0,0,0,0,1,0,0,0,0,0,"1 day"
+326,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Benzoylecgonine, Cocaethylene, Cocaine, dextromethorphan, chlorpheniramine","acetaminophen, ibuprofen",,,,,,,,,,,
+326,qtof_screen,2,,,,,,,,,,,,,,,,,0,"cocaethylene, benzoylecgonine, dextromethorphan, cocaine, doxyamine, citalopram/escitalopram","Acetaminophen, ibuprofen",,,,,,,,,,,
+329,specimen_form,1,MCW-OD2A-024-U,2026-01-05,5,31,2,0,0,1,0,0,0,0,1,0,"Ethanol <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,0
+329,qtof_screen,1,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,
+329,qtof_screen,2,,,,,,,,,,,,,,,,,0,Famotidine,,,,,,,,,,,,
+330,specimen_form,1,MCW-OD2A-024-B,2026-01-05,5,31,2,0,0,1,0,0,0,0,1,0,"Ethanol <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,0
+330,qtof_screen,1,,,,,,,,,,,,,,,,,1,Famotidine,"THC-M (carboxy THC-gluc)",,,,,,,,,,,
+331,specimen_form,1,MCW-OD2A-025-B,2026-01-08,5,47,1,0,0,1,0,0,0,1,0,0,,1,,,,0,0,0,0,0,0,1,0,1,0,<1
+331,qtof_screen,1,,,,,,,,,,,,,,,,,1,"meta-methyl acetyl fentanyl, benzoylecgonine, fentanyl, quinine, ","THC-M (carboxy THC glucuronide)",,,,,,,,,,,
+332,specimen_form,1,MCW-OD2A-026-U,2026-01-12,5,21,2,0,0,1,0,0,0,0,1,0," <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,"1 day"
+332,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Cocaine, benzoylecgonine, olanzaprine, ","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+332,qtof_screen,2,,,,,,,,,,,,,,,,,0,"olanzapine, N-desmethyl olanzapine","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+333,specimen_form,1,"MCW-OD2A-026-B ",2026-01-12,5,21,2,0,0,1,0,0,0,0,1,0," <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,"1 day"
+333,qtof_screen,1,,,,,,,,,,,,,,,,,1,,"THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide), THC-A",,,,,,,,,,,
+334,specimen_form,1,MCW-OD2A-027-U,2026-01-12,5,51,1,0,0,0,0,1,0,0,1,0," <0.010",4,,,,0,0,0,0,0,0,0,0,1,0,"1 day"
+334,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Benzoylecgonine, meta methyl acetyle fentanyl, beta-hydroxyfentanyl, fentanyl, ondansetron, metaprolol, Norbuprenorphine, norfentanyl, amlodipine",,,,,,,,,,,,
+334,qtof_screen,2,,,,,,,,,,,,,,,,,0,"meat-methyl Acetyl fentanyl, beta-hydroxyfentanyl, fentanyl, ondansetron, benzoylecgonine, metaprolol, norfentanyl, quinine, ",,,,,,,,,,,,
+335,specimen_form,1,MCW-OD2A-027-B,2026-01-12,5,51,1,0,0,0,0,1,0,0,1,0," <0.010",4,,,,0,0,0,0,0,0,0,0,1,0,"1 day"
+335,qtof_screen,1,,,,,,,,,,,,,,,,,1,"fentanyl, Benzoylecgonine, metaprolol, ondansetron",,,,,,,,,,,,
+336,specimen_form,1,MCW-OD2A-028-B,2026-01-12,5,21,2,0,0,0,0,0,1,0,1,0,"Unknown. ",1,,,,1,0,0,0,0,0,0,0,0,0,"<1 day"
+336,qtof_screen,1,,,,,,,,,,,,,,,,,1,,"THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+339,specimen_form,1,MCW-OD2A-030-B,2026-01-12,5,30,2,0,0,0,0,1,0,0,1,0,"Ethanol <0.010",1,,,,1,0,0,0,0,0,0,0,0,0,0
+339,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Bupropion, lamotrigine, ","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+340,specimen_form,1,MCW-OD2A-031-U,2026-01-12,5,34,1,0,0,1,0,0,0,0,1,0,<0.010,2,,,,0,0,0,0,1,0,0,0,0,0,3
+340,qtof_screen,1,,,,,,,,,,,,,,,,,0,"dextromethorphan, meprobamate, lidocaine, acetaminophen, metprolol",,,,,,,,,,,,
+340,qtof_screen,2,,,,,,,,,,,,,,,,,0,"Meprobamate, lidocaine, acetaminophen, ",,,,,,,,,,,,
+341,specimen_form,1,MCW-OD2A-031-B,2026-01-12,5,34,1,0,0,1,0,0,0,0,1,0,<0.010,2,,,,0,0,0,0,1,0,0,0,0,0,3
+341,qtof_screen,1,,,,,,,,,,,,,,,,,1,,Acetaminophen,,,,,,,,,,,
+342,specimen_form,1,MCW-OD2A-032,2026-01-14,5,54,2,0,0,0,0,1,0,0,1,0,"<0.010 ",2,,,,0,0,0,0,1,0,0,0,0,0,3
+342,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Warfarin, venlafaxine, norvenlafaxine, Venlafaxine-M (O-desmethyl metabolite), lansoprazole, pantoprazole, ",Warfarin,,,,,,,,,,,
+343,specimen_form,1,MCW-OD2A-033-B,2026-01-14,5,59,1,0,0,1,0,0,0,0,1,0,"<0.010 ",1,,,,0,0,0,0,1,0,0,0,1,0,2
+343,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Benzoylecgonine, Cocaine",,,,,,,,,,,,
+344,specimen_form,1,UW22-1083,2026-01-15,1,41,1,0,0,0,0,0,1,1,0,0,,4,,,,0,0,0,0,0,0,0,0,0,1,
+344,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Naloxone, lidocaine, meta-methyl acetyl fentanyl, fentanyl, norfentanyl, ",,,,,,,,,,,,
+345,specimen_form,1,1310,2026-01-15,4,14,1,0,0,0,0,1,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+345,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Sertraline, Amphetamine, Olanzapine, Haloperidol, Lorazepam, norsertraline, LSD-metabolite (2-oxo-hydroxy)","THC-M (carboxy THC metabolite)",,,,,,,,,,,
+346,specimen_form,1,1311,2026-01-15,4,75,2,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,4
+346,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Duloxetine, metoclopramide, acetaminophen, ropinirole, baclofen",acetaminophen,,,,,,,,,,,
+347,specimen_form,1,1312,2026-01-15,4,21,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,6
+347,qtof_screen,1,,,,,,,,,,,,,,,,,0,"diphenhydramine, Haloperidol, levetiracetam, Lorazepam, ","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+348,specimen_form,1,1313,2026-01-15,4,2,2,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,2
+348,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Levetiracetam,","THC-M (carboxy THC metabolite), THC (carboxy THC-glucuronide), phenytoin",,,,,,,,,,,
+349,specimen_form,1,1314,2026-01-15,4,64,2,0,0,0,0,1,0,0,1,0,,,,,,0,0,0,0,1,0,0,0,0,0,4
+349,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Diphenhydramine, gabapentin, acetaminophen, Caffeine","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+350,specimen_form,1,1315,2026-01-15,4,43,2,0,0,0,0,1,0,0,1,0,"237 mg/dL",2,,,,0,0,0,0,0,1,0,0,0,0,11
+350,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Benzoylecgonine, Ketamine (Nor), Ketamine, Caffeine, acetaminophen, midazolam, buspirone, quentiapine, demoxepam, ","Naproxen, acetaminophen, ",,,,,,,,,,,
+351,specimen_form,1,1316,2026-01-15,4,36,1,0,0,0,0,1,0,0,1,0,"535 mg/dL",1,,,,0,0,0,0,1,0,0,0,0,0,9
+351,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Ketamine (Nor), hydroxyzine, Caffeine, Ketamine, ",Phenobarbital,,,,,,,,,,,
+352,specimen_form,1,1317,2026-01-15,4,40,2,0,0,0,0,1,0,0,1,0,,1,,,,0,0,0,0,1,0,0,0,0,0,2
+352,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Benzoylecgonine, Haloperidol, Bupropion, Norvenlafaxine (N-desmethyl), Venlafaxine, Venlafaxine-M (O-desmethyl metabolite), lamotrigine, Cocaine","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+353,specimen_form,1,1318,2026-01-15,4,50,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,4
+353,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Cocaine, diphenhydramine, Fentanyl, Benzoylecgonine, Metonitazene, Norfentanyl, 8-amino-Clonazolam, Naloxone","THC-M (carboxy THC glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+354,specimen_form,1,1319,2026-01-15,4,43,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,8
+354,qtof_screen,1,,,,,,,,,,,,,,,,,,"Desipramine, Pregabalin, Methylphenidate, zolpidem, acetaminophen, metoprolol, Norbuprenorphine, ",,,,,,,,,,,,
+359,specimen_form,1,MCW-OD2A-036-B,2026-01-20,5,35,2,0,0,0,0,1,0,0,1,0,"<0.010 Ethanol",2,,,,1,0,0,0,0,0,0,0,0,0,
+359,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Benzoylecgonine, Cocaine, quetiapine, gabapentin, ","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+360,specimen_form,1,MCW-OD2A-036-U,2026-01-20,5,35,2,0,0,0,0,1,0,0,1,0,"Ethanol <0.010 ",2,,,,1,0,0,0,0,0,0,0,0,0,
+360,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Cocaethylene, Cocaine, Norbuprenorphine, citalopram/escitalopram, quetiapine, benzoylecgonine, citalopram-M (desmethyl metabolite), gabapentin","THC-M (carboxy THC-glucuronide), acetaminophen",,,,,,,,,,,
+360,qtof_screen,2,,,,,,,,,,,,,,,,,0,"Benzoylecgonine, Cocaethylene, Cocaine, quetiapine, citalopram/escitalopram, citalopram-M (desmethyl metabolite), Norbuprenorphine, gabapentin, ","THC-M (carboxy THC-glucuronide), acetaminophen",,,,,,,,,,,
+362,specimen_form,1,MCW-OD2A-038-B,2026-01-23,5,36,2,0,0,0,0,1,0,0,1,0," <0.010",1,,,,1,0,0,0,0,0,0,0,0,0,"<1 day"
+362,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Hydroxyzine, cariprazine"," -",,,,,,,,,,,
+363,specimen_form,1,MCW-OD2A-038-U,2026-01-23,5,36,2,0,0,0,0,1,0,0,1,0," <0.010",1,,,,1,0,0,0,0,0,0,0,0,0,"<1 day"
+363,qtof_screen,1,,,,,,,,,,,,,,,,,0,"hydroxyzine, cariprazine, Fluoxetine-desmethyl, fluoxetine, ","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+363,qtof_screen,2,,,,,,,,,,,,,,,,,0,"Cariprazine, hydroxyzine, desmethyl fluoxetine, fluoxetine, cetirizine ",,,,,,,,,,,,
+364,specimen_form,1,MCW-OD2A-039-B,2026-01-23,5,23,1,0,0,0,0,0,1,0,1,0," <0.010",1,,,,1,0,0,0,0,0,0,0,0,0,"<1 day"
+364,qtof_screen,1,,,,,,,,,,,,,,,,,1,Yohimbine,,,,,,,,,,,,
+365,specimen_form,1,MCW-OD2A-040-B,2026-01-23,5,19,1,0,0,0,0,0,1,0,1,0,0.229,1,,,,0,0,0,0,1,0,0,0,0,0,
+365,qtof_screen,1,,,,,,,,,,,,,,,,,1,,,,,,,,,,,,,
+366,specimen_form,1,MCW-OD2A-040-U,2026-01-23,5,19,1,0,0,0,0,0,1,0,1,0,0.229,1,,,,0,0,0,0,1,0,0,0,0,0,
+366,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Cocaine, benzoylecgonine, gabapentin",,,,,,,,,,,,
+366,qtof_screen,2,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,
+367,specimen_form,1,MCW-OD2A-041-B,2026-01-30,5,32,1,0,0,0,0,0,1,1,0,0,0.224,2,,,,1,0,0,0,0,0,0,0,0,0,0
+367,qtof_screen,1,,,,,,,,,,,,,,,,,1,trazodone,,,,,,,,,,,,
+368,specimen_form,1,MCW-OD2A-041-U,2026-01-30,5,32,1,0,0,0,0,0,1,1,0,0,0.224,1,,,,1,0,0,0,0,0,0,0,0,0,0
+368,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Cocaine, Benzoylecgonine, midazolam, ondansetron, dextromethorphan, quinine, ",,,,,,,,,,,,
+368,qtof_screen,2,,,,,,,,,,,,,,,,,0,"Midazolam, hydroxyzine, ondansetron, trazodone, Meprobamate, quinine, ",,,,,,,,,,,,
+369,specimen_form,1,MCW-OD2A-042-B,2026-01-30,5,35,1,0,0,0,0,0,1,0,0,1,0.013,1,,,,0,0,0,0,0,0,0,0,1,0,0
+369,qtof_screen,1,,,,,,,,,,,,,,,,,1,"fentanyl, Benzoylecgonine, ondansetron, beta-hydroxyfentanyl, Methoxyacetylfentanyl, Psilocin",,,,,,,,,,,,
+370,specimen_form,1,MCW-OD2A-042-U,2026-01-30,5,35,1,0,0,0,0,0,1,0,0,1,0.013,1,,,,0,0,0,0,0,0,0,0,1,0,0
+370,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Clonazolam-M (8-amino metabolite), benzoylecgonine, meta methyl acetyl fentanyl, Fentanyl,  quinine, Oxycodone, gabapentin, norfentanyl, ",ibuprofen,,,,,,,,,,,
+370,qtof_screen,2,,,,,,,,,,,,,,,,,0,"Benzoylecgonine, Clonazolam-M (8-amino metabolite), fentanyl, gabapentin, norfentanyl, Codeine, Oxycodone, quinine, ",ibuprofen,,,,,,,,,,,
+371,specimen_form,1,"Emplify 5007",2026-01-31,1,61,1,0,0,0,0,1,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+371,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Tianeptine, acetaminophen, rosuvastatin","Acetaminophen, THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+372,specimen_form,1,MCW-OD2A-043-B,2026-02-02,5,22,1,0,0,1,0,0,0,0,0,1,"Ethanol <0.010",1,,,,0,0,0,0,0,0,0,1,0,0,
+372,qtof_screen,1,,,,,,,,,,,,,,,,,1,,"THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+373,specimen_form,1,MCW-OD2A-043-U,2026-02-02,5,22,1,0,0,1,0,0,0,0,0,1,"Ethanol <0.010",1,,,,0,0,0,0,0,0,0,1,0,0,
+373,qtof_screen,1,,,,,,,,,,,,,,,,,0,"benzoylecgonine, phentermine","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+386,specimen_form,1,MCW-OD2A-045-B,2026-02-09,5,18,2,0,0,0,0,1,0,0,1,0,<0.010,1,,,,1,0,0,0,0,0,0,0,0,0,
+386,qtof_screen,1,,,,,,,,,,,,,,,,,1,,"THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+386,qtof_screen,2,,,,,,,,,,,,,,,,,0,"cetirizine, chlorcyclizine, ","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+388,specimen_form,1,MCW-OD2A-046-B,2026-02-09,5,19,1,0,0,0,0,1,0,0,1,0," 0.132",1,,,,1,0,0,0,0,0,0,0,0,0,
+388,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Benzoylecgonine, naloxone, clonazepam-M (7-amino metabolite), cocaine, ","THC-M (carboxy THC glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+389,specimen_form,1,MCW-OD2A-047-B,2026-02-10,5,32,1,0,0,0,0,1,0,1,0,0,0.276,1,,,,0,0,0,0,1,0,0,0,0,0,"2 "
+389,qtof_screen,1,,,,,,,,,,,,,,,,,1,"hydroxyzine, benzoylecgonine, demoxepam, diazepam, nordiazepam, naloxone, lorazepam, cocaine, temazepam, ","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+390,specimen_form,1,MCW-OD2A-047-U,2026-02-10,5,32,1,0,0,0,0,1,0,1,0,0,,1,,,,0,0,0,0,1,0,0,0,0,0,2
+390,qtof_screen,1,,,,,,,,,,,,,,,,,0,"naloxone, demoxepam, diazepam, ","THC-M (carboxy THC-glucuronide)  ",,,,,,,,,,,
+391,specimen_form,1,MCW-OD2A-048-U,2026-02-13,5,20,1,0,0,1,0,0,0,0,1,0," <0.010",2,,,,0,0,0,0,0,0,1,0,0,0,
+391,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Hydroxyzine, haloperidol, quetiapine, ","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+392,specimen_form,1,MCW-OD2A-048-B,2026-02-13,5,20,1,0,0,1,0,0,0,0,1,0," <0.010",2,,,,0,0,0,0,0,0,1,0,0,0,
+392,qtof_screen,1,,,,,,,,,,,,,,,,,1,"quetiapine, ","THC-M (carboxy THC-glucuronide)  ",,,,,,,,,,,
+393,specimen_form,1,MCW-OD2A-049-B,2026-02-18,5,45,1,0,0,0,0,1,0,0,1,0,<0.010,2,,,,1,0,0,0,0,0,0,0,0,0,<1
+393,qtof_screen,1,,,,,,,,,,,,,,,,,1,"benzoylecgonine, modafanil, desmethyl fluoxetine, methamphetamine, meta methyl acetyl fentanyl, alprazolam",,,,,,,,,,,,
+394,specimen_form,1,MCW-OD2A-050-B,2026-02-18,5,19,2,0,0,1,0,0,0,0,1,0,"<0.010 ",2,,,,0,0,0,0,1,0,0,0,0,0,>2
+394,qtof_screen,1,,,,,,,,,,,,,,,,,1,quetiapine,,,,,,,,,,,,
+395,specimen_form,1,MCW-OD2A-050-U,2026-02-18,5,19,2,0,0,1,0,0,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,>2
+395,qtof_screen,1,,,,,,,,,,,,,,,,,0,"benzoylecgonine, hydroxyzine, lidocaine,  cocaine",,,,,,,,,,,,
+396,specimen_form,1,MCW-OD2A-051-U,2026-02-23,5,69,2,0,1,0,0,0,0,0,1,0," <0.010",1,,,,0,0,0,0,1,0,0,0,0,0,"2 days"
+396,qtof_screen,1,,,,,,,,,,,,,,,,,0,"chloroquine, chloroquine-M (hydroxy metabolite), hydroxybupropion, ",,,,,,,,,,,,
+397,specimen_form,1,MCW-OD2A-051-B,2026-02-23,5,69,2,0,1,0,0,0,0,0,1,0," <0.010",1,,,,0,0,0,0,1,0,0,0,0,0,"2 days"
+397,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Chloroquine, ",,,,,,,,,,,,
+398,specimen_form,1,MCW-OD2A-052-B,2026-02-23,5,66,2,0,0,1,0,0,0,0,1,0," <0.010",4,,,,0,0,0,0,1,0,0,0,0,0,
+398,qtof_screen,1,,,,,,,,,,,,,,,,,1,"carvedilol, alprazolam, zolpidem, gabapentin, donepezil, naloxone, ",,,,,,,,,,,,
+402,specimen_form,1,MCW-OD2A-053-U,2026-02-23,5,18,2,0,0,1,0,0,0,0,1,0," <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,
+402,qtof_screen,1,,,,,,,,,,,,,,,,,0,"cocaine, benzoylecgonine, hydroxyzine, quetiapine, ",,,,,,,,,,,,
+403,specimen_form,1,MCW-OD2A-053-B,2026-02-23,5,18,2,0,0,1,0,0,0,0,1,0," <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,
+403,qtof_screen,1,,,,,,,,,,,,,,,,,1,"benzoylecgonine, hydroxyzine, quetiapine, ","aspirin, ",,,,,,,,,,,
+404,specimen_form,1,MCW-OD2A-056-B,2026-02-23,5,32,1,0,0,0,0,1,0,1,0,0,0.329,2,,,,0,0,0,0,1,0,0,0,0,0,
+404,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Fluconazole, diazepam, ondansetron, demoxepam, nordiazepam, chlordiazepoxide, etonitazene, trazodone",Phenobarbital,,,,,,,,,,,
+405,specimen_form,1,MCW-OD2A-056-U,2026-02-23,5,32,1,0,0,0,0,1,0,1,0,0,0.329,2,,,,0,0,0,0,1,0,0,0,0,0,
+405,qtof_screen,1,,,,,,,,,,,,,,,,,0,"7-amino clonazepam, benzoylecgonine, cocaine, fluconazole, demoxepam, gabapentin, ",phenobarbital,,,,,,,,,,,
+409,specimen_form,1,MCW-OD2A-057-U,2026-02-26,5,38,2,0,0,0,0,1,0,0,1,0," <0.010",2,,,,0,0,0,0,0,1,0,0,0,0,
+409,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Norbuprenorphine, 7-amino clonazepam, clonazepam, benzoylecgonine, burprenorphine, cocaine,  gabapentin, ketamine, fluconazole","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+410,specimen_form,1,MCW-OD2A-057-B,2026-02-26,5,38,2,0,0,0,0,1,0,0,1,0," <0.010",2,,,,0,0,0,0,0,1,0,0,0,0,
+410,qtof_screen,1,,,,,,,,,,,,,,,,,1,"7-amino-Clonazepam, meloxicam, gabapentin, clonazepam, buprenorphine, norbuprenorphine, benzoylecgonine, cocaine","THC-M (carboxy THC-glucuronide), meloxicam",,,,,,,,,,,
+411,specimen_form,1,MCW-OD2A-058-U,2026-02-26,5,22,2,0,0,1,0,0,0,0,1,0," <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,"<1 day"
+411,qtof_screen,1,,,,,,,,,,,,,,,,,0,paroxetine,meloxicam,,,,,,,,,,,
+412,specimen_form,1,MCW-OD2A-058-B,2026-02-26,5,22,2,0,0,1,0,0,0,0,1,0," <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,"<1 day"
+412,qtof_screen,1,,,,,,,,,,,,,,,,,1,"fluconazole, meloxicam, paroxetine",meloxicam,,,,,,,,,,,
+413,specimen_form,1,MCW-OD2A-059-B,2026-02-26,5,48,2,0,0,0,0,1,0,0,1,0," <0.010",,,,,0,0,0,1,0,0,0,0,0,0,"<1 day"
+413,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Meloxicam, benzoylecgonine, fluconazole, naloxone, diazepam, cocaine, warfarin, ketamine, cocaethylene, ",Meloxicam,,,,,,,,,,,
+414,specimen_form,1,MCW-OD2A-060-B,2026-03-04,5,65,1,0,0,0,0,1,0,0,1,0,0.033,2,,,,1,0,0,1,0,0,0,0,0,0,<1
+414,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Clonazepam-M (7-amino metabolite), benzoylecgonine, cocaine, metoprolol, fluconazole, warfarin, gabapentin, Nordiazepam, diazepam, ","warfarin, lorsartan",,,,,,,,,,,
+415,specimen_form,1,MCW-OD2A-060-U,2026-03-04,5,65,1,0,0,0,0,1,0,0,1,0,,2,,,,1,0,0,1,0,0,0,0,0,0,<1
+415,qtof_screen,1,,,,,,,,,,,,,,,,,0,"cocaine, benzoylecgonine, metoprolol, 7-amino clonazepam, gabapentin, ","lorsartan, acetaminophen",,,,,,,,,,,
+416,specimen_form,1,1331,2026-03-04,4,15,1,0,0,0,0,1,0,1,0,0,,4,,,,1,0,0,0,0,0,0,0,0,0,2
+416,qtof_screen,1,,,,,,,,,,,,,,,,,0,"levetiracetam ","levetiracetam ",,,,,,,,,,,
+417,specimen_form,1,1332,2026-03-04,4,17,1,0,0,0,0,1,0,0,1,0,"269 mg/dL",4,,,,1,0,0,0,0,0,0,0,0,0,1
+417,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Ondansetron, Benzoylecgonine, citalopram/escitalopram, citalopram-M (desmethyl metabolite), cocaethylene, cocaine, famotidine, ","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+418,specimen_form,1,1333,2026-03-04,4,51,1,0,0,0,0,1,0,0,1,0,,4,,,,0,0,0,0,1,0,0,0,0,0,4
+418,qtof_screen,1,,,,,,,,,,,,,,,,,0,"levetiracetam, famotidine","phenobarbital, levetiracetam, ",,,,,,,,,,,
+419,specimen_form,1,1334,2026-03-04,4,55,2,0,0,0,0,1,0,0,1,0,,4,,,,1,0,0,0,0,0,0,0,0,0,1
+419,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Methamphetamine, gabapentin, quetiapine, acetaminophen, losartan, amphetamine, phentermine",acetaminophen,,,,,,,,,,,
+420,specimen_form,1,1335,2026-03-04,4,21,1,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,32
+420,qtof_screen,1,,,,,,,,,,,,,,,,,0,"lidocaine, risperidone (hydroxy), clonazepam-M (7-amino metabolite), clozapine-M (desmethyl metabolite), clozapine-M (N-oxide metabolite), acyclovir",,,,,,,,,,,,
+421,specimen_form,1,1336,2026-03-04,4,16,1,0,0,1,0,0,0,0,1,0,,4,,,,1,0,0,0,0,0,0,0,0,0,1
+421,qtof_screen,1,,,,,,,,,,,,,,,,,0,,ibuprofen,,,,,,,,,,,
+422,specimen_form,1,1337,2026-03-04,4,55,2,0,0,0,0,1,0,0,1,0,,2,,,,0,0,0,0,1,0,0,0,0,0,6
+422,qtof_screen,1,,,,,,,,,,,,,,,,,0,"pregabalin, acetaminophen, ondansetron, bupropion, clonazepam-M (7-amino metabolite), clonazepam, hydroxybupropion, ondansteron-M (7-hydroxy)",acetaminophen,,,,,,,,,,,
+423,specimen_form,1,1338,2026-03-04,4,17,1,0,0,0,0,1,0,1,0,0,,2,,,,1,0,0,0,0,0,0,0,0,0,4
+423,qtof_screen,1,,,,,,,,,,,,,,,,,0,"doxylamine, citalopram/escitalopram, citalopram-M (desmethyl metabolite), acetaminophen, glufosinate",acetaminophen,,,,,,,,,,,
+424,specimen_form,1,1339,2026-03-04,4,48,1,0,0,0,0,1,0,1,0,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+424,qtof_screen,1,,,,,,,,,,,,,,,,,0,"gabapentin, cyclobenzaprine, cocaine, benzoylecgonine, diphenhydramine, clonazepam-M (7-amino metabolite), cocaethylene, ",acetaminophen,,,,,,,,,,,
+425,specimen_form,1,1340,2026-03-04,4,32,1,0,0,0,0,0,1,0,0,1,,4,,,,1,0,0,0,0,0,0,0,0,0,2
+425,qtof_screen,1,,,,,,,,,,,,,,,,,0,"cocaine, methadone, benzoylecgonine, amphetamine, EDDP","THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite)",,,,,,,,,,,
+426,specimen_form,1,1341,2026-03-04,4,15,2,0,0,0,0,1,0,0,1,0,"202 mg/dL",2,,,,1,0,0,0,0,0,0,0,0,0,1
+426,qtof_screen,1,,,,,,,,,,,,,,,,,0,"methadone, ","THC-M (carboxy THC-glucuronide),",,,,,,,,,,,
+427,specimen_form,1,1342,2026-03-04,4,1,2,0,0,1,0,0,0,0,1,0,,1,,,,1,0,0,0,0,0,0,0,0,0,1
+427,qtof_screen,1,,,,,,,,,,,,,,,,,0,,"THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite), chlorthalidone",,,,,,,,,,,
+428,specimen_form,1,MCW-OD2A-061-B,2026-03-05,5,38,2,0,0,1,0,0,0,0,1,0,"Unknown. ",4,,,,1,0,0,0,0,0,0,0,1,0,"<1 day"
+428,qtof_screen,1,,,,,,,,,,,,,,,,,1,"benzoylecgonine, quinine, cocaine","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+433,specimen_form,1,MCW-OD2A-064-U,2026-03-10,5,38,1,0,0,0,0,1,0,0,1,0,"ETHANOL, SERUM: <0.010",2,,,,0,0,0,0,0,0,1,0,0,0,
+433,qtof_screen,1,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,
+434,specimen_form,1,MCW-OD2A-064-B,2026-03-10,5,38,1,0,0,0,0,1,0,0,1,0,"ETHANOL, SERUM: <0.010",2,,,,0,0,0,0,0,0,1,0,0,0,
+434,qtof_screen,1,,,,,,,,,,,,,,,,,1,"risperidone-hydroxy, Metorpolol, pantoprazole, mirtazapine-n-desmethyl, mirtazapine",,,,,,,,,,,,
+435,specimen_form,1,MCW-OD2A-065-B,2026-03-10,5,29,2,0,0,1,0,0,0,0,1,0,"<0.010 ",2,,,,0,0,0,0,0,0,1,1,0,0,<1
+435,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Oxycodone, acetaminophen, noroxycodone","THC-M (carboxy-THC-glucuronide), acetaminophen",,,,,,,,,,,
+436,specimen_form,1,MCW-OD2A-065-U,2026-03-10,5,29,2,0,0,1,0,0,0,0,1,0,,2,,,,0,0,0,0,0,0,1,1,0,0,<1
+436,qtof_screen,1,,,,,,,,,,,,,,,,,0,"Oxycodone, acetaminophen, noroxycodone, ","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+437,specimen_form,1,MCW-OD2A-067-U,2026-03-16,5,63,1,0,0,1,0,0,0,0,1,0,,2,,,,0,0,0,0,0,1,0,0,0,0,
+437,qtof_screen,1,,,,,,,,,,,,,,,,,0,"naloxone, cis-isofentanyl, quinine, benzoylecgonine, cocaine, ","THC-M (carboxy THC glucuronide)",,,,,,,,,,,
+438,specimen_form,1,MCW-OD2A-068-U,2026-03-16,5,37,2,0,0,1,0,0,0,0,1,0,"ETHANOL, SERUM: <0.010",2,,,,0,0,0,0,0,0,1,0,0,0,3
+438,qtof_screen,1,,,,,,,,,,,,,,,,,0,"citalopram-desmethyl metabolite, citalopram/escitalopram, metoclopramide, gabapentin,","THC-M (carboxy THC metabolite), THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+439,specimen_form,1,MCW-OD2A-068-B,2026-03-16,5,37,2,0,0,1,0,0,0,0,1,0,"ETHANOL, SERUM: <0.010",2,,,,0,0,0,0,0,0,1,0,0,0,3
+439,qtof_screen,1,,,,,,,,,,,,,,,,,1,,"THC-M (carboxy THC-glucuronide), THC-M (carboxy THC metabolite) ",,,,,,,,,,,
+442,specimen_form,1,MCW-OD2A-069-B,2026-03-17,5,37,2,0,0,1,0,0,0,0,1,0,,3,,,,1,0,0,0,0,0,0,0,0,0,<1
+442,qtof_screen,1,,,,,,,,,,,,,,,,,1,"acetaminophen, famotidine, ",,,,,,,,,,,,
+443,specimen_form,1,MCW-OD2A-070-B,2026-03-17,5,42,1,0,0,1,0,0,0,0,1,0,,3,,,,1,0,0,0,0,0,0,0,0,0,<1
+443,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Venlafaxine, O-desmethyl venlafaxine, amlodipine","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+446,specimen_form,1,MCW-OD2A-067-B,2026-03-19,5,44,2,0,0,0,0,1,0,0,1,0," <0.010",2,,,,1,0,0,0,0,0,0,0,0,0,"2 days"
+446,qtof_screen,1,,,,,,,,,,,,,,,,,1,"Clonazepam, 7-aminoclomazepam","THC-M (carboxy THC-glucuronide)",,,,,,,,,,,
+447,specimen_form,1,MCW-OD2A-071-B,2026-03-19,5,44,1,0,0,0,0,1,0,0,1,0," <0.010",1,,,,1,0,0,0,0,0,0,0,0,0,"<1 day"
+447,qtof_screen,1,,,,,,,,,,,,,,,,,1,,,,,,,,,,,,,
+448,specimen_form,1,MCW-OD2A-071-U,2026-03-19,5,44,1,0,0,0,0,1,0,0,1,0," <0.010",1,,,,1,0,0,0,0,0,0,0,0,0,"<1 day"
+448,qtof_screen,1,,,,,,,,,,,,,,,,,0,"methoxyacetylfentanyl, diphenhydramine, meta-methyl acetyl fentanyl, benzoylecgonine, cocaine, quinine, naloxone, citalopram/escitalopram, citalopram-desmethyl metabolite, norfentanyl, ",,,,,,,,,,,,
