@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# Generated outputs (reproducible from data/ via src/ scripts)
+new_infogenerator/output/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
