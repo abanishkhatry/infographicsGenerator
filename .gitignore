@@ -4,6 +4,10 @@
 # Generated outputs (reproducible from data/ via src/ scripts)
 new_infogenerator/output/
 
+# Data files — keep patient/source data out of git (PHI-sensitive)
+**/data/*.csv
+**/data/**/*.csv
+
 # Python
 __pycache__/
 *.pyc
