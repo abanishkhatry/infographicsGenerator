@@ -2,11 +2,15 @@
 .DS_Store
 
 # Generated outputs (reproducible from data/ via src/ scripts)
-new_infogenerator/output/
+**/output/
 
 # Data files — keep patient/source data out of git (PHI-sensitive)
 **/data/*.csv
 **/data/**/*.csv
+
+# Versioned data snapshots — versions live locally, out of git (PHI-sensitive).
+# The directory + its README stay tracked; the CSV versions do not.
+new_infogenerator/versioned/*.csv
 
 # Python
 __pycache__/
