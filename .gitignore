@@ -7,6 +7,10 @@
 # Data files — keep patient/source data out of git (PHI-sensitive)
 **/data/*.csv
 **/data/**/*.csv
+**/data/*.xlsx
+**/data/**/*.xlsx
+# ...except the analyte reference mapping, which carries no patient data
+!new_infogenerator/data/Analyte_Category_Mapping.xlsx
 
 # Versioned data snapshots — versions live locally, out of git (PHI-sensitive).
 # The directory + its README stay tracked; the CSV versions do not.
