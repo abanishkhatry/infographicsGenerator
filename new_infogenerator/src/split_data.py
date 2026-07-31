@@ -50,7 +50,9 @@ SPECIMEN_COLS = [
     "Patient's Ethnicity (choice=Unknown)",
     "Patient's blood alcohol concentration (if known)",
     "Manner of overdose?",
-    "Sample matrix",
+    # "Sample matrix" is deliberately absent: it is empty on every Specimen Form
+    # row because the matrix is recorded against the QToF rows. It lives in
+    # QTOF_COLS instead.
     "What was the patient's discharge status? (choice=Official discharge)",
     "What was the patient's discharge status? (choice=Death)",
     "What was the patient's discharge status? (choice=Left without treatment)",
@@ -68,6 +70,7 @@ QTOF_COLS = [
     "Record ID",
     "Repeat Instance",
     "Specimen number",  # backfilled from the specimen row
+    "Sample matrix",  # recorded on the QToF rows, never on the Specimen Form
     "Positive Ion Mode",
     "Negative Ion Mode",
 ]
@@ -94,7 +97,7 @@ def split(source: Path, out_dir: Path) -> tuple[Path, Path]:
         _require_columns(fieldnames, [INSTRUMENT_COL, KEY_COL], source)
         _require_columns(
             fieldnames,
-            [c for c in SPECIMEN_COLS if c != SPEC_NUM_COL] + ["Positive Ion Mode"],
+            [c for c in SPECIMEN_COLS + QTOF_COLS if c != SPEC_NUM_COL],
             source,
         )
         rows = list(reader)
