@@ -1,5 +1,21 @@
 # macOS
 .DS_Store
+.AppleDouble
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
 
 # Generated outputs (reproducible from data/ via src/ scripts)
 **/output/
@@ -18,8 +34,6 @@
 new_infogenerator/versioned/*
 !new_infogenerator/versioned/README.md
 
-# Python
-__pycache__/
-*.pyc
-.venv/
-venv/
+# NOTE: new_infogenerator/sample_images/ is intentionally NOT ignored. It holds
+# published reference one-pagers used as design targets. They carry aggregate
+# figures only — no patient-level data — so they belong in the repo.
