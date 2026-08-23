@@ -61,6 +61,11 @@ CATEGORY_FIXES = {
     "DissociativeAnesthetic": "DissociativeAnesthetics",
     "NSPOpioids": "NPSOpioids",
     "Hallucinogen": "Hallucinogens",
+    # Category names are plural by convention, and the validation template
+    # already spells this one 'Cathinones'. Decided Aug 2026: conform.
+    # NOTE: applies to the CATEGORY columns only. The canonical 'cathinone' is a
+    # substance name that happens to share the string and is left alone.
+    "Cathinone": "Cathinones",
 }
 
 # Canonical values that were misspelled, so correct input produced wrong output.
@@ -68,6 +73,47 @@ CANONICAL_FIXES = {
     "disulfram": "disulfiram",
     "lorsartan": "losartan",
     "aspirin-salicyclic acid": "aspirin-salicylic acid",
+    # 'metaprolol' is a misspelling that was given its own canonical, splitting
+    # one beta blocker across two names. Confirmed by the study team (Heather,
+    # Aug 2026): merge into 'metoprolol'. Its metabolite row carries a second
+    # typo in the canonical itself ('hydorxy').
+    "metaprolol": "metoprolol",
+    "metaprolol-hydorxy": "metoprolol-hydroxy",
+}
+
+# Flag repairs keyed by ``Analyte``, applied after the canonical fixes.
+#
+# The workbook left ``Flag`` blank on some spellings of a substance while
+# flagging others, so metabolite status depended on which spelling a technician
+# typed. ``Flag`` has no explicit "not a metabolite" value -- it is either
+# ``Metabolite`` or empty -- so a blank meant either "not a metabolite" or "not
+# filled in", and the file could not distinguish them.
+#
+# Five canonicals were affected. The study team resolved all five as metabolites
+# (Heather, Aug 2026; see data/Analyte_Category_Mapping_reviewed_2026-08.xlsx),
+# which is applied per-spelling below. After this pass every canonical agrees
+# with itself, so downstream code can read ``Flag`` directly instead of
+# reconciling it.
+FLAG_FIXES = {
+    # Created by the metaprolol merge above: this row's twin
+    # ('metoprolol-hydroxy') is flagged Metabolite, and a hydroxy metabolite is
+    # a metabolite regardless of which spelling was typed.
+    "metaprolol-hydroxy": "Metabolite",
+    # canonical '1-(3-chlorophenyl)piperazine' -- the misspelled twin was blank
+    "1-(3-chlorophenyl)piperazone (mCPP)": "Metabolite",
+    # canonical '4-anpp' -- 4-ANPP is both a fentanyl precursor and a fentanyl
+    # metabolite; the study team confirmed it counts as a metabolite here, which
+    # keeps it out of any "excluding metabolites" figure (42 patients).
+    "4-ANPP (despropionylfentanyl)": "Metabolite",
+    "4-ANPP/despropionylfentanyl": "Metabolite",
+    # canonical 'aspirin-salicylic acid' -- salicylic acid is aspirin's metabolite
+    "aspirin-M": "Metabolite",
+    "aspirin-M (salicyclic acid)": "Metabolite",
+    "aspirin-M (salicylic acid)": "Metabolite",
+    # canonical 'cathine' -- metabolite of cathinone
+    "cathine": "Metabolite",
+    # canonical 'loperamide-dimethyl' -- three of its four spellings already said so
+    "loperamide-dimethyl": "Metabolite",
 }
 
 # Canonicals differing from an existing twin only by case. Lowercase is the
@@ -289,6 +335,7 @@ def clean(source: Path, stem: Path) -> None:
     trimmed = 0
     cat_edits: dict[tuple[str, str], int] = {}
     canon_edits: dict[tuple[str, str], int] = {}
+    flag_edits: list[str] = []
 
     for row in rows:
         for col in fieldnames:
@@ -311,6 +358,11 @@ def clean(source: Path, stem: Path) -> None:
             canon_edits[(value, new)] = canon_edits.get((value, new), 0) + 1
             row[CANON_COL] = new
 
+        flag = FLAG_FIXES.get(row["Analyte"])
+        if flag and row["Flag"] != flag:
+            flag_edits.append(f"  {row['Analyte']!r}: {row['Flag']!r} -> {flag!r}")
+            row["Flag"] = flag
+
     print(f"\nwhitespace: {trimmed} cell(s) trimmed")
     print(f"\ncategory spellings: {sum(cat_edits.values())} cell(s) changed")
     for (old, new), n in sorted(cat_edits.items(), key=lambda kv: -kv[1]):
@@ -318,6 +370,10 @@ def clean(source: Path, stem: Path) -> None:
     print(f"\ncanonical names: {sum(canon_edits.values())} cell(s) changed")
     for (old, new), n in sorted(canon_edits.items(), key=lambda kv: -kv[1]):
         print(f"  {n:>3}x  {old!r} -> {new!r}")
+
+    print(f"\nflag repairs: {len(flag_edits)} row(s) changed")
+    for line in flag_edits:
+        print(line)
 
     before = len(rows)
     rows, dedupe_report = dedupe_flag_twins(fieldnames, rows)
