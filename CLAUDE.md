@@ -7,14 +7,23 @@ eventually, generated infographics.
 ## Layout
 
 ```
-new_infogenerator/          active work — the one-pager data pipeline
+new_infogenerator/          active work — the one-pager pipeline and renderer
   data/                      REDCap exports + reference mappings (PHI, git-ignored)
+  assets/                    map images for the facility sheet (no patient data)
+  src/vocab.py               template vocabularies + study-team rulings, one copy
   src/split_data.py          splits the long REDCap export into specimen + qtof
   src/clean_specimen.py      per-column cleaning of the specimen side
   src/clean_qtof.py          text normalization of the drug-screen side
   src/clean_analyte_mapping.py  repairs the analyte -> category vocabulary
+  src/extend_analyte_mapping.py adds the substances QToF needs -> mapping_v3
+  src/clean_specimen_v3.py   specimen_v2 -> the validation template's shape
+  src/clean_qtof_v3.py       qtof_v2 + mapping_v3 -> canonicalized analytes
+  src/build_validate.py      joins both v3 sides -> validate_v1.csv
+  src/onepager_stats.py      computes every figure (suppression lives here)
+  src/build_onepager.py      renders layout only, three selectable bodies
+  src/dashboard.py           local picker + live preview + PDF export
   versioned/                 numbered data snapshots (git-ignored) + README
-  output/                    scratch output of split_data.py (git-ignored)
+  output/                    rendered pages, a build artefact (git-ignored)
 
 biosurveillance-main/       prior/reference project (CDC OD2A submission tooling)
   src/biosurveillance_analytics/     validation + QToF analytics
@@ -35,6 +44,11 @@ external service.
   tracked from that directory.
 - `new_infogenerator/data/Analyte_Category_Mapping.xlsx` is the one tracked file
   in `data/` — it is a reference drug vocabulary, not patient data.
+- `new_infogenerator/assets/` **is** tracked: state maps, no patient data. The
+  rendered pages in `output/` are not — they carry cohort counts derived from
+  PHI.
+- The dashboard binds `127.0.0.1` only, and every render prints a reminder that
+  the page must not be published to an external service.
 - Never `git add .` in this repo. Stage files explicitly.
 - When profiling or reporting on the data, prefer aggregate output (value
   counts, distributions) over dumping patient-level rows.
@@ -77,9 +91,20 @@ python3 src/clean_qtof.py            # qtof_v1     -> qtof_v2
 python3 src/clean_analyte_mapping.py # data/*.xlsx -> analyte_mapping_v2
 ```
 
-`openpyxl` is **not installed** and should not be assumed. `clean_analyte_mapping.py`
-reads and writes xlsx as raw OOXML, and emits a CSV alongside so downstream code
-can use the stdlib.
+The v3 chain, the join and the renderer continue from there — the full ordered
+list is in `versioned/README.md`, which is the authority on this pipeline.
+
+## Dependencies — assume nothing
+
+`openpyxl`, `pandas`, `numpy`, `matplotlib` and `jinja2` are **not installed**
+and must not be assumed. `clean_analyte_mapping.py` reads and writes xlsx as raw
+OOXML, and emits a CSV alongside so downstream code can use the stdlib. Charts
+are hand-authored inline SVG for the same reason.
+
+The one exception is the PDF export: `src/dashboard.py` imports **`weasyprint`**,
+which is installed under **Python 3.13 only**. Homebrew moved `python3` to 3.14
+in Sep 2026, so run it as `python3.13 src/dashboard.py`. Everything else runs on
+any Python 3.
 
 ## Cleaning conventions
 
@@ -109,6 +134,27 @@ The working pattern, established across specimen, qtof, and the mapping:
 
 `versioned/README.md` documents what each version contains, the per-column rules,
 and the caveats that matter when charting. Update it whenever a version changes.
+
+## Rendering conventions
+
+1. **Numbers and layout are separate.** `onepager_stats.py` computes every
+   figure and applies `SUPPRESS_BELOW`; `build_onepager.py` only scales bars to
+   pixels. Nothing in the renderer may compare a count to a threshold — a cell
+   reaching it is already adjudicated.
+2. **Count patients, never rows.** `validate_v1` is one row per
+   (patient x analyte), so `len(df)` weights each patient by how many substances
+   they screened positive for.
+3. **Check the PDF, not the preview.** WeasyPrint is not a browser and has
+   diverged from it five separate times on this page — CSS does not cascade into
+   inline SVG, `preserveAspectRatio` does not scale a viewBox down, `<img>`
+   dimensions need inline CSS, and flex children get stretched to fill a
+   `min-height`. The gotchas are listed in `versioned/README.md`.
+4. **Every size is a measured constant.** The sheet has 998px of printable
+   height and all three bodies sit within ~12px of it, so sizes are found by
+   sweeping for the largest value that still renders on one page — not chosen.
+   **Adding anything means removing something.**
+5. **One page is asserted, not hoped for.** `dashboard.render_pdf` refuses to
+   serve a two-page PDF, so an overflowing layout fails loudly.
 
 ## Known data caveats
 

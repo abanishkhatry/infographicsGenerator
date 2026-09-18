@@ -72,6 +72,8 @@ specimen_v3.csv  373 x 12      qtof_v3.csv  2709 x 9
                  |  src/build_onepager.py     renders layout only
                  v
         output/onepager.html               one page, self-contained
+                 ^
+                 |  src/dashboard.py            pick a body, preview, export PDF
 ```
 
 Each `vN` is immutable and is never edited in place. Every cleaning script reads
@@ -89,8 +91,17 @@ python3 src/clean_specimen_v3.py      # specimen_v2 -> specimen_v3
 python3 src/clean_qtof_v3.py          # qtof_v2 + mapping_v3 -> qtof_v3
 python3 src/build_validate.py         # specimen_v3 + qtof_v3 -> validate_v1
 python3 src/onepager_stats.py         # review the figures (--json to hand over)
-python3 src/build_onepager.py         # validate_v1 -> output/onepager.html
+python3 src/build_onepager.py --body classes    # -> output/onepager.html
+python3.13 src/dashboard.py                     # http://127.0.0.1:8000
 ```
+
+**Interpreter.** Everything up to `build_onepager.py` is standard library and
+runs on any Python 3. The **dashboard's PDF export is the one exception**: it
+imports `weasyprint`, which on this machine is installed under **Python 3.13
+only**. Homebrew moved `python3` to 3.14 in Sep 2026, at which point
+`python3 src/dashboard.py` stopped starting. Run the dashboard as `python3.13`,
+or `python3.14 -m pip install weasyprint` and forget about it. `PIL` is present
+under 3.13 too but no pipeline script imports it.
 
 Order matters in one place: `clean_qtof_v3.py` reads `analyte_mapping_v3.csv`,
 so the mapping chain must run first.
@@ -517,26 +528,107 @@ denominators, at the cost of 6 rows the template has no value for.
 
 ## The one-pager
 
-Two scripts, **standard library only** — matplotlib, pandas, numpy and jinja2
-are all absent from this environment, so nothing is assumed. `output/` is
-git-ignored; the rendered page is a build artefact, not a snapshot.
+Three scripts. `onepager_stats.py` and `build_onepager.py` are **standard
+library only** — matplotlib, pandas, numpy and jinja2 are all absent from this
+environment, so nothing is assumed. `dashboard.py` adds `weasyprint` for the PDF
+export, and nothing else. `output/` is git-ignored; the rendered page is a build
+artefact, not a snapshot.
 
 | Script | Job |
 | --- | --- |
 | `src/onepager_stats.py` | Computes every figure. Prints them; `--json` hands them over for review. |
 | `src/build_onepager.py` | Layout only — no arithmetic beyond scaling bars to pixels. |
+| `src/dashboard.py` | Local picker: choose a body, live preview, download PDF. Binds 127.0.0.1 only. |
 
 The split is deliberate: the study team can sign off on **the numbers** before
 anyone argues about **the layout**, and the layout can be re-cut without touching
 the arithmetic. Every number on the page traces to one function.
 
+### Three bodies, one masthead
+
+`--body` selects what fills the sheet. The masthead and footnote are fixed per
+body rather than selectable — what needs explaining depends on what is shown,
+and leaving the caveat selectable invited a sheet whose footnotes did not match
+its charts.
+
+| `--body` | Sheet |
+| --- | --- |
+| `classes` | Opioids vs stimulants — two panels, then WHO above OUTCOME. |
+| `overview` | All sixteen drug classes ranked, then an 8x8 co-occurrence grid. |
+| `facility` | Madison / Milwaukee / Green Bay, each with the same two classes, under a state map. |
+
+`BODIES` in `build_onepager.py` holds each one's title, footnote and caveat
+template. Adding a body means adding an entry and a renderer; nothing else
+branches on the name except the per-body sizing constants below.
+
 **Charts are hand-authored inline SVG** — `<rect>` bars, one `<pattern>` in
 `<defs>` for the metabolite hatch, and a `<circle>` with `stroke-dasharray` for
 the sex donut. No plotting library, no CDN, **no external references at all**, so
-the file opens offline and prints to PDF via `@page letter portrait`. Palette is
-the house navy from `biosurveillance_dissemination/doc_styles.py` (`#003D78`)
-plus a maroon for the stimulant panel, matching the reference one-pager in
-`sample_images/`.
+the file opens offline and prints to PDF. Palette is the house navy from
+`biosurveillance_dissemination/doc_styles.py` (`#003D78`) plus a maroon for the
+stimulant panel, matching the reference one-pager in `sample_images/`.
+
+The one raster asset is the state map on the facility sheet. `assets/` holds the
+two originals plus `wisconsin_map_sheet.png`, the derived copy that actually
+ships: cropped to its ink, scaled down, and **embedded as a base64 data URI** so
+the output stays a single self-contained file. The dashboard renders from a
+string in memory, so there is no document location for a relative `src` to
+resolve against — a linked image renders locally and vanishes in the PDF.
+
+### Everything is one page, and the page is full
+
+`dashboard.render_pdf` asserts the PDF is **exactly one page** and refuses to
+serve a longer one, so a layout change that overflows fails loudly instead of
+shipping a truncated sheet.
+
+The sheet is 816 x 1056 CSS px with 0.3in margins, leaving **998px of printable
+height**, and all three bodies sit within ~12px of that. Every size on the page
+is therefore a *measured* constant, not a chosen one — each was found by
+sweeping values and taking the largest that still rendered on one page:
+
+| Constant | What it sizes |
+| --- | --- |
+| `HEADER_PAD`, `HEADER_LEAD` | Masthead: gap below the org line; space above the eyebrow (facility only). |
+| `BLOCK_GAP` | Rhythm between the sheet's top-level blocks. |
+| `STACK_GAP` | Separation between the stacked WHO and OUTCOME blocks. |
+| `BAND_ROW_H`, `OBAR_H` | WHO/OUTCOME chart heights — **per body**, because the sheets have different room. |
+| `WHO_STAT_PAD` | The three demographic rows, classes sheet only. |
+| `FACILITY_LEAD`, `MAP_INDENT`, `MAP_KEY_INSET` | The facility sheet's map band. |
+| `DISCHARGE_BAR_H`, `DISCHARGE_LABEL_MIN` | The outcome bar and the smallest share that still gets an inline number. |
+
+**Consequence worth internalising: adding anything means removing something.**
+The contact line in the footer cost ~19px and pushed all three sheets to two
+pages; it was paid for by shrinking charts. If a sheet needs to grow, the
+cheapest sources are the footnote prose and the `classes` KPI strip (64.5px,
+whose four numbers all appear elsewhere on that sheet).
+
+### WeasyPrint is not a browser
+
+Five separate bugs on this page came from assuming it behaves like Chrome. All
+of them rendered correctly in the browser preview and wrongly in the PDF, so
+**the PDF is the thing to check, not the preview**:
+
+- **Document CSS does not cascade into inline SVG.** Class-styled chart text
+  fell back to ~16px. Every SVG element carries presentation attributes instead
+  — that is what `BAR_VALUE`, `BAR_LABEL`, `AXIS_TEXT`, `BAND_LABEL` are for.
+- **A repeated XML attribute is not an override — the first one wins.** Hence
+  `BAND_LABEL` as its own set rather than `AXIS_TEXT` plus a tweak.
+- **`url(#id)` does not resolve across `<svg>` elements.** The metabolite hatch
+  is emitted into a `<defs>` inside each SVG that uses it.
+- **`preserveAspectRatio` does not scale an over-wide viewBox down.** It renders
+  1:1 and clips. A chart whose column width varies must not be an SVG with an
+  absolute viewBox — the outcome bar is percentage-width `<div>`s for exactly
+  this reason.
+- **`height: 100%` on an `<img>` does not derive the width**, and HTML `width`/
+  `height` attributes are ignored. Only inline CSS with both dimensions works;
+  `lead_band()` reads the PNG's IHDR header to compute them.
+
+Also: `border-radius: 50%` against a thick border renders as a teardrop, which
+is why the legend swatches are SVG circles; and **flex was abandoned entirely**
+for the sheet. WeasyPrint stretches every child of a column flex container to
+soak up a `min-height`, ignoring `flex-grow` and `auto` margins, which meant
+spacing was decided by the renderer and differed between bodies. `.sheet` is
+`display: block` so every gap is the gap the CSS states.
 
 ### Two safeguards built in
 
@@ -570,20 +662,17 @@ PHI-derived counts and must not be published to an external service.
   71%, Amphetamines 75%, while Antidepressants flip to 43%. Each subtype
   therefore carries its own male share; the class aggregate was flattening a
   20-point gap.
-- **The `WHERE` panel is a proportional bar, not a list.** Two-thirds of the
-  cohort is one hospital, which is the most important caveat for reading
-  everything below it, and the caption states that consequence from the data
-  rather than hardcoding it.
 - **`spec_date` cannot supply the reporting period**, so it is a `--period`
   argument.
 
 ### Known placeholders
 
-The headline (`"What Wisconsin overdose patients tested positive for"`) and the
-`--period` value both need the study team's wording. `benzoylecgonine` (101)
-tops the stimulant chart because it is cocaine's metabolite, so it outranks
-`cocaine` (67) while being the same people — correct as lab output, but worth
-deciding whether cocaine-type should collapse to a single bar.
+`--period` still needs the study team's wording. `benzoylecgonine` (101) tops the
+stimulant chart because it is cocaine's metabolite, so it outranks `cocaine`
+(67) while being the same people — correct as lab output, but worth deciding
+whether cocaine-type should collapse to a single bar. The **"Cohort." footnote
+still says "three Wisconsin hospitals"** while the facility title now says
+"participating"; if more sites are expected, that line wants the same wording.
 
 ## Caveats for anyone charting these
 
@@ -741,9 +830,14 @@ deciding whether cocaine-type should collapse to a single bar.
 
 ### Next steps
 
-- **The one-pager headline and reporting period** need the study team's wording;
-  both are placeholders today and `--period` is a CLI argument because
-  `spec_date` cannot supply it.
+- **The reporting period** needs the study team's wording; `--period` is a CLI
+  argument because `spec_date` cannot supply it. The three headlines are settled
+  (Sep 2026), but the **"Cohort." footnote still reads "three Wisconsin
+  hospitals"** while the facility headline now says "participating" — worth
+  aligning if more sites are expected to join.
+- **Declare the `weasyprint` dependency.** The PDF export is the project's only
+  non-stdlib requirement and it is not written down anywhere but here; it broke
+  silently in Sep 2026 when Homebrew moved `python3` from 3.13 to 3.14.
 - **Decide whether cocaine-type collapses to one bar.** `benzoylecgonine` (101)
   currently outranks `cocaine` (67) on the stimulant chart while being the same
   people, because it is cocaine's metabolite.
@@ -781,6 +875,14 @@ deciding whether cocaine-type should collapse to a single bar.
 - **The one-pager** — `output/onepager.html`, one page, self-contained, stdlib
   only, with patient-level counting and small-cell suppression enforced in the
   stats layer.
+- **Three bodies** — opioids vs stimulants, all sixteen classes with an 8x8
+  co-occurrence grid, and a per-facility sheet with a keyed state map. Each
+  carries its own headline and footnote; all three fit one page.
+- **The dashboard** — `src/dashboard.py`, a local picker on 127.0.0.1 with a
+  live side-by-side preview and PDF download. The PDF path asserts exactly one
+  page, so an overflowing layout fails rather than shipping truncated.
+- **A contact address in every footer** — `NFODbiosurveillance@dhs.wisconsin.gov`,
+  as a live `mailto:` link.
 
 ## Git
 
