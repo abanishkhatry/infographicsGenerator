@@ -74,6 +74,11 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from clean_qtof import split_analytes
+from vocab import (
+    GROUP_VALUES as TEMPLATE_GROUPS,
+    TEMPLATE_ADDITIONS_REQUESTED,
+    read_rows,
+)
 
 KEY_COL = "Record ID"
 ION_COLS = ("Positive Ion Mode", "Negative Ion Mode")
@@ -100,7 +105,15 @@ SENTINEL = "none detected"
 DELIMITER = ", "
 _FORBIDDEN_IN_CANONICAL = (",", ";", "|", "\t")
 
-RUNGS = ("exact key", "casefold key", "canonical self-key", "known variant")
+# (label, Index attribute) in the order resolve() tries them. Driving both the
+# lookup and the report from one list means a renamed rung cannot silently make
+# the coverage table read 0.00%.
+RUNGS = (
+    ("exact key", "exact"),
+    ("casefold key", "casefold"),
+    ("canonical self-key", "canonical"),
+    ("known variant", "variant"),
+)
 
 # The template's rule: a substance with no Drug_Category_ at all is reported as
 # 'Other' in analyte_group_1, not left blank.
@@ -118,14 +131,10 @@ METABOLITE = "Metabolite"
 # being adjudicated.
 FLAG_CONFLICT_METABOLITE_WINS = False
 
-# The validation template's allowed analyte_group vocabulary, from the "details"
-# sheet of data/validation_set.xlsx.
-TEMPLATE_GROUPS = {
-    "Amphetamines", "Antidepressants", "Antipsychotics", "Barbiturates",
-    "Benzodiazepines", "Cannabinoids", "Cathinones", "CSNSStimulants", "Cocaine",
-    "DissociativeAnesthetics", "Fentanyl", "Hallucinogens", "MOUD",
-    "MuscleRelaxers", "Naloxone", "NarcoticAnalgesics", "NPSOpioids", OTHER,
-}
+# Category vocabularies are shared with build_validate; see src/vocab.py.
+# TEMPLATE_ADDITIONS_REQUESTED holds the categories emitted by decision that the
+# template has yet to list -- reported, not raised. Anything in neither set is a
+# genuine violation and stops the run.
 
 # DECIDED (Aug 2026): where the mapping and the template spell a category
 # differently, the mapping wins and the template gains the mapping's spelling.
@@ -133,28 +142,12 @@ TEMPLATE_GROUPS = {
 # So this stays empty; populate it only to make the data conform instead.
 CATEGORY_RENAMES: dict[str, str] = {}
 
-# Categories emitted that the validation template does not yet list. These are
-# not errors -- they are the pending template edits implied by the decision
-# above, and are reported as such so the request does not get forgotten. Any
-# category outside both TEMPLATE_GROUPS and this set is a genuine violation.
-TEMPLATE_ADDITIONS_REQUESTED = {
-    "CNSStimulants",   # template currently spells this 'CSNSStimulants'
-    # Decided Aug 2026: adopt the three classes the study team proposed and add
-    # them to the template. Adopting them also meant backfilling the drugs of
-    # those classes already in the vocabulary -- see
-    # extend_analyte_mapping.CATEGORY_BACKFILL -- so the counts describe the
-    # whole class rather than only the newest additions.
-    "Anticonvulsants",
-    "Antihistamines",
-    "Anesthetics",
-}
-
 # Sample matrix is unrecorded for most screens. The study team confirmed
 # (Aug 2026) that no plasma was collected during the earlier part of the study,
 # so an unrecorded matrix means urine. Filling it is what lets wslh_matrix
 # satisfy the template, which allows only Plasma | Urine and has no blank.
 #
-# This is an IMPUTATION, not a measurement: it turns 249 of 373 patients into
+# This is an IMPUTATION, not a measurement: it turns 248 of 373 patients into
 # "urine" by inference. See versioned/README.md -- a urine-vs-plasma comparison
 # is mostly assumption on the urine side. Set to None to leave blanks blank.
 MATRIX_BLANK_FILL = "urine"
@@ -182,7 +175,6 @@ class Index:
         self.ambiguous_variants: dict[str, list[str]] = {}
         self.traits: dict[str, tuple[tuple[str, str, str], bool]] = {}
         self.flag_conflicts: dict[str, list[str]] = {}
-        self.category_conflicts: dict[str, list[tuple[str, ...]]] = {}
 
         variants: defaultdict[str, set[str]] = defaultdict(set)
         seen: defaultdict[str, set[tuple[str, ...]]] = defaultdict(set)
@@ -224,7 +216,6 @@ class Index:
         """Collapse a canonical's rows into one (categories, is_metabolite)."""
         categories = {r[:3] for r in rows}
         if len(categories) > 1:
-            self.category_conflicts[canonical] = sorted(categories)
             raise SystemExit(
                 f"{canonical!r} has rows with different categories, so there is "
                 f"no basis for choosing: {sorted(categories)}"
@@ -266,16 +257,18 @@ class Index:
             )
 
     def resolve(self, token: str) -> tuple[str | None, str | None]:
-        """Return (canonical, rung) or (None, None) if nothing matches."""
-        if token in self.exact:
-            return self.exact[token], "exact key"
+        """Return (canonical, rung) or (None, None) if nothing matches.
+
+        The first rung matches the token verbatim; the rest match its normalized
+        form. Rung order and labels come from RUNGS, so the report cannot fall
+        out of step with what actually fired.
+        """
         key = normalize(token)
-        if key in self.casefold:
-            return self.casefold[key], "casefold key"
-        if key in self.canonical:
-            return self.canonical[key], "canonical self-key"
-        if key in self.variant:
-            return self.variant[key], "known variant"
+        for label, attr in RUNGS:
+            index = getattr(self, attr)
+            hit = index.get(token if attr == "exact" else key)
+            if hit is not None:
+                return hit, label
         return None, None
 
     def groups(self, canonical: str) -> list[str]:
@@ -288,12 +281,6 @@ class Index:
 
     def is_metabolite(self, canonical: str) -> bool:
         return self.traits[canonical][1]
-
-
-def read_rows(source: Path) -> tuple[list[str], list[dict[str, str]]]:
-    with source.open(newline="", encoding="utf-8") as fh:
-        reader = csv.DictReader(fh)
-        return list(reader.fieldnames or []), list(reader)
 
 
 def _merge_carried(
@@ -350,7 +337,7 @@ def transform(source: Path, mapping_path: Path, dest: Path) -> None:
     flag_applied: Counter[str] = Counter()
     sentinels = 0
     collapsed = 0
-    merged_records: dict[str, int] = {}
+    merged_records: list[str] = []
     matrix_conflicts: dict[str, list[str]] = {}
     empty_records: list[str] = []
     out_rows: list[dict[str, str]] = []
@@ -363,7 +350,7 @@ def transform(source: Path, mapping_path: Path, dest: Path) -> None:
 
     for record_id, record_screens in grouped.items():
         if len(record_screens) > 1:
-            merged_records[record_id] = len(record_screens)
+            merged_records.append(record_id)
 
         resolved: set[str] = set()
         unresolved: set[str] = set()
@@ -441,7 +428,7 @@ def report(
     collapsed: int,
     empty_records: list[str],
     flag_applied: Counter[str],
-    merged_records: dict[str, int],
+    merged_records: list[str],
     matrix_conflicts: dict[str, list[str]],
 ) -> None:
     print(f"read  {len(screens)} screens over {len(grouped)} record(s)")
@@ -457,10 +444,10 @@ def report(
         for record_id, values in matrix_conflicts.items():
             print(f"    Record {record_id}: {values}")
     if MATRIX_BLANK_FILL:
-        filled = sum(1 for r in out_rows if not any(
-            s2["Sample matrix"] for s2 in grouped[r[KEY_COL]]))
-        pats = len({r[KEY_COL] for r in out_rows if not any(
-            s2["Sample matrix"] for s2 in grouped[r[KEY_COL]])})
+        imputed = {rid for rid, screens in grouped.items()
+                   if not any(s["Sample matrix"] for s in screens)}
+        filled = sum(1 for r in out_rows if r[KEY_COL] in imputed)
+        pats = len(imputed)
         counts = Counter(r["Sample matrix"] for r in out_rows)
         print(f"\nSample matrix: unrecorded -> {MATRIX_BLANK_FILL!r} on {filled} row(s) "
               f"/ {pats} patient(s) — an IMPUTATION, not a measurement")
@@ -478,9 +465,9 @@ def report(
     print(f"\n'{SENTINEL}' sentinel stripped: {sentinels}")
     print(f"analyte tokens: {total}")
     running = 0
-    for rung in RUNGS:
-        running += rung_hits[rung]
-        print(f"  {rung:20s} {rung_hits[rung]:5d}   cumulative {running:5d}"
+    for label, _ in RUNGS:
+        running += rung_hits[label]
+        print(f"  {label:20s} {rung_hits[label]:5d}   cumulative {running:5d}"
               f"  {running / total:7.2%}")
     print(f"  {'UNMATCHED':20s} {sum(unmatched.values()):5d}"
           f"   {len(unmatched)} distinct token(s)")

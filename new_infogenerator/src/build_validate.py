@@ -40,6 +40,17 @@ import csv
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from vocab import (
+    ANALYTE_LESS_RECORDS,
+    GROUP_VALUES,
+    MATRIX_TITLES,
+    SPECIMEN_ALLOWED,
+    TEMPLATE_ADDITIONS_REQUESTED,
+    TRUE_NEGATIVE_RECORDS,
+    UNRECORDED_SCREEN_RECORDS,
+    read_rows,
+)
+
 SPECIMEN_KEY = "record_id"
 QTOF_KEY = "Record ID"
 
@@ -77,37 +88,16 @@ FROM_QTOF = [
 
 MATRIX_SRC = "Sample matrix"
 MATRIX_DEST = "wslh_matrix"
-# qtof_v3 carries the lab's lowercase values; the template is Title Case.
-MATRIX_VALUES = {"urine": "Urine", "plasma": "Plasma"}
 
 # Working columns that exist to make the pipeline auditable, not to be published.
 DROPPED = ["sc_specimen_number", "Specimen number", "unmatched_analytes"]
 
-# --- template vocabularies, transcribed from the "details" sheet -------------
-GROUP_VALUES = {
-    "Amphetamines", "Antidepressants", "Antipsychotics", "Barbiturates",
-    "Benzodiazepines", "Cannabinoids", "Cathinones", "CSNSStimulants", "Cocaine",
-    "DissociativeAnesthetics", "Fentanyl", "Hallucinogens", "MOUD",
-    "MuscleRelaxers", "Naloxone", "NarcoticAnalgesics", "NPSOpioids", "Other",
-}
-ALLOWED = {
-    "wslh_matrix": {"Plasma", "Urine"},
-    "location": {
-        "Bellin Health - Green Bay",
-        "UW-Health - Madison",
-        "Medical College of Wisconsin - Milwaukee (Froedtert)",
-    },
-    "sex": {"M", "F"},
-    "race": {
-        "American Indian or Alaskan Native", "Asian", "Black or African American",
-        "Native Hawaiian or Pacific Islander", "White", "Two or more races",
-        "Unknown",
-    },
-    "ethnicity": {"Hispanic", "Not Hispanic", "Unknown"},
-    "od_manner": {"Intentional", "Unintentional", "Assault", "Unknown"},
-    "discharge_status": {
-        "Discharged", "Admitted", "Transferred", "Other", "Unknown",
-    },
+# --- template vocabularies ---------------------------------------------------
+# Shared with clean_specimen_v3 and clean_qtof_v3 so the three cannot drift; see
+# src/vocab.py. The analyte_group_* columns share one vocabulary.
+ALLOWED: dict[str, set[str]] = {
+    **SPECIMEN_ALLOWED,
+    "wslh_matrix": set(MATRIX_TITLES.values()),
     "analyte_group_1": GROUP_VALUES,
     "analyte_group_2": GROUP_VALUES,
     "analyte_group_3": GROUP_VALUES,
@@ -123,38 +113,15 @@ NULLABLE = {
 }
 ANALYTE_FIELDS = ["analyte_name", "analyte_group_1", "metabolite_flag"]
 
-# Categories emitted by decision (Aug 2026) that the template has yet to list:
-# where the mapping and the template disagreed, the mapping won and the template
-# gains its spelling. Reported, not raised. Mirrors
-# clean_qtof_v3.TEMPLATE_ADDITIONS_REQUESTED.
-TEMPLATE_ADDITIONS_REQUESTED = {
-    "CNSStimulants",    # template currently spells this 'CSNSStimulants'
-    "Anticonvulsants",
-    "Antihistamines",
-    "Anesthetics",
-}
-
-# Records whose QToF screen produced no analyte. NOT interchangeable:
-#   190 -- a genuine negative; qtof_v1 recorded "None" in both ion modes.
-#   the rest -- completely empty ion-mode cells in the raw export, so the screen
-#   result was never entered. Their screen is *missing*, not negative, and
-#   counting them as negatives would dilute any "% with X detected" figure with
-#   unscreened patients.
-TRUE_NEGATIVE_RECORDS = {"190"}
-UNRECORDED_SCREEN_RECORDS = {"142", "143", "365", "433", "447"}
-ANALYTE_LESS_RECORDS = TRUE_NEGATIVE_RECORDS | UNRECORDED_SCREEN_RECORDS
+# The analyte-less records, and the ruling on what each one means, live in
+# src/vocab.py -- onepager_stats needs the same distinction, and it was
+# previously stated here only.
 
 # Keep the analyte-less rows so those patients stay in the demographic
 # denominators. Their analyte fields are blank, which the template has no value
 # for, so a strict validator will flag them -- that is the honest trade. Set
 # False to drop them instead, losing 6 patients from every denominator.
 KEEP_ANALYTE_LESS_ROWS = True
-
-
-def read_rows(path: Path) -> tuple[list[str], list[dict[str, str]]]:
-    with path.open(newline="", encoding="utf-8") as fh:
-        reader = csv.DictReader(fh)
-        return list(reader.fieldnames or []), list(reader)
 
 
 def build(specimen_path: Path, qtof_path: Path, dest: Path) -> None:
@@ -207,12 +174,12 @@ def build(specimen_path: Path, qtof_path: Path, dest: Path) -> None:
         out = {"record_id": record_id}
 
         matrix = row[MATRIX_SRC].strip()
-        if matrix and matrix not in MATRIX_VALUES:
+        if matrix and matrix not in MATRIX_TITLES:
             raise SystemExit(
                 f"Record {record_id}: unexpected {MATRIX_SRC} {matrix!r}; "
-                f"expected one of {sorted(MATRIX_VALUES)}"
+                f"expected one of {sorted(MATRIX_TITLES)}"
             )
-        out[MATRIX_DEST] = MATRIX_VALUES.get(matrix, "")
+        out[MATRIX_DEST] = MATRIX_TITLES.get(matrix, "")
 
         for column in FROM_SPECIMEN:
             out[column] = specimen[column]

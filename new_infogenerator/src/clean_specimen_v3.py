@@ -49,6 +49,8 @@ import re
 from collections import Counter
 from pathlib import Path
 
+from vocab import SPECIMEN_ALLOWED, read_rows
+
 KEY_COL = "Record ID"
 
 # --- source column names, exactly as they appear in v2 ----------------------
@@ -83,34 +85,8 @@ SIDECAR_COLS = ["sc_specimen_number"]
 OUT_COLS = TEMPLATE_COLS + SIDECAR_COLS
 
 # --- template vocabularies --------------------------------------------------
-# Copied from the "details" sheet of data/validation_set.xlsx. Output is checked
-# against these, so a source value we have not seen before fails the run.
-ALLOWED = {
-    "location": {
-        "Bellin Health - Green Bay",
-        "UW-Health - Madison",
-        "Medical College of Wisconsin - Milwaukee (Froedtert)",
-    },
-    "sex": {"M", "F"},
-    "race": {
-        "American Indian or Alaskan Native",
-        "Asian",
-        "Black or African American",
-        "Native Hawaiian or Pacific Islander",
-        "White",
-        "Two or more races",
-        "Unknown",
-    },
-    "ethnicity": {"Hispanic", "Not Hispanic", "Unknown"},
-    "od_manner": {"Intentional", "Unintentional", "Assault", "Unknown"},
-    "discharge_status": {
-        "Discharged",
-        "Admitted",
-        "Transferred",
-        "Other",
-        "Unknown",
-    },
-}
+# Shared with build_validate so the two cannot drift; see src/vocab.py.
+ALLOWED = dict(SPECIMEN_ALLOWED)
 
 MAX_AGE = 199  # template cap
 
@@ -301,12 +277,6 @@ def build_stay(raw: str) -> int | None:
 
 
 # --- driver -----------------------------------------------------------------
-
-
-def read_rows(source: Path) -> tuple[list[str], list[dict[str, str]]]:
-    with source.open(newline="", encoding="utf-8") as fh:
-        reader = csv.DictReader(fh)
-        return list(reader.fieldnames or []), list(reader)
 
 
 def transform(source: Path, dest: Path) -> None:

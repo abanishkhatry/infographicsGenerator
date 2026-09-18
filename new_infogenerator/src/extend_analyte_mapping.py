@@ -44,7 +44,7 @@ import csv
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from clean_analyte_mapping import write_workbook
+from clean_analyte_mapping import CATEGORY_COLS, write_workbook
 
 FIELDS = [
     "Analyte",
@@ -55,8 +55,6 @@ FIELDS = [
     "Drug_Category_3",
     "Flag",
 ]
-CATEGORY_COLS = ("Drug_Category_1", "Drug_Category_2", "Drug_Category_3")
-
 # Shortest believable abbreviation in Known_Variants. Guards against a variant
 # that contains the comma delimiter splitting into junk tokens.
 MIN_VARIANT_LEN = 3
@@ -141,7 +139,7 @@ TIER_C = [
     ("rosuvastatin", "rosuvastatin", ""),
 ]
 
-# --- Category backfill: canonical -> (cat1, cat2) ---------------------------
+# --- Category backfill: canonical -> Drug_Category_1 -------------------------
 #
 # The study team proposed Anticonvulsants (eslicarbazepine, valproic acid),
 # Antihistamines (chlorcyclizine) and Anesthetics (propofol). Decided Aug 2026:
@@ -164,42 +162,42 @@ TIER_C = [
 #     ingested.
 #   * promethazine is an antihistamine, an antiemetic and a phenothiazine.
 #   * Metabolites inherit their parent's class.
-CATEGORY_BACKFILL = {
+CATEGORY_BACKFILL: dict[str, str] = {
     # --- Anticonvulsants -----------------------------------------------------
-    "carbamazepine": ("Anticonvulsants", ""),
-    "oxycarbazepine": ("Anticonvulsants", ""),
-    "lamotrigine": ("Anticonvulsants", ""),
-    "levetiracetam": ("Anticonvulsants", ""),
-    "topiramate": ("Anticonvulsants", ""),
-    "phenytoin": ("Anticonvulsants", ""),
-    "zonisamide": ("Anticonvulsants", ""),
-    "lacosamide": ("Anticonvulsants", ""),
-    "gabapentin": ("Anticonvulsants", ""),
-    "pregabalin": ("Anticonvulsants", ""),
-    "valproic acid": ("Anticonvulsants", ""),      # study team
-    "eslicarbazepine": ("Anticonvulsants", ""),    # study team
+    "carbamazepine": "Anticonvulsants",
+    "oxycarbazepine": "Anticonvulsants",
+    "lamotrigine": "Anticonvulsants",
+    "levetiracetam": "Anticonvulsants",
+    "topiramate": "Anticonvulsants",
+    "phenytoin": "Anticonvulsants",
+    "zonisamide": "Anticonvulsants",
+    "lacosamide": "Anticonvulsants",
+    "gabapentin": "Anticonvulsants",
+    "pregabalin": "Anticonvulsants",
+    "valproic acid": "Anticonvulsants",      # study team
+    "eslicarbazepine": "Anticonvulsants",    # study team
     # --- Antihistamines ------------------------------------------------------
-    "diphenhydramine": ("Antihistamines", ""),
-    "hydroxyzine": ("Antihistamines", ""),
-    "cetirizine": ("Antihistamines", ""),
-    "cetirizine-metabolite": ("Antihistamines", ""),
-    "cetirizine-n-desalkyl": ("Antihistamines", ""),
-    "doxylamine": ("Antihistamines", ""),
-    "chlorpheniramine": ("Antihistamines", ""),
-    "chlorpheniramine-desmethyl": ("Antihistamines", ""),
-    "chlorpheniramine-n-oxide": ("Antihistamines", ""),
-    "promethazine": ("Antihistamines", ""),
-    "promethazine-sulphoxide": ("Antihistamines", ""),
-    "chlorcyclizine": ("Antihistamines", ""),      # study team
+    "diphenhydramine": "Antihistamines",
+    "hydroxyzine": "Antihistamines",
+    "cetirizine": "Antihistamines",
+    "cetirizine-metabolite": "Antihistamines",
+    "cetirizine-n-desalkyl": "Antihistamines",
+    "doxylamine": "Antihistamines",
+    "chlorpheniramine": "Antihistamines",
+    "chlorpheniramine-desmethyl": "Antihistamines",
+    "chlorpheniramine-n-oxide": "Antihistamines",
+    "promethazine": "Antihistamines",
+    "promethazine-sulphoxide": "Antihistamines",
+    "chlorcyclizine": "Antihistamines",      # study team
     # --- Anesthetics ---------------------------------------------------------
-    "propofol": ("Anesthetics", ""),               # study team
-    "etomidate": ("Anesthetics", ""),
-    "lidocaine": ("Anesthetics", ""),
-    "lidocaine-n-deethylated": ("Anesthetics", ""),
-    "Glycinexylidide": ("Anesthetics", ""),        # a lidocaine metabolite
-    "bupivacaine/levobupivacaine": ("Anesthetics", ""),
+    "propofol": "Anesthetics",               # study team
+    "etomidate": "Anesthetics",
+    "lidocaine": "Anesthetics",
+    "lidocaine-n-deethylated": "Anesthetics",
+    "Glycinexylidide": "Anesthetics",        # a lidocaine metabolite
+    "bupivacaine/levobupivacaine": "Anesthetics",
     # --- already-allowed category the study team supplied --------------------
-    "paroxetine": ("Antidepressants", ""),
+    "paroxetine": "Antidepressants",
 }
 
 
@@ -249,9 +247,7 @@ def build_tier_a(rows: list[dict[str, str]]) -> tuple[list[dict[str, str]], list
                 f"categories/Flag, so there is nothing to inherit: {sorted(traits)}"
             )
         cats = next(iter(traits))
-        row = make_row(analyte, canonical, flag=cats[3])
-        for col, value in zip(CATEGORY_COLS, cats):
-            row[col] = value
+        row = make_row(analyte, canonical, "", *cats)
         new.append(row)
         inherited = [v for v in cats[:3] if v] or ["(no category)"]
         report.append(
@@ -304,10 +300,10 @@ def extend(source: Path, stem: Path) -> None:
             f"{missing_targets}"
         )
     for row in out:
-        assignment = CATEGORY_BACKFILL.get(row["Canonical_Analyte"])
-        if assignment and not any(row[c] for c in CATEGORY_COLS):
-            row["Drug_Category_1"], row["Drug_Category_2"] = assignment
-            backfilled[assignment[0]] += 1
+        category = CATEGORY_BACKFILL.get(row["Canonical_Analyte"])
+        if category and not any(row[c] for c in CATEGORY_COLS):
+            row["Drug_Category_1"] = category
+            backfilled[category] += 1
 
     # Known_Variants is comma-delimited, so a variant containing a comma splits
     # into junk. '3,4-methylenedioxyamphetamine' would yield a one-character
@@ -375,15 +371,14 @@ def report(
     print(f"\nTIER C -- {len(TIER_C)} substance(s) absent from the vocabulary")
     for analyte, canonical, variants in TIER_C:
         extra = f"  variants={variants!r}" if variants else ""
-        assignment = CATEGORY_BACKFILL.get(canonical)
-        cat = f"  [{assignment[0]}]" if assignment else "  [Other]"
+        cat = f"  [{CATEGORY_BACKFILL.get(canonical, 'Other')}]"
         print(f"  {analyte!r} -> {canonical!r}{cat}{extra}")
 
     print(f"\nCATEGORY BACKFILL -- {sum(backfilled.values())} row(s) given a class "
           f"that had none")
     by_category: dict[str, list[str]] = {}
-    for canonical, (cat1, _) in CATEGORY_BACKFILL.items():
-        by_category.setdefault(cat1, []).append(canonical)
+    for canonical, category in CATEGORY_BACKFILL.items():
+        by_category.setdefault(category, []).append(canonical)
     for category, count in backfilled.most_common():
         drugs = sorted(by_category.get(category, []))
         print(f"  {category:18s} {count:3d} row(s), {len(drugs)} substance(s): {drugs}")
