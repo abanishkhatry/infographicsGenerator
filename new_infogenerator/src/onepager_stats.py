@@ -29,10 +29,53 @@ import statistics
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from vocab import (
+    EMITTABLE_GROUPS,
+    SPECIMEN_ALLOWED,
+    SUPPRESS_BELOW,
+    TRUE_NEGATIVE_RECORDS,
+    UNRECORDED_SCREEN_RECORDS,
+    read_rows,
+)
+
 KEY = "record_id"
 
 AGE_BANDS = [(0, 17, "0-17"), (18, 24, "18-24"), (25, 34, "25-34"),
              (35, 44, "35-44"), (45, 54, "45-54"), (55, 200, "55+")]
+
+# Wider bands for the age-by-intent chart. The six-band split puts intentional
+# overdoses at 45-54 below the reporting threshold, and a suppressed segment in
+# a stacked bar is worse than a coarser bar: the reader can subtract it from the
+# band total. Four bands keep every cell reportable.
+INTENT_BANDS = [(0, 17, "0-17"), (18, 34, "18-34"),
+                (35, 54, "35-54"), (55, 200, "55+")]
+INTENT_ORDER = ["Unintentional", "Intentional", "Unknown"]
+
+# Short labels for the class chart and the co-occurrence grid. The vocabulary
+# names are accurate but too long to head a matrix column.
+CLASS_LABELS = {
+    "NarcoticAnalgesics": "Opioids",
+    "CNSStimulants": "Stimulants",
+    "DissociativeAnesthetics": "Dissociatives",
+    "Cannabinoids": "Cannabis",
+    "Antidepressants": "Antidepressants",
+    "Antihistamines": "Antihistamines",
+    "Anticonvulsants": "Anticonvulsants",
+    "Benzodiazepines": "Benzodiazepines",
+    "Antipsychotics": "Antipsychotics",
+    "MuscleRelaxers": "Muscle relaxers",
+    "Other": "No class assigned",
+}
+
+# Kept out of the co-occurrence grid. 'Other' is the template's fill for a
+# substance carrying no category, so it co-occurs with everything by being 74%
+# of the cohort and tells you nothing. Naloxone is administered in the ED, so
+# pairing it with a drug class measures treatment, not co-use.
+NOT_A_CLASS = {"Other", "Naloxone"}
+
+# Eight rows keeps every cell in the grid above the reporting floor. The ninth
+# class introduces one suppressed pair and the tenth introduces six.
+MATRIX_SIZE = 8
 
 # Drug classes the one-pager gives a panel to, with the subtypes shown beneath
 # the headline figure. analyte_group_2 is a *subtype* of group_1, not a peer, so
@@ -79,8 +122,25 @@ SITE_LABELS = {
 # "substances detected" figures and reported separately.
 TREATMENT_DRUGS = {"naloxone"}
 
-# Cells this small are a re-identification risk once crossed with anything else.
-SUPPRESS_BELOW = 11
+_unknown_sites = set(SITE_LABELS) - SPECIMEN_ALLOWED["location"]
+if _unknown_sites:
+    raise SystemExit(
+        f"SITE_LABELS names facilit(ies) the template does not allow: "
+        f"{sorted(_unknown_sites)}. A stale key falls back to the full name in "
+        f"the chart legend rather than failing, so it is checked at import."
+    )
+
+_unknown_groups = {
+    p["group"] for p in PANELS if p["group"] not in EMITTABLE_GROUPS
+} | {
+    s for p in PANELS for s in p["subtypes"] if s not in EMITTABLE_GROUPS
+}
+if _unknown_groups:
+    raise SystemExit(
+        f"PANELS names categor(ies) the pipeline cannot emit: "
+        f"{sorted(_unknown_groups)}. A panel whose group never matches renders "
+        f"0% with no error, so this is checked at import."
+    )
 
 
 def band(age: str) -> str:
@@ -132,11 +192,17 @@ class Cohort:
         counts = Counter(self.patients[i]["sex"] for i in ids)
         return {"M": counts.get("M", 0), "F": counts.get("F", 0)}
 
+    def at(self, location: str) -> set[str]:
+        """Record ids seen at one facility."""
+        return {i for i, p in self.patients.items() if p["location"] == location}
+
     def substances(self, predicate, limit: int = 8) -> list[dict]:
         """Substances ranked by patients, carrying the metabolite flag.
 
         Ranked by patients rather than rows so a substance detected in both ion
-        modes does not outrank one detected once.
+        modes does not outrank one detected once, and filtered to the reporting
+        threshold here rather than at each call site -- the class panels were
+        publishing counts of 10 and 6 while the facility panels suppressed them.
         """
         by_name: defaultdict[str, set[str]] = defaultdict(set)
         flags: dict[str, bool] = {}
@@ -149,8 +215,9 @@ class Cohort:
         ranked = sorted(by_name.items(), key=lambda kv: (-len(kv[1]), kv[0]))
         return [
             {"name": name, "patients": len(ids), "metabolite": flags[name]}
-            for name, ids in ranked[:limit]
-        ]
+            for name, ids in ranked
+            if len(ids) >= SUPPRESS_BELOW
+        ][:limit]
 
 
 def compute_stats(rows: list[dict[str, str]]) -> dict:
@@ -175,6 +242,7 @@ def compute_stats(rows: list[dict[str, str]]) -> dict:
 
     # --- drug-class panels ---------------------------------------------------
     stats["panels"] = []
+    panel_ids: dict[str, set[str]] = {}
     for panel in PANELS:
         ids = c.having(lambda r, g=panel["group"]: r["analyte_group_1"] == g)
         entry = {
@@ -190,6 +258,7 @@ def compute_stats(rows: list[dict[str, str]]) -> dict:
             ),
             "subtypes": [],
         }
+        panel_ids[panel["key"]] = ids
         for subtype in panel["subtypes"]:
             sub = c.having(lambda r, s=subtype: r["analyte_group_2"] == s)
             sex = c.sex_split(sub)
@@ -237,8 +306,10 @@ def compute_stats(rows: list[dict[str, str]]) -> dict:
 
     # --- outcome -------------------------------------------------------------
     discharge, discharge_n = c.demographic("discharge_status")
-    opioid = c.having(lambda r: r["analyte_group_1"] == "NarcoticAnalgesics")
-    stimulant = c.having(lambda r: r["analyte_group_1"] == "CNSStimulants")
+    # Reuse the sets the panel loop already built: deriving them again from
+    # literal group names would let PANELS and this figure drift apart.
+    opioid = panel_ids["opioids"]
+    stimulant = panel_ids["stimulants"]
     stats["outcome"] = {
         "discharge": {"counts": dict(discharge), "n": discharge_n},
         "stay": c.numeric("hospital_stay_length"),
@@ -271,15 +342,269 @@ def compute_stats(rows: list[dict[str, str]]) -> dict:
         "metabolite_rows": sum(
             1 for r in c.analyte_rows if r["metabolite_flag"] == "True"
         ),
-        # Kept for the footnote: these patients have no QToF result on file, so
-        # they must not be counted as "no drugs detected".
-        "no_analyte_patients": sorted(
-            (set(c.patients) - {r[KEY] for r in c.analyte_rows}), key=int
-        ),
+        # The six analyte-less patients are NOT interchangeable. Only one is a
+        # true negative; the rest have no screen result on file and must not be
+        # counted as "no drugs detected" -- doing so dilutes any detection rate
+        # with unscreened patients. Reported separately for exactly that reason.
+        "analyte_less": analyte_less_split(c),
     }
 
+    stats["age_intent"] = age_by_intent(c)
+    stats["classes"] = class_ranking(c)
+    stats["unclassified"] = unclassified_summary(c)
+    stats["matrix"] = cooccurrence(c)
+    stats["facilities"] = facility_panels(c)
     stats["suppressed"] = find_small_cells(stats)
+    # Adjudicate every publishable count once, here, so the renderer never
+    # compares a count to SUPPRESS_BELOW itself. Previously it re-applied the
+    # rule for od_manner and skipped it entirely for discharge_status, which put
+    # a flagged cell on the page.
+    stats["withheld"] = {
+        "od_manner": {k for k, v in stats["who"]["od_manner"]["counts"].items()
+                      if v < SUPPRESS_BELOW},
+        "discharge_status": {k for k, v in stats["outcome"]["discharge"]["counts"].items()
+                             if v < SUPPRESS_BELOW},
+    }
     return stats
+
+
+def class_ranking(c: Cohort) -> list[dict]:
+    """Every drug class, ranked by how many patients it was found in.
+
+    Not a breakdown: a patient appears in every class they tested positive for,
+    so the shares sum to far more than 100%. ``kind`` separates the two entries
+    that are not drug classes, so the renderer can set them apart rather than
+    letting 'no class assigned' head the chart as though it were a finding.
+    """
+    groups: defaultdict[str, set[str]] = defaultdict(set)
+    for row in c.analyte_rows:
+        groups[row["analyte_group_1"]].add(row[KEY])
+    ranked = []
+    for name, ids in sorted(groups.items(), key=lambda kv: -len(kv[1])):
+        ranked.append({
+            "name": CLASS_LABELS.get(name, name),
+            "raw": name,
+            "patients": len(ids),
+            "share": len(ids) / c.n,
+            "show": len(ids) >= SUPPRESS_BELOW,
+            "kind": "aside" if name in NOT_A_CLASS else "class",
+        })
+    return ranked
+
+
+#: Pharmacological families for the substances the mapping leaves unclassified.
+#: This grouping is clinical knowledge, not something the data carries -- the
+#: whole point is that these have no category -- so it is stated here and the
+#: counts are computed from the file. Anything unlisted falls to "other".
+UNCLASSIFIED_FAMILIES = [
+    ("analgesics", ["acetaminophen", "naproxen", "ibuprofen", "meloxicam",
+                    "ketorolac", "celecoxib", "aspirin", "aspirin-salicylic acid",
+                    "aspirin-gentisic acid"]),
+    ("antiemetics", ["ondansetron", "ondansetron-7-hydroxy",
+                     "ondansetron-8-hydroxy", "metoclopramide",
+                     "prochlorperazine"]),
+    ("caffeine and other xanthines", ["caffeine", "theophylline", "theobromine",
+                                      "nicotine", "cotinine", "pseudoephedrine"]),
+    ("beta blockers", ["metoprolol", "metoprolol-hydroxy", "Propranolol",
+                       "atenolol", "carvedilol", "labetalol", "etilefrine"]),
+    # Called out separately because these are markers of the illicit supply
+    # rather than incidental medication, and they are the strongest argument
+    # for the vocabulary gaining a class.
+    ("drug-supply adulterants", ["quinine", "xylazine", "levamisole/tetramisole"]),
+]
+
+
+def unclassified_summary(c: Cohort) -> dict:
+    """What sits behind the substances the mapping gives no drug class.
+
+    A third of all detections carry no category, so the sheet has to say what
+    they are. Most have an obvious class the vocabulary simply does not include.
+    """
+    by_name: defaultdict[str, set[str]] = defaultdict(set)
+    for row in c.analyte_rows:
+        if row["analyte_group_1"] == "Other":
+            by_name[row["analyte_name"]].add(row[KEY])
+    patients = {i for ids in by_name.values() for i in ids}
+
+    families, claimed = [], set()
+    for label, members in UNCLASSIFIED_FAMILIES:
+        found = [(n, len(by_name[n])) for n in members if n in by_name]
+        if not found:
+            continue
+        claimed.update(n for n, _ in found)
+        found.sort(key=lambda kv: -kv[1])
+        families.append({
+            "label": label,
+            "detections": sum(n for _, n in found),
+            "top": [(n, k) for n, k in found if k >= SUPPRESS_BELOW][:3],
+        })
+    families.sort(key=lambda f: -f["detections"])
+    return {
+        "patients": len(patients),
+        "substances": len(by_name),
+        "families": families,
+        "unfamilied": len(set(by_name) - claimed),
+    }
+
+
+def cooccurrence(c: Cohort) -> dict:
+    """How often each pair of drug classes turns up in the same patient.
+
+    Cells are read along the row: of the patients with the row's class, what
+    share also had the column's. Asymmetric on purpose -- half of the 133 opioid
+    patients also had a stimulant, but a third of the far larger cannabis group
+    did, and one number would hide that.
+
+    Rates rather than counts, because counts here mostly measure class size:
+    the two biggest classes co-occur most simply by being biggest.
+    """
+    groups: defaultdict[str, set[str]] = defaultdict(set)
+    for row in c.analyte_rows:
+        groups[row["analyte_group_1"]].add(row[KEY])
+    names = [n for n, _ in sorted(groups.items(), key=lambda kv: -len(kv[1]))
+             if n not in NOT_A_CLASS][:MATRIX_SIZE]
+    rows = []
+    for a in names:
+        cells = []
+        for b in names:
+            if a == b:
+                cells.append({"self": True, "patients": len(groups[a])})
+                continue
+            both = len(groups[a] & groups[b])
+            cells.append({
+                "self": False,
+                "patients": both,
+                "share": both / len(groups[a]),
+                "show": both >= SUPPRESS_BELOW,
+            })
+        rows.append({"name": CLASS_LABELS.get(a, a), "patients": len(groups[a]),
+                     "cells": cells})
+    return {"labels": [CLASS_LABELS.get(n, n) for n in names], "rows": rows}
+
+
+def age_by_intent(c: Cohort) -> list[dict]:
+    """How the manner of overdose changes with age.
+
+    The most striking pattern in the cohort and previously only a caption: no
+    intentional overdose under 10, a majority intentional through adolescence,
+    and unintentional again in later life. Raises rather than publishing if a
+    band ever falls below the threshold, since a stacked bar makes a suppressed
+    segment recoverable by subtraction.
+    """
+    bands = []
+    for low, high, label in INTENT_BANDS:
+        ids = [i for i, p in c.patients.items() if low <= int(p["age"]) <= high]
+        counts = Counter(c.patients[i]["od_manner"] for i in ids)
+        small = [k for k in INTENT_ORDER if 0 < counts[k] < SUPPRESS_BELOW]
+        if small:
+            raise SystemExit(
+                f"age band {label} has {small} below {SUPPRESS_BELOW}; widen "
+                f"INTENT_BANDS rather than publishing a stacked bar whose "
+                f"hidden segment can be subtracted out."
+            )
+        bands.append({
+            "label": label,
+            "patients": len(ids),
+            "segments": [(k, counts[k], counts[k] / len(ids) if ids else 0)
+                         for k in INTENT_ORDER],
+        })
+    return bands
+
+
+def _days(value: float) -> str:
+    n = round(value)
+    return f"{n} day" if n == 1 else f"{n} days"
+
+
+def facility_panels(c: Cohort) -> list[dict]:
+    """The same two drug classes, one set per facility.
+
+    Everything here is a share of that facility's own patients, not of the
+    cohort -- the sites differ by a factor of seven in size, so counts alone
+    would say more about catchment than about drugs.
+
+    Suppression bites unevenly and is applied per figure rather than per site:
+    Amphetamines is reportable at two of the three sites, Cocaine at two, and
+    the number of substances clearing the floor ranges from two to five. Each
+    figure therefore carries its own flag instead of a site being judged
+    publishable or not as a whole.
+    """
+    panels = []
+    for name, count in c.demographic("location")[0].most_common():
+        short, city = SITE_LABELS.get(name, (name, ""))
+        ids = c.at(name)
+        classes = []
+        for panel in PANELS:
+            group = panel["group"]
+            in_class = ids & c.having(lambda r, g=group: r["analyte_group_1"] == g)
+            sex = c.sex_split(in_class)
+            subtypes = []
+            for subtype in panel["subtypes"]:
+                sub = ids & c.having(
+                    lambda r, s=subtype: r["analyte_group_2"] == s
+                )
+                subtypes.append({
+                    "name": SUBTYPE_LABELS.get(subtype, subtype),
+                    "patients": len(sub),
+                    "share": len(sub) / len(ids) if ids else 0.0,
+                    "show": len(sub) >= SUPPRESS_BELOW,
+                })
+            substances = c.substances(
+                lambda r, g=group, i=ids: (
+                    r["analyte_group_1"] == g and r[KEY] in i
+                ),
+                limit=4,
+            )
+            classes.append({
+                "key": panel["key"],
+                "title": panel["title"],
+                "patients": len(in_class),
+                "share": len(in_class) / len(ids) if ids else 0.0,
+                "male_share": sex["M"] / len(in_class) if in_class else 0.0,
+                "show_sex": len(in_class) >= SUPPRESS_BELOW,
+                "subtypes": subtypes,
+                "substances": substances,
+            })
+        # A short profile of the site's patients, to sit beside its drug
+        # columns. Only figures that clear the floor at *every* site are here:
+        # a row that reads "withheld" for one site and not another invites the
+        # reader to work out the missing value from the total. Under-18,
+        # intentional, and BAC-positive all fail that test at Green Bay.
+        stays = [int(c.patients[i]["hospital_stay_length"]) for i in ids
+                 if c.patients[i]["hospital_stay_length"].strip()]
+        sex = c.sex_split(ids)
+        admitted = sum(1 for i in ids
+                       if c.patients[i]["discharge_status"] == "Admitted")
+        panels.append({
+            "name": name, "short": short, "city": city,
+            "patients": count, "share": count / c.n, "classes": classes,
+            "profile": [
+                ("Median age",
+                 f"{statistics.median([int(c.patients[i]['age']) for i in ids]):.0f}"),
+                ("Male", f"{sex['M'] / len(ids):.0%}"),
+                ("Admitted", f"{admitted / len(ids):.0%}"),
+                ("Median stay", _days(statistics.median(stays))
+                 if stays else "—"),
+            ],
+        })
+    return panels
+
+
+def analyte_less_split(c: Cohort) -> dict:
+    """Classify the patients with no analyte row. See vocab.py for the ruling."""
+    observed = set(c.patients) - {r[KEY] for r in c.analyte_rows}
+    unexpected = observed - TRUE_NEGATIVE_RECORDS - UNRECORDED_SCREEN_RECORDS
+    if unexpected:
+        raise SystemExit(
+            f"analyte-less record(s) with no ruling in vocab.py: "
+            f"{sorted(unexpected, key=int)}. Classify them before publishing — "
+            f"a true negative and a missing screen mean different things."
+        )
+    return {
+        "true_negative": sorted(observed & TRUE_NEGATIVE_RECORDS, key=int),
+        "unrecorded": sorted(observed & UNRECORDED_SCREEN_RECORDS, key=int),
+        "total": len(observed),
+    }
 
 
 def find_small_cells(stats: dict) -> list[str]:
@@ -355,14 +680,65 @@ def print_stats(stats: dict) -> None:
     print(f"\nNOTES")
     print(f"    bac: {n['bac']['positive']} positive of {n['bac']['tested']} "
           f"tested, median {n['bac']['median_positive']:.3f} g/dL")
+    cannabis_metabolite = 1 - n["cannabis"]["parent_only"] / n["cannabis"]["any"]
     print(f"    cannabis: {n['cannabis']['any']} patients, but only "
           f"{n['cannabis']['parent_only']} with a parent compound "
-          f"(98% is metabolite — excluding metabolites nearly erases it)")
+          f"({cannabis_metabolite:.0%} metabolite-only — excluding metabolites "
+          f"nearly erases it)")
     print(f"    treatment drugs excluded from charts: {n['treatment']}")
     print(f"    metabolite rows: {n['metabolite_rows']} of "
           f"{stats['analyte_rows']}")
-    print(f"    patients with no QToF result on file: "
-          f"{n['no_analyte_patients']} — MISSING, not negative")
+    al = n["analyte_less"]
+    print(f"    analyte-less patients: {al['total']} — "
+          f"{len(al['true_negative'])} true negative {al['true_negative']}, "
+          f"{len(al['unrecorded'])} with no screen on file {al['unrecorded']} "
+          f"(MISSING, not negative)")
+
+    print(f"\nDRUG CLASSES, ranked by patients")
+    for cl in stats["classes"]:
+        mark = "" if cl["kind"] == "class" else "   (not a drug class)"
+        val = f"{cl['patients']:4d} ({cl['share']:3.0%})" if cl["show"] else "withheld"
+        print(f"  {cl['name']:22s} {val}{mark}")
+
+    u = stats["unclassified"]
+    print(f"\nUNCLASSIFIED — {u['patients']} patients, {u['substances']} substances")
+    for fam in u["families"]:
+        top = ", ".join(f"{n} {k}" for n, k in fam["top"]) or "none above the floor"
+        print(f"  {fam['label']:28s} {fam['detections']:4d} detections   {top}")
+    print(f"  {'(no family assigned here)':28s} {u['unfamilied']:4d} substances")
+
+    print(f"\nCO-OCCURRENCE — of the row class, share who also had the column")
+    m = stats["matrix"]
+    print(f"  {'':17s}" + "".join(f"{l[:8]:>9s}" for l in m["labels"]))
+    for row in m["rows"]:
+        line = f"  {row['name'][:15]:17s}"
+        for cell in row["cells"]:
+            if cell["self"]:
+                line += f"{cell['patients']:>9d}"
+            else:
+                line += f"{cell['share']:8.0%} " if cell["show"] else f"{'·':>9s}"
+        print(line)
+
+    print(f"\nAGE BY INTENT")
+    for b in stats["age_intent"]:
+        print(f"  {b['label']:6s} n={b['patients']:3d}  " + "  ".join(
+            f"{k} {n} ({sh:.0%})" for k, n, sh in b["segments"]))
+
+    print(f"\nBY FACILITY")
+    for f in stats["facilities"]:
+        print(f"  {f['short']}, {f['city']} — {f['patients']} patients")
+        print(f"      profile: " + " · ".join(
+            f"{k} {v}" for k, v in f["profile"]))
+        for cl in f["classes"]:
+            subs = " · ".join(
+                f"{s['name']} {s['patients']}" if s["show"]
+                else f"{s['name']} withheld"
+                for s in cl["subtypes"]
+            )
+            print(f"      {cl['title']:11s} {cl['patients']:3d} "
+                  f"({cl['share']:3.0%})  {subs}")
+            print(f"                  substances shown: "
+                  f"{[x['name'] for x in cl['substances']]}")
 
     if stats["suppressed"]:
         print(f"\nSMALL CELLS (< {SUPPRESS_BELOW}) — suppress or collapse before "
@@ -372,8 +748,7 @@ def print_stats(stats: dict) -> None:
 
 
 def load(path: Path) -> list[dict[str, str]]:
-    with path.open(newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
+    return read_rows(path)[1]
 
 
 def main() -> None:
