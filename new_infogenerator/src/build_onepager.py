@@ -27,7 +27,8 @@ from onepager_stats import compute_stats, load
 from vocab import SUPPRESS_BELOW
 
 # House navy, from biosurveillance_dissemination/doc_styles.py, plus a maroon
-# for the stimulant panel matching the reference one-pager.
+# for the stimulant panel, following the Milwaukee Toxicology Project one-pager
+# (Dec 2022) that this sheet's layout is modelled on.
 THEME = {
     "opioids": {"bar": "#003D78", "dark": "#002B56", "soft": "#DCE6F0"},
     "stimulants": {"bar": "#7B1E3C", "dark": "#5C1229", "soft": "#F2DFE4"},

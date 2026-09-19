@@ -748,7 +748,12 @@ branches on the name except the per-body sizing constants below.
 the sex donut. No plotting library, no CDN, **no external references at all**, so
 the file opens offline and prints to PDF. Palette is the house navy from
 `biosurveillance_dissemination/doc_styles.py` (`#003D78`) plus a maroon for the
-stimulant panel, matching the reference one-pager in `sample_images/`.
+stimulant panel. Both follow the **Milwaukee Toxicology Project** one-pager
+(Dec 2022), which is where this sheet's whole shape comes from: paired
+OPIOIDS / STIMULANTS panels, a ranked substance bar chart, an age histogram and
+a sex donut per panel, and a novel-psychoactive-substance spotlight. That image
+used to sit in `sample_images/`; it was removed, so git history is the only copy
+in this repo.
 
 The one raster asset is `assets/wisconsin_facility_sites.png`, the state map on
 the facility sheet: a county outline with a ring on Madison, Milwaukee and Green
