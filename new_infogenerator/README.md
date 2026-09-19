@@ -1077,8 +1077,17 @@ still says "three Wisconsin hospitals"** while the facility title now says
 
 ### Loose ends in the working tree
 
-- **`data/~$validation_set.xlsx`** is an Excel lock file left by an open
-  workbook. Harmless, but it should not be committed.
+- **The REDCap export is in git history and has been pushed.** Blob `d2aa42c`,
+  added in `8a60896` and removed from tracking in `03e2129` — but removal from
+  tracking is not removal from history. It is reachable today from `origin/dev`,
+  `origin/main` and `origin/feature/split-specimen-qtof-csv` via
+  `git cat-file -p d2aa42c`, which returns all 373 patients. `.gitignore`
+  prevents new commits of it and does nothing about the one already there.
+  **This is a disclosure question, not a technical one** — report it before
+  rewriting history, because a rewrite destroys the evidence of scope.
+- **`data/validation_set.xlsx` was circulated as a template.** Its example row
+  is a real 16-year-old's record. If it went out by email or shared drive, that
+  record went with it. Worth reissuing with a fabricated example.
 - **The study team's returned review is no longer on disk.** Deleted Sep 2026,
   along with its byte-identical duplicate `versioned/analyte_mapping_v3_hb.xlsx`.
   Her answers survive only as constants — `FLAG_FIXES`, `TIER_B`,
@@ -1115,6 +1124,11 @@ still says "three Wisconsin hospitals"** while the facility title now says
   existing drugs of those classes.
 
 ### Next steps
+
+**Ahead of anything below — two PHI exposures are open.** Both are in *Loose
+ends*: the REDCap export sitting in pushed git history, and
+`data/validation_set.xlsx` carrying a real patient in its example sheet. Neither
+is a code change, and both are likely reportable before they are remediable.
 
 - **The reporting period** needs the study team's wording; `--period` is a CLI
   argument because `spec_date` cannot supply it. The three headlines are settled
@@ -1169,17 +1183,32 @@ still says "three Wisconsin hospitals"** while the facility title now says
   page, so an overflowing layout fails rather than shipping truncated.
 - **A contact address in every footer** — `NFODbiosurveillance@dhs.wisconsin.gov`,
   as a live `mailto:` link.
+- **Per-sheet download names** — each body arrives as its own headline
+  slugified, rather than three files all called `onepager.pdf`. Derived from
+  `BODIES[body]["title"]`, so a headline change carries into the filename.
+- **One README for the directory** — this file, replacing the one that lived
+  inside `versioned/`, a directory whose contents are entirely git-ignored.
+- **Layout made deterministic** — `.sheet` is `display: block`, because
+  WeasyPrint stretches flex children to absorb a `min-height` and was deciding
+  spacing the CSS could not set. Every gap is now the gap it says it is.
+- **`assets/` reduced to what is used** — one map, named for what it shows,
+  plus the pipeline diagram.
 
 ## Git
 
 | Path | Tracked? | Why |
 | --- | --- | --- |
 | `src/`, `README.md` | yes | The pipeline and its documentation. |
-| `assets/` | yes | State maps. No patient data. |
-| `data/Analyte_Category_Mapping*.xlsx` | yes | Reference drug vocabulary, not patient data. |
+| `assets/` | yes | The state map and the pipeline diagram. Aggregate figures only. |
+| `data/Analyte_Category_Mapping.xlsx` | yes | Reference drug vocabulary, not patient data. The one file in `data/` that is. |
 | `data/*.csv` | **no** | The REDCap export. PHI. |
+| `data/validation_set.xlsx` | **no** | Looks like a template; its `example` sheet is a real patient. PHI. |
+| `~$*` | **no** | Excel lock files. Not content, just whoever had the workbook open. |
 | `versioned/*` | **no** | Derived and reproducible from `data/` via `src/`, and PHI-sensitive. |
 | `output/` | **no** | Build artefact. Carries cohort counts derived from PHI. |
+
+Every rule above is asserted, not assumed: `git check-ignore` was run across
+these paths in Sep 2026 and each behaved as intended.
 
 Feature work goes on a branch off `dev`; `main` is the default branch. Stage
 files explicitly — **never `git add .`** — and do not add `Co-Authored-By:`
