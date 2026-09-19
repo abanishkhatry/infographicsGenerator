@@ -102,7 +102,7 @@ MATRIX_TITLES: dict[str, str] = {"urine": "Urine", "plasma": "Plasma"}
 # but folds it into a global counter rather than recording it per record. Until
 # it emits that as a column, the classification has to be stated.
 #
-# See versioned/README.md, "The 6 blank analyte_name rows".
+# See new_infogenerator/README.md, "The 6 blank analyte_name rows".
 
 #: The screen ran and found nothing. A real result, and a real negative.
 TRUE_NEGATIVE_RECORDS: set[str] = {"190"}

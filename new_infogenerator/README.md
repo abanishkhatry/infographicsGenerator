@@ -1,38 +1,132 @@
-# Versioned data snapshots
+# new_infogenerator
 
-Every time we change a dataset (filtering, cleaning, re-splitting a new export),
-the result is saved here as a new numbered version so we can compare and roll
-back.
+Turns a REDCap export of specimen + drug-screen records into cleaned, validated
+datasets and renders the WSLH non-fatal overdose biosurveillance one-pager.
 
-## Naming convention
+This is the single reference for the directory: what each file does, how to run
+the chain, what every dataset version contains, which decisions are encoded in
+the scripts, and what still needs the study team.
 
-Flat directory, version suffix in the filename:
+---
+
+## Read this first — the data is PHI
+
+**The REDCap export is PHI-sensitive. It must stay out of git and out of any
+external service.**
+
+- `.gitignore` excludes `**/data/*.csv`, `**/data/*.xlsx`, `**/output/` and the
+  data files under `versioned/`. Only documentation and the reference vocabulary
+  are tracked.
+- **Never `git add .` in this repo.** Stage files explicitly.
+- `data/Analyte_Category_Mapping.xlsx` is the one tracked file in `data/` — it is
+  a reference drug vocabulary, not patient data.
+- `assets/` **is** tracked: state maps, no patient data. `output/` is **not** —
+  the rendered pages carry cohort counts derived from PHI.
+- When profiling, prefer aggregate output (value counts, distributions) over
+  dumping patient-level rows.
+- Small demographic cells are a re-identification risk. Race categories in this
+  cohort go as low as **n=1**. Aggregate before publishing anything, and see the
+  suppression rules under *The one-pager*.
+- `src/dashboard.py` binds `127.0.0.1` only, and every render prints a reminder
+  that the page must not be published externally.
+
+---
+
+## Directory layout
 
 ```
-versioned/
-  specimen_v1.csv          qtof_v1.csv          (baselines from split_data.py)
-  specimen_v2.csv          qtof_v2.csv          (cleaned)
-  specimen_v3.csv          qtof_v3.csv          (validation-template shape)
-  analyte_mapping_v2.xlsx  analyte_mapping_v2.csv   (spelling repairs)
-  analyte_mapping_v3.xlsx  analyte_mapping_v3.csv   (+ 35 QToF additions,
-                                                    study-team review, backfill)
-  validate_v1.csv                                   (the template's 17 columns)
+new_infogenerator/
+  README.md                    this file — the whole directory
+  data/                        inputs (PHI, git-ignored except the mapping)
+    Analyte_Category_Mapping.xlsx        study team's drug vocabulary (tracked)
+    Analyte_Category_Mapping_reviewed_2026-08.xlsx   study team's returned review
+    validation_set.xlsx                  the template this pipeline targets
+    NonFatalOverdoseBioS-OnePagerData_DATA_LABELS_2026-07-12_1336.csv
+                                         the REDCap export, 183 KB / 770 lines
+  assets/                      tracked, no patient data
+    wisconsin_facility_sites.png         county outline + the three site markers
+    pipeline-workflow.pdf                hand-drawn diagram of the whole chain
+  src/
+    vocab.py                   template vocabularies + study-team rulings, one copy
+    split_data.py              splits the long REDCap export into specimen + qtof
+    clean_specimen.py          per-column cleaning of the specimen side   -> v2
+    clean_qtof.py              text normalization of the drug-screen side -> v2
+    clean_analyte_mapping.py   repairs the analyte -> category vocabulary -> v2
+    extend_analyte_mapping.py  adds the substances QToF needs             -> v3
+    clean_specimen_v3.py       reshapes specimen onto the template        -> v3
+    clean_qtof_v3.py           canonicalizes, classifies, merges instances-> v3
+    build_validate.py          joins both v3 sides                        -> validate_v1
+    onepager_stats.py          computes every figure (suppression lives here)
+    build_onepager.py          renders layout only, three selectable bodies
+    dashboard.py               local picker + live preview + PDF export
+  versioned/                   numbered data snapshots (git-ignored)
+    analyte_mapping_v3_hb.xlsx           unreferenced; see 'Loose ends' below
+  output/                      rendered pages, a build artefact (git-ignored)
 ```
 
-`validate_v1.csv` is the joined deliverable rather than a cleaning generation.
-It bumps when either input side bumps. The rendered one-pager is **not** here —
-it goes to `output/`, which is git-ignored, because it is a build artefact.
+**The export is git-ignored, so a fresh checkout will not have it.** Restore it
+to the path above before running step 1, or pass `--source`. Verified Sep 2026:
+187,740 bytes, 769 data rows x 33 columns, splitting 373 `Specimen Form` +
+396 `QToF Screen` rows, and `split_data.py` reproduces both v1 baselines
+byte-for-byte from it. Every stage after step 1 runs from the `versioned/`
+snapshots, so the rest of the chain works without the export present.
 
-- `v1` = the untouched baseline produced by `src/split_data.py` from the
-  NonFatalOverdose LABELS export (unfiltered).
-- Bump the version number for each subsequent change. Keep `specimen_vN` and
-  `qtof_vN` on the same `N` where both sides change together, so a version pairs
-  cleanly for re-merging on `Record ID`.
-- The analyte mapping starts at `v2` because its baseline is the study team's
-  `data/Analyte_Category_Mapping.xlsx`, which is the implicit v1 and is never
-  modified.
+`biosurveillance-main/` in the parent directory is a **prior/reference project**
+(CDC OD2A submission tooling). Treat it as reference unless asked otherwise; the
+house palette here comes from its `doc_styles.py`.
 
-## Pipeline
+---
+
+## Requirements — assume nothing
+
+`openpyxl`, `pandas`, `numpy`, `matplotlib`, `seaborn`, `plotly` and `jinja2` are
+**not installed** and must not be assumed.
+
+- `clean_analyte_mapping.py` reads and writes xlsx as **raw OOXML** via `zipfile`
+  and `xml.etree`, and emits a CSV alongside so downstream code can use the
+  stdlib.
+- Charts are **hand-authored inline SVG** for the same reason — see
+  *The one-pager*.
+
+The **one** non-stdlib dependency is `weasyprint`, used solely by
+`dashboard.py` for PDF export. On this machine it is installed under
+**Python 3.13 only**. Homebrew moved `python3` to 3.14 in Sep 2026, at which
+point `python3 src/dashboard.py` stopped starting. Either:
+
+```
+python3.13 src/dashboard.py            # use the interpreter that has it
+python3.14 -m pip install weasyprint   # or install it where python3 points
+```
+
+Everything else runs on any Python 3.
+
+---
+
+## Quick start
+
+Run from `new_infogenerator/`. Order matters in one place: `clean_qtof_v3.py`
+reads `analyte_mapping_v3.csv`, so the mapping chain must run first.
+
+```
+python3 src/split_data.py             # -> output/, copy to versioned/*_v1.csv
+python3 src/clean_specimen.py         # specimen_v1 -> specimen_v2
+python3 src/clean_qtof.py             # qtof_v1     -> qtof_v2
+python3 src/clean_analyte_mapping.py  # data/*.xlsx -> analyte_mapping_v2
+python3 src/extend_analyte_mapping.py # mapping_v2  -> analyte_mapping_v3
+python3 src/clean_specimen_v3.py      # specimen_v2 -> specimen_v3
+python3 src/clean_qtof_v3.py          # qtof_v2 + mapping_v3 -> qtof_v3
+python3 src/build_validate.py         # specimen_v3 + qtof_v3 -> validate_v1
+python3 src/onepager_stats.py         # review the figures (--json to hand over)
+python3 src/build_onepager.py --body classes   # -> output/onepager.html
+python3.13 src/dashboard.py                    # http://127.0.0.1:8000
+```
+
+Every run prints the full old -> new change list so the transformation can be
+audited before the output is trusted.
+
+---
+
+## The pipeline
 
 ```
 data/NonFatalOverdoseBioS-OnePagerData_DATA_LABELS_*.csv   (REDCap LABELS export)
@@ -76,40 +170,128 @@ specimen_v3.csv  373 x 12      qtof_v3.csv  2709 x 9
                  |  src/dashboard.py            pick a body, preview, export PDF
 ```
 
-Each `vN` is immutable and is never edited in place. Every cleaning script reads
-its baseline and rewrites its output from scratch on each run, so runs are
-deterministic and idempotent — re-running can never accumulate half-applied
-edits. Regenerate everything with:
+`assets/pipeline-workflow.pdf` draws this same chain by hand across three
+phases, with the per-column problems noted against each stage. It is a snapshot
+from Aug 2026 and its Phase 2 still shows infographics generation as
+in-progress — that part is done. This README is the authority where they differ.
+
+The REDCap export is a **"long" file** — 769 data rows x 33 columns, 183 KB.
+Each specimen has one `Specimen Form` row (373) plus one or more `QToF Screen`
+rows (396), tagged in the `Repeat Instrument` column.
+`split_data.py` separates the two so each side can be cleaned independently and
+re-merged later on `Record ID`.
+
+Columns are selected by header **name**, not index, so a reordered export does
+not silently corrupt the split. Which side a column lands on matters:
+`Sample matrix` is populated only on the QToF rows, so it belongs to `QTOF_COLS`
+and is deliberately absent from `SPECIMEN_COLS`.
+
+---
+
+## Conventions
+
+### Cleaning
+
+1. **`vN` is immutable.** Never edit a snapshot in place. A cleaning script reads
+   `vN` and rewrites `vN+1` from scratch every run, so it is deterministic and
+   idempotent — re-running cannot accumulate partial edits. The source-of-truth
+   files in `data/` are never modified either.
+2. **One column at a time, rules agreed before coding.** `clean_specimen.py`
+   holds a `CLEANERS` registry keyed by column name; `RENAMES` and `DROPS` handle
+   header changes and dead columns.
+3. **Fail loudly, never guess.** Cleaners raise on an unrecognized format and the
+   runner reports the line number. Row-level fixes assert the cell's expected
+   prior state, `drop_columns` refuses to drop a column that has become
+   populated, and `clean_qtof.py` validates `Sample matrix` against a known value
+   set. A future export with new junk breaks the run instead of writing a wrong
+   value.
+4. **Report every change.** Each run prints the full old -> new list with counts
+   so the diff can be audited before the output is trusted.
+5. **Verify against the baseline.** After a change, confirm the intended columns
+   changed and everything else is byte-identical to `vN`. For qtof, also check
+   the analyte multiset — every gained or lost token must be explainable.
+6. **Correct the root cause, not the symptom.** `Sample matrix` was missing
+   because `split_data.py` never selected it; the fix went there and the baseline
+   was regenerated, rather than patching it in downstream.
+
+### Rendering
+
+1. **Numbers and layout are separate.** `onepager_stats.py` computes every figure
+   and applies `SUPPRESS_BELOW`; `build_onepager.py` only scales bars to pixels.
+   Nothing in the renderer may compare a count to a threshold — a cell reaching it
+   is already adjudicated.
+2. **Count patients, never rows.** `validate_v1` is one row per
+   (patient x analyte), so `len(df)` weights each patient by how many substances
+   they screened positive for.
+3. **Check the PDF, not the preview.** WeasyPrint is not a browser and has
+   diverged from it five separate times on this page.
+4. **Every size is a measured constant.** The sheet has 998px of printable height
+   and all three bodies sit within ~12px of it, so sizes are found by sweeping for
+   the largest value that still renders on one page — not chosen. **Adding
+   anything means removing something.**
+5. **One page is asserted, not hoped for.** `dashboard.render_pdf` refuses to
+   serve a two-page PDF, so an overflowing layout fails loudly.
+
+### Shared vocabulary
+
+`src/vocab.py` owns two kinds of fact, kept in separate sections because they
+answer to different owners:
+
+- **The validation template's allowed values**, transcribed from the `details`
+  sheet of `data/validation_set.xlsx`. Owned by whoever maintains that template.
+  `SPECIMEN_ALLOWED`, `GROUP_VALUES`, `TEMPLATE_ADDITIONS_REQUESTED`,
+  `EMITTABLE_GROUPS`, `MATRIX_TITLES`.
+- **Study-team rulings about specific records** that no rule can derive.
+  `TRUE_NEGATIVE_RECORDS`, `UNRECORDED_SCREEN_RECORDS`, `ANALYTE_LESS_RECORDS`.
+
+Plus `SUPPRESS_BELOW` (the disclosure floor) and `read_rows()`, which tolerates
+the BOM an Excel round-trip leaves behind — without it the first fieldname reads
+as `﻿record_id` and every column lookup misses.
+
+These were previously transcribed into two or three scripts each. That is a
+silent-drift hazard, not a tidiness one: granting the four pending category
+additions meant editing identical sets in two files, and missing one left
+`clean_qtof_v3` passing while `build_validate` aborted after the whole pipeline
+had re-run.
+
+---
+
+## Versioned snapshots
+
+
+Every time a dataset changes (filtering, cleaning, re-splitting a new export),
+the result is saved under `versioned/` as a new numbered version so it can be
+compared and rolled back. Flat directory, version suffix in the filename:
 
 ```
-python3 src/split_data.py            # -> output/, copy to versioned/*_v1.csv
-python3 src/clean_specimen.py        # specimen_v1 -> specimen_v2
-python3 src/clean_qtof.py            # qtof_v1     -> qtof_v2
-python3 src/clean_analyte_mapping.py  # data/*.xlsx -> analyte_mapping_v2
-python3 src/extend_analyte_mapping.py # mapping_v2  -> analyte_mapping_v3
-python3 src/clean_specimen_v3.py      # specimen_v2 -> specimen_v3
-python3 src/clean_qtof_v3.py          # qtof_v2 + mapping_v3 -> qtof_v3
-python3 src/build_validate.py         # specimen_v3 + qtof_v3 -> validate_v1
-python3 src/onepager_stats.py         # review the figures (--json to hand over)
-python3 src/build_onepager.py --body classes    # -> output/onepager.html
-python3.13 src/dashboard.py                     # http://127.0.0.1:8000
+versioned/
+  specimen_v1.csv          qtof_v1.csv          (baselines from split_data.py)
+  specimen_v2.csv          qtof_v2.csv          (cleaned)
+  specimen_v3.csv          qtof_v3.csv          (validation-template shape)
+  analyte_mapping_v2.xlsx  analyte_mapping_v2.csv   (spelling repairs)
+  analyte_mapping_v3.xlsx  analyte_mapping_v3.csv   (+ 35 QToF additions,
+                                                    study-team review, backfill)
+  validate_v1.csv                                   (the template's 17 columns)
 ```
 
-**Interpreter.** Everything up to `build_onepager.py` is standard library and
-runs on any Python 3. The **dashboard's PDF export is the one exception**: it
-imports `weasyprint`, which on this machine is installed under **Python 3.13
-only**. Homebrew moved `python3` to 3.14 in Sep 2026, at which point
-`python3 src/dashboard.py` stopped starting. Run the dashboard as `python3.13`,
-or `python3.14 -m pip install weasyprint` and forget about it. `PIL` is present
-under 3.13 too but no pipeline script imports it.
+`validate_v1.csv` is the joined deliverable rather than a cleaning generation.
+It bumps when either input side bumps. The rendered one-pager is **not** here —
+it goes to `output/`, which is git-ignored, because it is a build artefact.
 
-Order matters in one place: `clean_qtof_v3.py` reads `analyte_mapping_v3.csv`,
-so the mapping chain must run first.
+- `v1` = the untouched baseline produced by `src/split_data.py` from the
+  NonFatalOverdose LABELS export (unfiltered).
+- Bump the version number for each subsequent change. Keep `specimen_vN` and
+  `qtof_vN` on the same `N` where both sides change together, so a version pairs
+  cleanly for re-merging on `Record ID`.
+- The analyte mapping starts at `v2` because its baseline is the study team's
+  `data/Analyte_Category_Mapping.xlsx`, which is the implicit v1 and is never
+  modified.
 
-Every run prints the full old -> new change list so the transformation can be
-audited before the output is trusted.
+---
 
-## specimen_v2 — what changed
+## Dataset versions, stage by stage
+
+### specimen_v2 — what changed
 
 Rules were agreed column by column. Unparseable values raise with a line number
 rather than silently defaulting, so new junk in a future export fails loudly.
@@ -132,7 +314,7 @@ and `Record ID` (verified clean: 373 unique, no duplicates or blanks).
 row because the matrix is recorded against the QToF rows, so `split_data.py`
 selects it into the qtof side only.
 
-## specimen_v3 — reshaped onto the validation template
+### specimen_v3 — reshaped onto the validation template
 
 373 rows (unchanged), 28 columns -> 12. The 11 columns the validation template
 (`data/validation_set.xlsx`) defines for the specimen side, plus 1 `sc_` sidecar.
@@ -186,7 +368,7 @@ Re-join on `record_id` rather than re-deriving:
   (8) are already collapsed there. Recovering it means going back to v1 or
   changing `clean_specimen.py` — see Open items.
 
-## qtof_v2 — what changed
+### qtof_v2 — what changed
 
 Text normalization only. This pass does **not** canonicalize analyte names
 against the mapping, collapse metabolites, merge the 23 second instances, or
@@ -212,7 +394,7 @@ Coverage, as measured by the `qtof_v3` run: **all 2935 analyte detections
 was 98.57%, with 38 raw tokens / 42 detections stranded; the 35 substances behind
 those were added in v3. See the qtof_v3 section for the rung breakdown.
 
-## qtof_v3 — analytes canonicalized, classified, and merged per record
+### qtof_v3 — analytes canonicalized, classified, and merged per record
 
 **2709 rows x 9 columns**, from 396 screens over 373 records. The QToF side in
 the validation template's shape, with everything resolved.
@@ -232,7 +414,7 @@ the validation template's shape, with everything resolved.
 Only 6 blanks exist anywhere in the template-bound columns, all on the same 6
 rows. `Sample matrix` and `unmatched_analytes` are both fully resolved.
 
-### Grain: one row per (Record ID x analyte)
+#### Grain: one row per (Record ID x analyte)
 
 The explode is **forced, not chosen** — a screen can list 21 analytes with 21
 different classifications, and a single `analyte_group_1` cell cannot hold them.
@@ -252,7 +434,7 @@ modes, case variants landing on one canonical, and 117 recorded on both
 instances. The run asserts every output row is a unique
 (`Record ID`, `analyte_name`) pair and raises otherwise.
 
-### Resolution: a four-rung chain, first hit wins
+#### Resolution: a four-rung chain, first hit wins
 
 | Rung | Detections | Cumulative |
 | --- | --- | --- |
@@ -283,7 +465,7 @@ Also handled:
 - `F-alpha-PPP` is dropped from the variant index as **ambiguous** — it is listed
   against both `3'-fluoro-` and `4'-fluoro-alpha-pyrrolidinopropiophenone`.
 
-### Classification
+#### Classification
 
 `analyte_group_1`, the only column that partitions the 2703 analyte rows exactly:
 
@@ -324,7 +506,7 @@ and barbiturates untouched. Any "excluding metabolites" view changes the drug
 *mix*, not just the totals. 307 of 373 patients (82%) carry at least one
 metabolite.
 
-### Three decisions encoded as constants
+#### Three decisions encoded as constants
 
 **Category spelling — the mapping wins** (Aug 2026). Where the mapping and the
 template disagree, the mapping's spelling is emitted and the *template* gains it.
@@ -353,7 +535,7 @@ self-consistent. `FLAG_CONFLICT_METABOLITE_WINS` is left **False** on purpose: a
 disagreement now means the mapping has regressed, and that should stop the run
 rather than be papered over by a tie-break.
 
-### The 6 blank `analyte_name` rows
+#### The 6 blank `analyte_name` rows
 
 Deliberate, but they are **not all the same thing** and must not be read as "no
 drugs detected":
@@ -374,7 +556,7 @@ unscreened patients. Exclude them from analyte-based denominators, or report the
 as missing. `qtof_v1` has 7 all-empty rows; two are second instances of Records
 329 and 366, whose first instances do carry analytes, so the merge resolves those.
 
-## analyte_mapping_v2 — what changed
+### analyte_mapping_v2 — what changed
 
 `data/Analyte_Category_Mapping.xlsx` is the study team's file and is never
 modified. v2 repairs:
@@ -396,7 +578,7 @@ canonical. Only the `Canonical_*` output side is fixed. All 444 keys survive.
 Both outputs have identical content; the CSV exists because `openpyxl` is not
 installed, so pipeline code reads the CSV.
 
-## analyte_mapping_v3 — the substances QToF needs
+### analyte_mapping_v3 — the substances QToF needs
 
 v2 held the study team's vocabulary with its defects repaired, but was missing
 35 substances that appear in the QToF free text — which is why `qtof_v3` first
@@ -458,7 +640,7 @@ Two deliberate departures from her file, both documented in code:
   pre-existing. Lookups are case-insensitive either way; this is about anything
   that groups or sorts on canonical name.
 
-### Category backfill
+#### Category backfill
 
 The study team proposed three classes the template does not list —
 `Anticonvulsants`, `Antihistamines`, `Anesthetics`. Decided Aug 2026: adopt all
@@ -489,7 +671,7 @@ Metabolites inherit their parent's class throughout.
 The script refuses to write if an addition duplicates an existing `Analyte` key
 (case-insensitively), or if it would introduce a **new** `Flag` disagreement.
 
-## validate_v1 — the joined deliverable
+### validate_v1 — the joined deliverable
 
 **2709 rows x 17 columns over 373 patients.** `src/build_validate.py` joins
 `specimen_v3` (373 x 12) to `qtof_v3` (2709 x 9) on the record id and emits the
@@ -568,12 +750,22 @@ the file opens offline and prints to PDF. Palette is the house navy from
 `biosurveillance_dissemination/doc_styles.py` (`#003D78`) plus a maroon for the
 stimulant panel, matching the reference one-pager in `sample_images/`.
 
-The one raster asset is the state map on the facility sheet. `assets/` holds the
-two originals plus `wisconsin_map_sheet.png`, the derived copy that actually
-ships: cropped to its ink, scaled down, and **embedded as a base64 data URI** so
-the output stays a single self-contained file. The dashboard renders from a
-string in memory, so there is no document location for a relative `src` to
-resolve against — a linked image renders locally and vanishes in the PDF.
+The one raster asset is `assets/wisconsin_facility_sites.png`, the state map on
+the facility sheet: a county outline with a ring on Madison, Milwaukee and Green
+Bay. It is flattened onto white and cropped to its ink, and is **embedded as a
+base64 data URI** (~30 KB) so the output stays a single self-contained file. The
+dashboard renders from a string in memory, so there is no document location for
+a relative `src` to resolve against — a linked image renders locally and
+vanishes in the PDF.
+
+Two earlier candidates were removed once this one was adopted: a filled-county
+version at 3600x3600 (611 KB, superseded by the outline, which reads better at
+242px because its county lines do not compete with the markers) and the outline's
+own pre-flattening original, which differed from the shipped copy only by an
+alpha channel and one row of blank margin. `MAP_MARKERS` is sampled from the
+shipped file's pixels, so **replacing the map means re-sampling those three
+colours** — `map_key()` raises if a site has no entry, but it cannot detect a
+colour that has merely drifted.
 
 ### Everything is one page, and the page is full
 
@@ -629,6 +821,33 @@ for the sheet. WeasyPrint stretches every child of a column flex container to
 soak up a `min-height`, ignoring `flex-grow` and `auto` margins, which meant
 spacing was decided by the renderer and differed between bodies. `.sheet` is
 `display: block` so every gap is the gap the CSS states.
+
+### The dashboard
+
+`src/dashboard.py` is a local picker, not a service: a `ThreadingHTTPServer`
+bound to `127.0.0.1` on port 8000, serving a two-column page — controls on the
+left, a live preview iframe on the right.
+
+| Part | Detail |
+| --- | --- |
+| Body selector | The three `BODIES` keys, by label. Changing it re-renders immediately. |
+| Reporting period | Free text, debounced 400ms, passed through as `--period`. |
+| Preview | The real sheet, scaled to fit by **both** width and height via a CSS `transform`. |
+| Download | Re-renders server-side and returns `application/pdf`. |
+
+Two things that are easy to get wrong here, both fixed:
+
+- **The download button and the hidden preview field must not share a name.**
+  Both submitted, and `parse_qs(...)[0]` took the hidden one, so "Download PDF"
+  returned HTML. The button is `name="download"`, the hidden field is
+  `name="format"`.
+- **Responses send `Cache-Control: no-store, no-cache, must-revalidate`.**
+  Without it the browser served a stale sheet after a code change, which is
+  indistinguishable from the change not working.
+
+The preview iframe only re-renders when the form submits. After editing the
+renderer, switch bodies and back, or hard-reload — the PDF path always
+re-renders, so a download is the reliable check.
 
 ### Two safeguards built in
 
@@ -800,6 +1019,16 @@ still says "three Wisconsin hospitals"** while the facility title now says
   every Record ID below 234. If no true collection date exists, the one-pager
   cannot carry a time axis.
 
+### Loose ends in the working tree
+
+- **`versioned/analyte_mapping_v3_hb.xlsx`** (22 KB, Aug 2026) is referenced by
+  no script. Most likely a hand-edited copy from the study-team review round.
+  Confirm it is superseded by `analyte_mapping_v3.xlsx` and delete it, or
+  document what it is — an unreferenced mapping file next to the real one is a
+  trap for the next person.
+- **`data/~$validation_set.xlsx`** is an Excel lock file left by an open
+  workbook. Harmless, but it should not be committed.
+
 ### Worth raising, not blocking
 
 - **`Other` is still 601 rows (22%)**, and it is a mix rather than a residue.
@@ -886,6 +1115,15 @@ still says "three Wisconsin hospitals"** while the facility title now says
 
 ## Git
 
-The data snapshots here are **git-ignored** — they are derived, reproducible from
-`data/` via `src/`, and the CSVs are PHI-sensitive. Only this README is tracked,
-so the directory and the convention live in the repo while the data stays local.
+| Path | Tracked? | Why |
+| --- | --- | --- |
+| `src/`, `README.md` | yes | The pipeline and its documentation. |
+| `assets/` | yes | State maps. No patient data. |
+| `data/Analyte_Category_Mapping*.xlsx` | yes | Reference drug vocabulary, not patient data. |
+| `data/*.csv` | **no** | The REDCap export. PHI. |
+| `versioned/*` | **no** | Derived and reproducible from `data/` via `src/`, and PHI-sensitive. |
+| `output/` | **no** | Build artefact. Carries cohort counts derived from PHI. |
+
+Feature work goes on a branch off `dev`; `main` is the default branch. Stage
+files explicitly — **never `git add .`** — and do not add `Co-Authored-By:`
+lines to commits, PR bodies or issue comments.

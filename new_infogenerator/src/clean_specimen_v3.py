@@ -169,7 +169,7 @@ def build_spec_date(raw: str) -> str | None:
     """ISO 'YYYY-MM-DD' -> 'MM/DD/YYYY'. Blank -> None (219 of 373).
 
     The source is a data-entry stamp, not a collection date, and is absent for
-    every Record ID below 234. See versioned/README.md before using it as a
+    every Record ID below 234. See new_infogenerator/README.md before using it
     time axis.
     """
     value = raw.strip()

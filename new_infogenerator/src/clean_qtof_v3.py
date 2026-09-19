@@ -41,7 +41,7 @@ patients from every denominator downstream, but they are NOT interchangeable:
 
 Treating the five as "no drugs detected" would dilute any "% of patients with X
 detected" figure with unscreened patients. Exclude them from analyte-based
-denominators or report them as missing -- see versioned/README.md.
+denominators or report them as missing -- see new_infogenerator/README.md.
 
 How a token is resolved. Four indexes are tried in order and the first hit
 wins; the rung that fired is counted and reported::
@@ -148,7 +148,7 @@ CATEGORY_RENAMES: dict[str, str] = {}
 # satisfy the template, which allows only Plasma | Urine and has no blank.
 #
 # This is an IMPUTATION, not a measurement: it turns 248 of 373 patients into
-# "urine" by inference. See versioned/README.md -- a urine-vs-plasma comparison
+# "urine" by inference. See new_infogenerator/README.md -- a urine-vs-plasma
 # is mostly assumption on the urine side. Set to None to leave blanks blank.
 MATRIX_BLANK_FILL = "urine"
 

@@ -40,8 +40,8 @@ happens in `new_infogenerator/`.
 external service.
 
 - `.gitignore` excludes `**/data/*.csv`, `**/data/*.xlsx`, `**/output/`, and
-  `new_infogenerator/versioned/*` data files. Only `versioned/README.md` is
-  tracked from that directory.
+  `new_infogenerator/versioned/*` data files. Nothing under `versioned/` is
+  tracked.
 - `new_infogenerator/data/Analyte_Category_Mapping.xlsx` is the one tracked file
   in `data/` — it is a reference drug vocabulary, not patient data.
 - `new_infogenerator/assets/` **is** tracked: state maps, no patient data. The
@@ -92,7 +92,8 @@ python3 src/clean_analyte_mapping.py # data/*.xlsx -> analyte_mapping_v2
 ```
 
 The v3 chain, the join and the renderer continue from there — the full ordered
-list is in `versioned/README.md`, which is the authority on this pipeline.
+list is in `new_infogenerator/README.md`, which is the authority on this
+directory.
 
 ## Dependencies — assume nothing
 
@@ -132,8 +133,9 @@ The working pattern, established across specimen, qtof, and the mapping:
    because `split_data.py` never selected it; the fix went there and the baseline
    was regenerated, rather than patching it in downstream.
 
-`versioned/README.md` documents what each version contains, the per-column rules,
-and the caveats that matter when charting. Update it whenever a version changes.
+`new_infogenerator/README.md` is the single reference for that directory — what
+each file does, what each dataset version contains, the per-column rules, and
+the caveats that matter when charting. Update it whenever a version changes.
 
 ## Rendering conventions
 
@@ -148,7 +150,7 @@ and the caveats that matter when charting. Update it whenever a version changes.
    diverged from it five separate times on this page — CSS does not cascade into
    inline SVG, `preserveAspectRatio` does not scale a viewBox down, `<img>`
    dimensions need inline CSS, and flex children get stretched to fill a
-   `min-height`. The gotchas are listed in `versioned/README.md`.
+   `min-height`. The gotchas are listed in `new_infogenerator/README.md`.
 4. **Every size is a measured constant.** The sheet has 998px of printable
    height and all three bodies sit within ~12px of it, so sizes are found by
    sweeping for the largest value that still renders on one page — not chosen.
@@ -158,7 +160,7 @@ and the caveats that matter when charting. Update it whenever a version changes.
 
 ## Known data caveats
 
-Full detail in `new_infogenerator/versioned/README.md`. The ones that bite:
+Full detail in `new_infogenerator/README.md`. The ones that bite:
 
 - **Cohort is 373, not 448.** `Record ID` spans 1-448 with 75 values missing
   entirely from the export. Never derive a denominator from `max(Record ID)`.
