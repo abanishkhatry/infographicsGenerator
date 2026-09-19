@@ -136,9 +136,9 @@ MAP_KEY_INSET = 70  # key, held off the right margin by rather less
 
 MAP_KEY_TITLE = "Where these patients were seen"
 
-#: Marker colours in wisconsin_map_sheet.png, keyed by the city each marker sits
-#: on. Sampled from the asset itself rather than eyeballed, so the ring in the
-#: key is the exact colour of the ring on the map. Replacing the map means
+#: Marker colours in wisconsin_facility_sites.png, keyed by the city each marker
+#: sits on. Sampled from the asset itself rather than eyeballed, so the ring in
+#: the key is the exact colour of the ring on the map. Replacing the map means
 #: re-sampling these -- map_key raises if a site has no entry.
 MAP_MARKERS = {
     "Madison": "#E22A00",
@@ -146,11 +146,12 @@ MAP_MARKERS = {
     "Green Bay": "#D48400",
 }
 
-#: Wisconsin with the three sites marked. Cropped to its ink and pre-scaled
-#: from assets/wisconsin_map.png (611 KB) so embedding costs ~56 KB, not
-#: ~815 KB. Kept true-colour: a 64-entry adaptive palette spent every slot
-#: on the cream county fill and quantised the three markers to brown.
-MAP_PATH = Path(__file__).resolve().parents[1] / "assets/wisconsin_map_sheet.png"
+#: Wisconsin county outline with the three participating sites marked, flattened
+#: onto white and cropped to its ink so it embeds as a ~30 KB data URI.
+#: Deliberately true-colour: a 64-entry adaptive palette spent every slot on the
+#: background and quantised the three markers to brown.
+MAP_PATH = (Path(__file__).resolve().parents[1]
+            / "assets/wisconsin_facility_sites.png")
 
 # WHO/OUTCOME chart heights, per body. They differ because the sheets have
 # different amounts of room: measured by sweep, the classes sheet takes 13/17
