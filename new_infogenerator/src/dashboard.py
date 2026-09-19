@@ -29,6 +29,7 @@ from __future__ import annotations
 import argparse
 import html
 import io
+import re
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -240,6 +241,19 @@ def preview_wrapper(page: str) -> str:
 """
 
 
+def download_name(body: str, suffix: str) -> str:
+    """Name the file after the sheet's headline, so three downloads differ.
+
+    All three used to arrive as onepager.pdf, so saving one after another either
+    overwrote the last or produced onepager-1.pdf, and nothing in the name said
+    which sheet it was. The headline is already the thing that distinguishes
+    them on screen, so it distinguishes them in the finder too.
+    """
+    title = BODIES[body]["title"]
+    slug = re.sub(r"[^a-z0-9]+", "-", title.casefold()).strip("-")
+    return f"{slug}.{suffix}"
+
+
 class Handler(BaseHTTPRequestHandler):
     rows: list[dict[str, str]] = []
 
@@ -302,10 +316,11 @@ class Handler(BaseHTTPRequestHandler):
                     "text/plain; charset=utf-8",
                 )
                 return
-            self._send(pdf, "application/pdf", "onepager.pdf")
+            self._send(pdf, "application/pdf",
+                       download_name(choice["body"], "pdf"))
         elif choice["format"] == "html":
             self._send(page.encode("utf-8"), "text/html; charset=utf-8",
-                       "onepager.html")
+                       download_name(choice["body"], "html"))
         else:
             self._send(preview_wrapper(page).encode("utf-8"),
                        "text/html; charset=utf-8")

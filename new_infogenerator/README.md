@@ -170,9 +170,9 @@ specimen_v3.csv  373 x 12      qtof_v3.csv  2709 x 9
 ```
 
 `assets/pipeline-workflow.pdf` draws this same chain by hand across three
-phases, with the per-column problems noted against each stage. It is a snapshot
-from Aug 2026 and its Phase 2 still shows infographics generation as
-in-progress — that part is done. This README is the authority where they differ.
+phases, with the per-column problems noted against each stage. Phase 2 covers
+`dashboard.py` and the three output versions. It is a hand-maintained snapshot,
+so this README is the authority where they differ.
 
 The REDCap export is a **"long" file** — 769 data rows x 33 columns, 183 KB.
 Each specimen has one `Specimen Form` row (373) plus one or more `QToF Screen`
@@ -871,7 +871,7 @@ left, a live preview iframe on the right.
 | Body selector | The three `BODIES` keys, by label. Changing it re-renders immediately. |
 | Reporting period | Free text, debounced 400ms, passed through as `--period`. |
 | Preview | The real sheet, scaled to fit by **both** width and height via a CSS `transform`. |
-| Download | Re-renders server-side and returns `application/pdf`. |
+| Download | Re-renders server-side and returns `application/pdf`, named after the sheet's headline. |
 
 Two things that are easy to get wrong here, both fixed:
 
@@ -879,6 +879,14 @@ Two things that are easy to get wrong here, both fixed:
   Both submitted, and `parse_qs(...)[0]` took the hidden one, so "Download PDF"
   returned HTML. The button is `name="download"`, the hidden field is
   `name="format"`.
+- **Each body downloads under its own filename**, slugified from
+  `BODIES[body]["title"]` by `download_name()` — so
+  `opioids-and-stimulants-in-wisconsin-overdose-patients.pdf` rather than
+  `onepager.pdf`. All three used to share one name, so saving them in sequence
+  either overwrote the last or produced `onepager-1.pdf` with nothing in the
+  name saying which sheet it held. Deriving it from the title means a headline
+  change carries into the filename automatically; it does **not** include the
+  reporting period, so re-exporting next quarter overwrites this quarter's file.
 - **Responses send `Cache-Control: no-store, no-cache, must-revalidate`.**
   Without it the browser served a stale sheet after a code change, which is
   indistinguishable from the change not working.
