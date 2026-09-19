@@ -9,6 +9,10 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
+# Office lock files. Excel writes ~$<name> beside an open workbook; it holds
+# only the username of whoever has it open, and is left behind if Excel crashes.
+~$*
+
 # Python
 __pycache__/
 *.py[cod]
@@ -17,7 +21,8 @@ __pycache__/
 venv/
 .ipynb_checkpoints/
 
-# Generated outputs (reproducible from data/ via src/ scripts)
+# Generated outputs (reproducible from data/ via src/ scripts). The rendered
+# one-pagers land here and carry cohort counts derived from PHI.
 **/output/
 
 # Data files — keep patient/source data out of git (PHI-sensitive)
@@ -25,15 +30,21 @@ venv/
 **/data/**/*.csv
 **/data/*.xlsx
 **/data/**/*.xlsx
-# ...except the analyte reference mapping, which carries no patient data
+# ...except the analyte reference mapping, which carries no patient data.
 !new_infogenerator/data/Analyte_Category_Mapping.xlsx
+#
+# data/validation_set.xlsx stays ignored, despite being a template. Its
+# "example" sheet is a REAL cohort record, not synthetic: record 234 matches
+# validate_v1.csv field for field — a 16-year-old, with collection date,
+# facility, ethnicity, BAC, length of stay and full drug profile. Checked
+# Sep 2026. Do not add an exception for it.
 
 # Versioned data snapshots — versions live locally, out of git. They are derived
 # and reproducible from data/ via src/, and the CSVs are PHI-sensitive.
-# Everything here is ignored except the README documenting the convention.
 new_infogenerator/versioned/*
-!new_infogenerator/versioned/README.md
 
-# NOTE: new_infogenerator/sample_images/ is intentionally NOT ignored. It holds
-# published reference one-pagers used as design targets. They carry aggregate
-# figures only — no patient-level data — so they belong in the repo.
+# NOTE on what IS tracked, so it is not "tidied away" later:
+#   new_infogenerator/README.md      the single reference for that directory
+#   new_infogenerator/assets/        the state map the facility sheet embeds,
+#                                    and the hand-drawn pipeline diagram.
+#                                    Aggregate figures only, no patient data.

@@ -20,8 +20,13 @@ external service.**
 - **Never `git add .` in this repo.** Stage files explicitly.
 - `data/Analyte_Category_Mapping.xlsx` is the one tracked file in `data/` — it is
   a reference drug vocabulary, not patient data.
-- `assets/` **is** tracked: state maps, no patient data. `output/` is **not** —
-  the rendered pages carry cohort counts derived from PHI.
+- `assets/` **is** tracked: the state map and the pipeline diagram, aggregate
+  figures only. `output/` is **not** — the rendered pages carry cohort counts
+  derived from PHI.
+- **`data/validation_set.xlsx` is PHI**, not just a template — see *What reads
+  what*. Its example row is a real patient.
+- Excel lock files (`~$*`) are ignored globally. One was found beside
+  `validation_set.xlsx` in Sep 2026, left behind by a crash.
 - When profiling, prefer aggregate output (value counts, distributions) over
   dumping patient-level rows.
 - Small demographic cells are a re-identification risk. Race categories in this
@@ -217,6 +222,11 @@ Two things that are **not** inputs, despite appearances:
   nothing here detects it.** The pipeline keeps validating against a snapshot of
   what the template said in Aug 2026. That is the silent drift behind the four
   pending category additions, and it runs in both directions.
+
+  It also **stays git-ignored despite being a template**: its `example` sheet is
+  a real cohort record, not synthetic. Record 234 matches `validate_v1.csv`
+  field for field — a 16-year-old with collection date, facility, ethnicity,
+  BAC, length of stay and full drug profile. Treat this file as PHI.
 - **The `.xlsx` mapping snapshots are written but never read.** Pipeline code
   reads the `.csv` twins, because `openpyxl` is not installed. The workbooks
   exist for people.
