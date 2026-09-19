@@ -65,7 +65,8 @@ new_infogenerator/
     build_onepager.py          renders layout only, three selectable bodies
     dashboard.py               local picker + live preview + PDF export
   versioned/                   numbered data snapshots (git-ignored)
-  output/                      rendered pages, a build artefact (git-ignored)
+  output/                      scratch, created on demand (git-ignored).
+                               Nothing reads it; safe to delete at any time.
 ```
 
 **The export is git-ignored, so a fresh checkout will not have it.** Restore it
@@ -112,7 +113,7 @@ Run from `new_infogenerator/`. Order matters in one place: `clean_qtof_v3.py`
 reads `analyte_mapping_v3.csv`, so the mapping chain must run first.
 
 ```
-python3 src/split_data.py             # -> output/, copy to versioned/*_v1.csv
+python3 src/split_data.py             # -> output/*_v1.csv, promote by hand
 python3 src/clean_specimen.py         # specimen_v1 -> specimen_v2
 python3 src/clean_qtof.py             # qtof_v1     -> qtof_v2
 python3 src/clean_analyte_mapping.py  # data/*.xlsx -> analyte_mapping_v2
@@ -127,6 +128,32 @@ python3.13 src/dashboard.py                    # http://127.0.0.1:8000
 
 Every run prints the full old -> new change list so the transformation can be
 audited before the output is trusted.
+
+### The one manual step
+
+`split_data.py` writes `output/specimen_v1.csv` and `output/qtof_v1.csv`. It
+**never writes to `versioned/`** — promoting a split to a baseline is a
+deliberate copy, because the `vN` snapshots are immutable and every later
+version was derived from the ones already there.
+
+The output carries the same filename as its destination, which makes the copy
+obvious but also makes it easy to overwrite a baseline by reflex. So each run
+compares against `versioned/` and says which it is:
+
+```
+  specimen_v1.csv: identical to the baseline, nothing to promote
+  qtof_v1.csv: DIFFERS from .../versioned/qtof_v1.csv
+      every vN above it was derived from the current baseline;
+      diff before copying, and re-run the chain if you do
+```
+
+Provenance of the current baselines: produced by this script on **31 Jul 2026**
+and copied in by hand. Re-running it today against the same export reproduces
+them **byte for byte**, so they are verified rather than merely trusted.
+
+`output/` holds nothing else of consequence — no script reads it, and both
+writers recreate it on demand (`split_data.py` via `out_dir.mkdir`,
+`build_onepager.py` via `dest.parent.mkdir`). Deleting it costs a re-run.
 
 ---
 
@@ -201,10 +228,10 @@ it reflects what the code does rather than what the comments say.
 | --- | --- | --- |
 | `data/NonFatalOverdose...DATA_LABELS_*.csv` | `split_data` | — |
 | `data/Analyte_Category_Mapping.xlsx` | `clean_analyte_mapping` | — |
-| `versioned/specimen_v1.csv` | `clean_specimen` | `split_data` (via `output/`) |
+| `versioned/specimen_v1.csv` | `clean_specimen` | `split_data` -> `output/`, promoted by hand |
 | `versioned/specimen_v2.csv` | `clean_specimen_v3` | `clean_specimen` |
 | `versioned/specimen_v3.csv` | `build_validate` | `clean_specimen_v3` |
-| `versioned/qtof_v1.csv` | `clean_qtof` | `split_data` (via `output/`) |
+| `versioned/qtof_v1.csv` | `clean_qtof` | `split_data` -> `output/`, promoted by hand |
 | `versioned/qtof_v2.csv` | `clean_qtof_v3` | `clean_qtof` |
 | `versioned/qtof_v3.csv` | `build_validate` | `clean_qtof_v3` |
 | `versioned/analyte_mapping_v2.csv` | `extend_analyte_mapping` | `clean_analyte_mapping` |
