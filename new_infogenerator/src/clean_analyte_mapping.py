@@ -90,8 +90,7 @@ CANONICAL_FIXES = {
 # filled in", and the file could not distinguish them.
 #
 # Five canonicals were affected. The study team resolved all five as metabolites
-# (Heather, Aug 2026; see data/Analyte_Category_Mapping_reviewed_2026-08.xlsx),
-# which is applied per-spelling below. After this pass every canonical agrees
+# in the Aug 2026 review round (Heather), applied per-spelling below. After this pass every canonical agrees
 # with itself, so downstream code can read ``Flag`` directly instead of
 # reconciling it.
 FLAG_FIXES = {

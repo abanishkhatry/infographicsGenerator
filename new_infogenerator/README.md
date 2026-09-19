@@ -39,8 +39,8 @@ new_infogenerator/
   README.md                    this file — the whole directory
   data/                        inputs (PHI, git-ignored except the mapping)
     Analyte_Category_Mapping.xlsx        study team's drug vocabulary (tracked)
-    Analyte_Category_Mapping_reviewed_2026-08.xlsx   study team's returned review
-    validation_set.xlsx                  the template this pipeline targets
+    validation_set.xlsx                  the template this pipeline targets --
+                                         read by nobody, see 'What reads what'
     NonFatalOverdoseBioS-OnePagerData_DATA_LABELS_2026-07-12_1336.csv
                                          the REDCap export, 183 KB / 770 lines
   assets/                      tracked, no patient data
@@ -60,7 +60,6 @@ new_infogenerator/
     build_onepager.py          renders layout only, three selectable bodies
     dashboard.py               local picker + live preview + PDF export
   versioned/                   numbered data snapshots (git-ignored)
-    analyte_mapping_v3_hb.xlsx           unreferenced; see 'Loose ends' below
   output/                      rendered pages, a build artefact (git-ignored)
 ```
 
@@ -187,6 +186,40 @@ not silently corrupt the split. Which side a column lands on matters:
 and is deliberately absent from `SPECIMEN_COLS`.
 
 ---
+
+## What reads what
+
+Traced by intercepting every file open during a full run — not by grepping, so
+it reflects what the code does rather than what the comments say.
+
+| File | Read by | Written by |
+| --- | --- | --- |
+| `data/NonFatalOverdose...DATA_LABELS_*.csv` | `split_data` | — |
+| `data/Analyte_Category_Mapping.xlsx` | `clean_analyte_mapping` | — |
+| `versioned/specimen_v1.csv` | `clean_specimen` | `split_data` (via `output/`) |
+| `versioned/specimen_v2.csv` | `clean_specimen_v3` | `clean_specimen` |
+| `versioned/specimen_v3.csv` | `build_validate` | `clean_specimen_v3` |
+| `versioned/qtof_v1.csv` | `clean_qtof` | `split_data` (via `output/`) |
+| `versioned/qtof_v2.csv` | `clean_qtof_v3` | `clean_qtof` |
+| `versioned/qtof_v3.csv` | `build_validate` | `clean_qtof_v3` |
+| `versioned/analyte_mapping_v2.csv` | `extend_analyte_mapping` | `clean_analyte_mapping` |
+| `versioned/analyte_mapping_v3.csv` | `clean_qtof_v3` | `extend_analyte_mapping` |
+| `versioned/validate_v1.csv` | `onepager_stats`, `build_onepager`, `dashboard` | `build_validate` |
+
+**Only two files enter the system**: the REDCap export and the original mapping.
+Everything else is generated, so deleting `versioned/` costs a re-run, not data.
+
+Two things that are **not** inputs, despite appearances:
+
+- **`data/validation_set.xlsx` is never opened.** Its vocabulary was transcribed
+  by hand into `vocab.py`. It is kept as the source of truth for *why* the
+  specimen side has the 11 columns it has — but **if the template changes,
+  nothing here detects it.** The pipeline keeps validating against a snapshot of
+  what the template said in Aug 2026. That is the silent drift behind the four
+  pending category additions, and it runs in both directions.
+- **The `.xlsx` mapping snapshots are written but never read.** Pipeline code
+  reads the `.csv` twins, because `openpyxl` is not installed. The workbooks
+  exist for people.
 
 ## Conventions
 
@@ -621,7 +654,7 @@ the expensive failure mode:
 | `mirtazapine-n-desmethyl` | `mirtazapine-n-desmethyl` (Flag=Metabolite) | `olanzapine-n-desmethyl` |
 
 The study team reviewed the whole file and returned it (Heather, Aug 2026;
-archived at `data/Analyte_Category_Mapping_reviewed_2026-08.xlsx`). Her answers
+her returned workbook is no longer kept in the repo). Her answers
 are folded into the **scripts**, not just the data, so the chain still reproduces
 from source: the 8 `Flag` values into `clean_analyte_mapping.FLAG_FIXES`, and the
 Tier B canonicals, categories and variants into `TIER_B`.
@@ -1026,13 +1059,14 @@ still says "three Wisconsin hospitals"** while the facility title now says
 
 ### Loose ends in the working tree
 
-- **`versioned/analyte_mapping_v3_hb.xlsx`** (22 KB, Aug 2026) is referenced by
-  no script. Most likely a hand-edited copy from the study-team review round.
-  Confirm it is superseded by `analyte_mapping_v3.xlsx` and delete it, or
-  document what it is — an unreferenced mapping file next to the real one is a
-  trap for the next person.
 - **`data/~$validation_set.xlsx`** is an Excel lock file left by an open
   workbook. Harmless, but it should not be committed.
+- **The study team's returned review is no longer on disk.** Deleted Sep 2026,
+  along with its byte-identical duplicate `versioned/analyte_mapping_v3_hb.xlsx`.
+  Her answers survive only as constants — `FLAG_FIXES`, `TIER_B`,
+  `CATEGORY_BACKFILL` — which record the *interpretation*, not the original. If
+  anyone asks whether a specific assignment was really hers, the email thread is
+  now the only evidence.
 
 ### Worth raising, not blocking
 

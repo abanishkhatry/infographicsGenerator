@@ -21,10 +21,9 @@ The additions come in three tiers, which differ in *what* had to be decided:
 
   Tier B (8 rows) -- genuinely new substances that merely *resemble* something
       already mapped. The study team confirmed these are NOT the same analytes
-      and supplied every canonical name, category and variant
-      (see data/Analyte_Category_Mapping_reviewed_2026-08.xlsx). Getting these
-      wrong is the expensive failure mode, so each row records what it must not
-      be confused with.
+      and supplied every canonical name, category and variant, returned in
+      the Aug 2026 review round. Getting these wrong is the expensive failure
+      mode, so each row records what it must not be confused with.
 
   Tier C (12 rows) -- absent from the vocabulary entirely. Canonical names and
       Known_Variants are the study team's, transcribed verbatim.
@@ -83,8 +82,9 @@ TIER_A = [
 # (Analyte, Canonical_Analyte, Known_Variants, cat1, cat2, cat3, Flag,
 #  must-not-be-confused-with)
 #
-# Categories and variants are the study team's (Heather, Aug 2026; see
-# data/Analyte_Category_Mapping_reviewed_2026-08.xlsx).
+# Categories and variants are the study team's, from the Aug 2026 review
+# round (Heather). Her returned workbook is not kept in the repo -- these
+# constants are the record of what it said.
 #
 # Canonicals are lowercased rather than taken verbatim. She Title-Cased the new
 # entries, but the file's canonicals are overwhelmingly lowercase and the
