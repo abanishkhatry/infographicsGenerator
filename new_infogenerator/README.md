@@ -1,280 +1,286 @@
-# new_infogenerator
+# Non-Fatal Overdose Biosurveillance — One-Pager Pipeline
 
-Turns a REDCap export of specimen + drug-screen records into cleaned, validated
-datasets and renders the WSLH non-fatal overdose biosurveillance one-pager.
+Turns a REDCap export of specimen and drug-screen records into cleaned,
+validated datasets, and renders them as a print-ready one-page infographic for
+the Wisconsin State Laboratory of Hygiene.
 
-This is the single reference for the directory: what each file does, how to run
-the chain, what every dataset version contains, which decisions are encoded in
-the scripts, and what still needs the study team.
+The pipeline is **standard library only**. Charts are hand-authored SVG; there
+is no plotting library, no CDN and no external request anywhere in the output,
+so a rendered sheet opens offline and prints identically everywhere.
+
+**Contents**
+
+| | |
+| --- | --- |
+| [Data privacy](#data-privacy) | Read before running anything |
+| [Requirements](#requirements) · [Installation](#installation) · [Usage](#usage) | Getting it running |
+| [Project structure](#project-structure) · [How it works](#how-it-works) | Orientation |
+| [Design conventions](#design-conventions) | Rules to follow when changing it |
+| [Dataset reference](#dataset-reference) · [Output reference](#output-reference) | What each file and sheet contains |
+| [Known limitations](#known-limitations) · [Project status](#project-status) | Before drawing conclusions |
 
 ---
 
-## Read this first — the data is PHI
+## Data privacy
 
-**The REDCap export is PHI-sensitive. It must stay out of git and out of any
-external service.**
+**The REDCap export contains protected health information. It must not be
+committed to version control or sent to any external service.**
 
-- `.gitignore` excludes `**/data/*.csv`, `**/data/*.xlsx`, `**/output/` and the
-  data files under `versioned/`. Only documentation and the reference vocabulary
-  are tracked.
-- **Never `git add .` in this repo.** Stage files explicitly.
-- `data/Analyte_Category_Mapping.xlsx` is the one tracked file in `data/` — it is
-  a reference drug vocabulary, not patient data.
-- `assets/` **is** tracked: the state map and the pipeline diagram, aggregate
-  figures only. `output/` is **not** — the rendered pages carry cohort counts
-  derived from PHI.
-- **`data/validation_set.xlsx` is PHI**, not just a template — see *What reads
-  what*. Its example row is a real patient.
-- Excel lock files (`~$*`) are ignored globally. One was found beside
-  `validation_set.xlsx` in Sep 2026, left behind by a crash.
-- When profiling, prefer aggregate output (value counts, distributions) over
-  dumping patient-level rows.
-- Small demographic cells are a re-identification risk. Race categories in this
-  cohort go as low as **n=1**. Aggregate before publishing anything, and see the
-  suppression rules under *The one-pager*.
-- `src/dashboard.py` binds `127.0.0.1` only, and every render prints a reminder
+- `.gitignore` excludes `**/data/*.csv`, `**/data/*.xlsx`, `**/output/` and
+  everything under `versioned/`. Stage files explicitly; do not use `git add .`.
+- `data/Analyte_Category_Mapping.xlsx` is the only tracked file in `data/`. It
+  is a reference drug vocabulary and contains no patient data.
+- `data/validation_set.xlsx` is **not** tracked despite being a template: its
+  `example` sheet contains a real patient record, not a synthetic one.
+- `assets/` is tracked — a state map and a pipeline diagram, aggregate figures
+  only. `output/` is not: rendered sheets carry cohort counts derived from PHI.
+- Excel lock files (`~$*`) are ignored globally.
+- Small demographic cells are a re-identification risk; some race categories in
+  this cohort have a single patient. The renderer enforces a suppression floor
+  (see [Disclosure control](#disclosure-control)), and every run prints what it
+  withheld.
+- The dashboard binds to `127.0.0.1` only, and each render prints a reminder
   that the page must not be published externally.
 
 ---
 
-## Directory layout
+## Requirements
+
+- **Python 3.10 or later.** No virtual environment is required; the pipeline
+  imports only the standard library.
+- **WeasyPrint** — optional, and needed only for PDF export from the dashboard.
+
+Deliberately **not** dependencies: `pandas`, `numpy`, `matplotlib`, `seaborn`,
+`plotly`, `jinja2`, `openpyxl`. Excel files are read and written as raw OOXML
+through `zipfile` and `xml.etree`; charts are hand-authored SVG. Do not
+introduce these libraries without discussion — several design decisions exist
+because they are absent.
+
+## Installation
+
+```bash
+git clone https://github.com/abanishkhatry/infographicsGenerator.git
+cd infographicsGenerator/new_infogenerator
+```
+
+Everything except PDF export runs as-is. For PDF export:
+
+```bash
+python3 -m pip install weasyprint
+```
+
+WeasyPrint has native dependencies (Pango, cairo); see the
+[WeasyPrint installation guide](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html)
+if the import fails.
+
+> **If the dashboard reports that WeasyPrint is unavailable**, confirm the
+> interpreter running it is the one you installed into —
+> `python3 -c "import weasyprint"`. Systems with several Python installations
+> commonly install into one and run another. Preview and HTML export work
+> without WeasyPrint; only PDF export needs it.
+
+### Input files
+
+The pipeline needs two inputs in `data/`, neither of which is in version
+control:
+
+| File | What it is |
+| --- | --- |
+| `NonFatalOverdoseBioS-OnePagerData_DATA_LABELS_<date>.csv` | REDCap **labels** export (not the raw-values export) |
+| `Analyte_Category_Mapping.xlsx` | Study team's drug vocabulary — tracked, already present |
+
+Pass a different export path with `--source`.
+
+---
+
+## Usage
+
+Run from the `new_infogenerator/` directory. Order matters in one place:
+`clean_qtof_v3.py` needs `analyte_mapping_v3.csv`, so the mapping chain must run
+before the QToF chain.
+
+### Build the datasets
+
+```bash
+python3 src/split_data.py             # export        -> specimen_v1, qtof_v1
+python3 src/clean_specimen.py         # specimen_v1   -> specimen_v2
+python3 src/clean_qtof.py             # qtof_v1       -> qtof_v2
+python3 src/clean_analyte_mapping.py  # mapping.xlsx  -> analyte_mapping_v2
+python3 src/extend_analyte_mapping.py # mapping_v2    -> analyte_mapping_v3
+python3 src/clean_specimen_v3.py      # specimen_v2   -> specimen_v3
+python3 src/clean_qtof_v3.py          # qtof_v2 + mapping_v3 -> qtof_v3
+python3 src/build_validate.py         # both v3 sides -> validate_v1
+```
+
+Every stage prints a full old → new change list, so each transformation can be
+audited before its output is trusted.
+
+### Review the figures
+
+```bash
+python3 src/onepager_stats.py          # print every computed figure
+python3 src/onepager_stats.py --json   # same, as JSON
+```
+
+Numbers are computed separately from layout so they can be signed off before
+anyone argues about design.
+
+### Render a sheet
+
+```bash
+python3 src/build_onepager.py --body classes --period "July 2025 – March 2026"
+```
+
+`--body` selects which sheet to build (`classes`, `overview`, `facility`) and
+`--dest` sets the output path. `--period` is required as an argument because the
+dataset has no usable collection date — see [Known limitations](#known-limitations).
+
+### Dashboard
+
+```bash
+python3 src/dashboard.py     # http://127.0.0.1:8000
+```
+
+A local page to pick a sheet, preview it live, and download it as PDF. Bound to
+localhost; it is not a service and has no authentication.
+
+---
+
+## Project structure
 
 ```
 new_infogenerator/
-  README.md                    this file — the whole directory
-  data/                        inputs (PHI, git-ignored except the mapping)
-    Analyte_Category_Mapping.xlsx        study team's drug vocabulary (tracked)
-    validation_set.xlsx                  the template this pipeline targets --
-                                         read by nobody, see 'What reads what'
-    NonFatalOverdoseBioS-OnePagerData_DATA_LABELS_2026-07-12_1336.csv
-                                         the REDCap export, 183 KB / 770 lines
-  assets/                      tracked, no patient data
-    wisconsin_facility_sites.png         county outline + the three site markers
-    pipeline-workflow.pdf                hand-drawn diagram of the whole chain
-  src/
-    vocab.py                   template vocabularies + study-team rulings, one copy
-    split_data.py              splits the long REDCap export into specimen + qtof
-    clean_specimen.py          per-column cleaning of the specimen side   -> v2
-    clean_qtof.py              text normalization of the drug-screen side -> v2
-    clean_analyte_mapping.py   repairs the analyte -> category vocabulary -> v2
-    extend_analyte_mapping.py  adds the substances QToF needs             -> v3
-    clean_specimen_v3.py       reshapes specimen onto the template        -> v3
-    clean_qtof_v3.py           canonicalizes, classifies, merges instances-> v3
-    build_validate.py          joins both v3 sides                        -> validate_v1
-    onepager_stats.py          computes every figure (suppression lives here)
-    build_onepager.py          renders layout only, three selectable bodies
-    dashboard.py               local picker + live preview + PDF export
-  versioned/                   numbered data snapshots (git-ignored)
-  output/                      only if you point --dest at it (git-ignored)
+├── data/                       inputs (PHI — git-ignored except the mapping)
+│   ├── Analyte_Category_Mapping.xlsx     drug vocabulary (tracked)
+│   ├── validation_set.xlsx               output template — see Data privacy
+│   └── NonFatalOverdose...LABELS_*.csv   REDCap export (supply your own)
+├── assets/                     tracked; aggregate figures only
+│   ├── wisconsin_facility_sites.png      county outline + site markers
+│   └── pipeline-workflow.pdf             hand-drawn diagram of the chain
+├── src/
+│   ├── vocab.py                template vocabularies + study-team rulings
+│   ├── split_data.py           splits the long export into two sides
+│   ├── clean_specimen.py       per-column cleaning          → specimen_v2
+│   ├── clean_qtof.py           text normalisation           → qtof_v2
+│   ├── clean_analyte_mapping.py  repairs the vocabulary     → mapping_v2
+│   ├── extend_analyte_mapping.py adds missing substances    → mapping_v3
+│   ├── clean_specimen_v3.py    reshapes onto the template   → specimen_v3
+│   ├── clean_qtof_v3.py        canonicalises and classifies → qtof_v3
+│   ├── build_validate.py       joins both sides             → validate_v1
+│   ├── onepager_stats.py       computes every figure
+│   ├── build_onepager.py       renders layout only
+│   └── dashboard.py            local picker, preview, PDF export
+└── versioned/                  numbered data snapshots (git-ignored)
 ```
 
-**The export is git-ignored, so a fresh checkout will not have it.** Restore it
-to the path above before running step 1, or pass `--source`. Verified Sep 2026:
-187,740 bytes, 769 data rows x 33 columns, splitting 373 `Specimen Form` +
-396 `QToF Screen` rows, and `split_data.py` reproduces both v1 baselines
-byte-for-byte from it. Every stage after step 1 runs from the `versioned/`
-snapshots, so the rest of the chain works without the export present.
-
-`biosurveillance-main/` in the parent directory is a **prior/reference project**
-(CDC OD2A submission tooling). Treat it as reference unless asked otherwise; the
-house palette here comes from its `doc_styles.py`.
+`biosurveillance-main/`, in the parent directory, is a prior reference project
+(CDC OD2A submission tooling). The house palette originates there.
 
 ---
 
-## Requirements — assume nothing
+## How it works
 
-`openpyxl`, `pandas`, `numpy`, `matplotlib`, `seaborn`, `plotly` and `jinja2` are
-**not installed** and must not be assumed.
+The REDCap export is a **long file**: each specimen has one `Specimen Form` row
+plus one or more `QToF Screen` rows, distinguished by the `Repeat Instrument`
+column. `split_data.py` separates the two so each side can be cleaned
+independently and re-joined later on `Record ID`.
 
-- `clean_analyte_mapping.py` reads and writes xlsx as **raw OOXML** via `zipfile`
-  and `xml.etree`, and emits a CSV alongside so downstream code can use the
-  stdlib.
-- Charts are **hand-authored inline SVG** for the same reason — see
-  *The one-pager*.
-
-The **one** non-stdlib dependency is `weasyprint`, used solely by
-`dashboard.py` for PDF export. On this machine it is installed under
-**Python 3.13 only**. Homebrew moved `python3` to 3.14 in Sep 2026, at which
-point `python3 src/dashboard.py` stopped starting. Either:
+Columns are selected by header **name**, never by position, so a reordered
+export cannot silently corrupt the split.
 
 ```
-python3.13 src/dashboard.py            # use the interpreter that has it
-python3.14 -m pip install weasyprint   # or install it where python3 points
+data/NonFatalOverdoseBioS-OnePagerData_DATA_LABELS_*.csv   (REDCap export)
+  │
+  │  split_data.py                    split by Repeat Instrument
+  ▼
+specimen_v1  373 × 28            qtof_v1  396 × 6
+  │                                │
+  │  clean_specimen.py             │  clean_qtof.py
+  ▼                                ▼
+specimen_v2  373 × 28            qtof_v2  396 × 6
+  │                                │
+  │  clean_specimen_v3.py          │  clean_qtof_v3.py  ◄── needs mapping_v3
+  ▼                                ▼
+specimen_v3  373 × 12            qtof_v3  2709 × 9
+  (11 template cols + 1 sidecar)   (one row per Record ID × analyte)
+
+data/Analyte_Category_Mapping.xlsx  445 × 7
+  │  clean_analyte_mapping.py         repairs spelling defects
+  ▼
+analyte_mapping_v2  444 × 7
+  │  extend_analyte_mapping.py        adds the substances QToF needs
+  ▼
+analyte_mapping_v3  479 × 7  ───────────────────► consumed by clean_qtof_v3.py
+
+specimen_v3 ──┐
+              ├── build_validate.py ──► validate_v1  2709 × 17
+qtof_v3 ──────┘                              │
+                                             │  onepager_stats.py  (figures)
+                                             │  build_onepager.py  (layout)
+                                             ▼
+                                    a one-page sheet, self-contained
+                                             ▲
+                                             │  dashboard.py  (pick / preview / PDF)
 ```
 
-Everything else runs on any Python 3.
+### Data flow
 
----
-
-## Quick start
-
-Run from `new_infogenerator/`. Order matters in one place: `clean_qtof_v3.py`
-reads `analyte_mapping_v3.csv`, so the mapping chain must run first.
-
-```
-python3 src/split_data.py             # -> versioned/{specimen,qtof}_v1.csv
-python3 src/clean_specimen.py         # specimen_v1 -> specimen_v2
-python3 src/clean_qtof.py             # qtof_v1     -> qtof_v2
-python3 src/clean_analyte_mapping.py  # data/*.xlsx -> analyte_mapping_v2
-python3 src/extend_analyte_mapping.py # mapping_v2  -> analyte_mapping_v3
-python3 src/clean_specimen_v3.py      # specimen_v2 -> specimen_v3
-python3 src/clean_qtof_v3.py          # qtof_v2 + mapping_v3 -> qtof_v3
-python3 src/build_validate.py         # specimen_v3 + qtof_v3 -> validate_v1
-python3 src/onepager_stats.py         # review the figures (--json to hand over)
-python3 src/build_onepager.py --body classes   # -> output/onepager.html
-python3.13 src/dashboard.py                    # http://127.0.0.1:8000
-```
-
-Every run prints the full old -> new change list so the transformation can be
-audited before the output is trusted.
-
-### The v1 baselines, and why the split refuses to overwrite them
-
-`split_data.py` writes `versioned/specimen_v1.csv` and `versioned/qtof_v1.csv`
-directly — no scratch copy, no manual promote.
-
-That lands on the snapshot **every later version was derived from**, so the
-immutability rule needs enforcing rather than merely stating. If a re-run could
-quietly rewrite `v1`, then `v2`, `v3`, `validate_v1` and the one-pager would all
-still build and still render — on a foundation that had moved underneath them,
-with nothing anywhere saying so.
-
-So the write is conditional:
-
-| Situation | What happens |
-| --- | --- |
-| No baseline yet | `+ specimen_v1.csv created` |
-| Baseline exists, bytes identical | `= specimen_v1.csv unchanged` — a no-op |
-| Baseline exists, bytes differ | **Stops.** Nothing is written. |
-| Differ, and `--force` given | `! specimen_v1.csv REPLACED (--force)` |
-
-The refusal names the consequence rather than just the conflict:
-
-```
-versioned/specimen_v1.csv already exists and this split differs from it.
-  Every later version was derived from the current baseline, so
-  overwriting it silently would leave v2/v3/validate_v1 built on
-  a snapshot that no longer exists.
-  Diff the two, then re-run with --force and rebuild the chain.
-```
-
-A new export is therefore a deliberate act: diff, `--force`, then re-run the
-whole chain. Re-running against the same export as often as you like is free.
-
-Provenance of the current baselines: produced by this script on **31 Jul 2026**.
-Re-running it today reproduces them **byte for byte**, so they are verified
-rather than merely trusted.
-
-`output/` no longer exists. It held the scratch split and a stale
-`onepager.html`; nothing read it, and `build_onepager.py --dest` recreates it on
-demand if you point a render back there.
-
----
-
-## The pipeline
-
-```
-data/NonFatalOverdoseBioS-OnePagerData_DATA_LABELS_*.csv   (REDCap LABELS export)
-  |
-  |  src/split_data.py         splits the long export by Repeat Instrument
-  v
-specimen_v1.csv  373 x 28      qtof_v1.csv  396 x 6
-  |                              |
-  |  src/clean_specimen.py       |  src/clean_qtof.py
-  v                              v
-specimen_v2.csv  373 x 28      qtof_v2.csv  396 x 6
-  |                              |
-  |  src/clean_specimen_v3.py    |  src/clean_qtof_v3.py  <--- needs mapping_v3
-  v                              v
-specimen_v3.csv  373 x 12      qtof_v3.csv  2709 x 9
-  (11 template cols + 1 sidecar)  (one row per Record ID x analyte,
-                                   classified and instance-merged)
-
-data/Analyte_Category_Mapping.xlsx  445 x 7   (study team's reference vocabulary)
-  |
-  |  src/clean_analyte_mapping.py      repairs spelling defects
-  v
-analyte_mapping_v2.{xlsx,csv}  444 x 7
-  |
-  |  src/extend_analyte_mapping.py     adds the substances QToF needs
-  v
-analyte_mapping_v3.{xlsx,csv}  479 x 7  ------> consumed by clean_qtof_v3.py
-
-specimen_v3.csv  373 x 12      qtof_v3.csv  2709 x 9
-  |                              |
-  +--------------+---------------+
-                 |  src/build_validate.py     joins on record_id
-                 v
-        validate_v1.csv  2709 x 17     the validation template's shape
-                 |
-                 |  src/onepager_stats.py     computes every figure
-                 |  src/build_onepager.py     renders layout only
-                 v
-        output/onepager.html               one page, self-contained
-                 ^
-                 |  src/dashboard.py            pick a body, preview, export PDF
-```
-
-`assets/pipeline-workflow.pdf` draws this same chain by hand across three
-phases, with the per-column problems noted against each stage. Phase 2 covers
-`dashboard.py` and the three output versions. It is a hand-maintained snapshot,
-so this README is the authority where they differ.
-
-The REDCap export is a **"long" file** — 769 data rows x 33 columns, 183 KB.
-Each specimen has one `Specimen Form` row (373) plus one or more `QToF Screen`
-rows (396), tagged in the `Repeat Instrument` column.
-`split_data.py` separates the two so each side can be cleaned independently and
-re-merged later on `Record ID`.
-
-Columns are selected by header **name**, not index, so a reordered export does
-not silently corrupt the split. Which side a column lands on matters:
-`Sample matrix` is populated only on the QToF rows, so it belongs to `QTOF_COLS`
-and is deliberately absent from `SPECIMEN_COLS`.
-
----
-
-## What reads what
-
-Traced by intercepting every file open during a full run — not by grepping, so
-it reflects what the code does rather than what the comments say.
+Traced by intercepting file access during a full run, so it reflects behaviour
+rather than intent.
 
 | File | Read by | Written by |
 | --- | --- | --- |
-| `data/NonFatalOverdose...DATA_LABELS_*.csv` | `split_data` | — |
+| `data/…DATA_LABELS_*.csv` | `split_data` | — |
 | `data/Analyte_Category_Mapping.xlsx` | `clean_analyte_mapping` | — |
-| `versioned/specimen_v1.csv` | `clean_specimen` | `split_data` (refuses to overwrite) |
+| `versioned/specimen_v1.csv` | `clean_specimen` | `split_data` |
 | `versioned/specimen_v2.csv` | `clean_specimen_v3` | `clean_specimen` |
 | `versioned/specimen_v3.csv` | `build_validate` | `clean_specimen_v3` |
-| `versioned/qtof_v1.csv` | `clean_qtof` | `split_data` (refuses to overwrite) |
+| `versioned/qtof_v1.csv` | `clean_qtof` | `split_data` |
 | `versioned/qtof_v2.csv` | `clean_qtof_v3` | `clean_qtof` |
 | `versioned/qtof_v3.csv` | `build_validate` | `clean_qtof_v3` |
 | `versioned/analyte_mapping_v2.csv` | `extend_analyte_mapping` | `clean_analyte_mapping` |
 | `versioned/analyte_mapping_v3.csv` | `clean_qtof_v3` | `extend_analyte_mapping` |
 | `versioned/validate_v1.csv` | `onepager_stats`, `build_onepager`, `dashboard` | `build_validate` |
 
-**Only two files enter the system**: the REDCap export and the original mapping.
-Everything else is generated, so deleting `versioned/` costs a re-run, not data.
+**Only two files enter the system.** Everything else is generated, so deleting
+`versioned/` costs a re-run, not data.
 
-Two things that are **not** inputs, despite appearances:
+Two things that look like inputs and are not:
 
 - **`data/validation_set.xlsx` is never opened.** Its vocabulary was transcribed
   by hand into `vocab.py`. It is kept as the source of truth for *why* the
-  specimen side has the 11 columns it has — but **if the template changes,
-  nothing here detects it.** The pipeline keeps validating against a snapshot of
-  what the template said in Aug 2026. That is the silent drift behind the four
-  pending category additions, and it runs in both directions.
+  specimen side has the columns it has, but **a change to the template will not
+  be detected** — the pipeline validates against the transcription. See
+  [Project status](#project-status).
+- **The generated `.xlsx` snapshots are written but never read.** Pipeline code
+  reads the `.csv` twins; the workbooks exist for people. Editing one has no
+  effect and the next run overwrites it.
 
-  It also **stays git-ignored despite being a template**: its `example` sheet is
-  a real cohort record, not synthetic. Record 234 matches `validate_v1.csv`
-  field for field — a 16-year-old with collection date, facility, ethnicity,
-  BAC, length of stay and full drug profile. Treat this file as PHI.
-- **The `.xlsx` mapping snapshots are written but never read.** Pipeline code
-  reads the `.csv` twins, because `openpyxl` is not installed. The workbooks
-  exist for people.
+### The v1 baselines
 
-## Conventions
+`split_data.py` writes `versioned/specimen_v1.csv` and `versioned/qtof_v1.csv`
+directly. Those are the snapshots every later version derives from, so the write
+is conditional rather than unconditional:
 
-### Cleaning
+| Situation | Result |
+| --- | --- |
+| No baseline yet | `+ specimen_v1.csv created` |
+| Baseline exists, bytes identical | `= specimen_v1.csv unchanged` — no-op |
+| Baseline exists, bytes differ | **Stops. Nothing is written.** |
+| Differs, `--force` given | `! specimen_v1.csv REPLACED (--force)` |
+
+Rows are rendered to a buffer before any file is touched, so a refusal cannot
+leave a half-written baseline behind.
+
+Re-running against the same export is therefore free and idempotent. Adopting a
+**new** export is a deliberate act: diff the result, re-run with `--force`, then
+rebuild the whole chain, because `v2` and `v3` do not regenerate themselves.
+
+---
+
+## Design conventions
+
+### Data cleaning
 
 1. **`vN` is immutable.** Never edit a snapshot in place. A cleaning script reads
    `vN` and rewrites `vN+1` from scratch every run, so it is deterministic and
@@ -340,8 +346,9 @@ had re-run.
 
 ---
 
-## Versioned snapshots
+## Dataset reference
 
+### Versioning scheme
 
 Every time a dataset changes (filtering, cleaning, re-splitting a new export),
 the result is saved under `versioned/` as a new numbered version so it can be
@@ -371,22 +378,18 @@ it goes to `output/`, which is git-ignored, because it is a build artefact.
   `data/Analyte_Category_Mapping.xlsx`, which is the implicit v1 and is never
   modified.
 
----
-
-## Dataset versions, stage by stage
-
 ### specimen_v2 — what changed
 
 Rules were agreed column by column. Unparseable values raise with a line number
 rather than silently defaulting, so new junk in a future export fails loudly.
 
-| Column | Change |
-| --- | --- |
-| `Patient's age` | Bare integers only (0-94). Unit text dropped (`29 yo` -> `29`); ages in months collapse to completed years, so under 12 months -> `0`. 3 cells. |
-| `How long was the hospital stay (in days)?` | Bare integers, `Unknown`, or blank. Unit text dropped; fractions round up; `<n` read as n; `>n` -> smallest integer above; anything at 0-1 -> `1`. A mis-entered date and an `N/A` became `Unknown`. 62 cells. |
-| `Patient's blood alcohol concentration (if known)` | Standardized to g/dL at 3 decimals, **renamed** to `Patient's blood alcohol concentration, g/dL (if known)`. Source mixed mg/dL and g/dL 1000x apart: results > 1 are mg/dL and divided by 1000, results < 1 are already g/dL. Censored values (`<5`, `<10`, `<0.010`) and `Negative` -> `0.000`; `N/A`/`Unknown` -> `Unknown`. Lab-report prose stripped. 139 cells. |
-| `What was the patient's discharge status?` | 8 rows fixed: IDs 414/415 lost `Official discharge` (contradicted `Left against medical advice`); IDs 435/436 lost `Transferred to another facility` (duplicate coding of the psych admission); IDs 1/15/29/286 had no box checked and are flagged in a **new** `(choice=Unknown)` column. The all-`Unchecked` `(choice=Left without treatment)` column was **dropped**. |
-| `Date completing this form` | Values untouched; **renamed** to `Date form completed (data entry date)` — it is a batch data-entry stamp, not a clinical event date. |
+| Column                                             | Change                                                                                                                                                                                                                                                                                                                                                                   |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Patient's age`                                    | Bare integers only (0-94). Unit text dropped (`29 yo` -> `29`); ages in months collapse to completed years, so under 12 months -> `0`. 3 cells.                                                                                                                                                                                                                          |
+| `How long was the hospital stay (in days)?`        | Bare integers, `Unknown`, or blank. Unit text dropped; fractions round up; `<n` read as n; `>n` -> smallest integer above; anything at 0-1 -> `1`. A mis-entered date and an `N/A` became `Unknown`. 62 cells.                                                                                                                                                           |
+| `Patient's blood alcohol concentration (if known)` | Standardized to g/dL at 3 decimals, **renamed** to `Patient's blood alcohol concentration, g/dL (if known)`. Source mixed mg/dL and g/dL 1000x apart: results > 1 are mg/dL and divided by 1000, results < 1 are already g/dL. Censored values (`<5`, `<10`, `<0.010`) and `Negative` -> `0.000`; `N/A`/`Unknown` -> `Unknown`. Lab-report prose stripped. 139 cells.    |
+| `What was the patient's discharge status?`         | 8 rows fixed: IDs 414/415 lost `Official discharge` (contradicted `Left against medical advice`); IDs 435/436 lost `Transferred to another facility` (duplicate coding of the psych admission); IDs 1/15/29/286 had no box checked and are flagged in a **new** `(choice=Unknown)` column. The all-`Unchecked` `(choice=Left without treatment)` column was **dropped**. |
+| `Date completing this form`                        | Values untouched; **renamed** to `Date form completed (data entry date)` — it is a batch data-entry stamp, not a clinical event date.                                                                                                                                                                                                                                    |
 
 Deliberately left as-is: `Specimen number` (13 site formats, but `Record ID` is
 the join key), `Patient's sex ` (the LABELS export merges cis and trans into two
@@ -405,29 +408,29 @@ selects it into the qtof side only.
 Values are checked against the template's allowed sets, so an unseen source value
 fails the run.
 
-| Template column | From | Rule |
-| --- | --- | --- |
-| `record_id` | `Record ID` | Copy. String — do not zero-pad; the mapping and v1/v2 all use bare integers. |
-| `spec_date` | `Date form completed` | ISO -> `MM/DD/YYYY`. **219 null (59%)** — see caveats. |
-| `location` | `To which facility...` | Copy. All 3 values already match the template byte-for-byte. |
-| `age` | `Patient's age` | `int`. 100% populated, 0-94. |
-| `sex` | `Patient's sex ` | 2-entry map, total: `Male (transgender male)` -> `M`, `Female (transgender female)` -> `F`. |
-| `race` | 6 checkbox columns | Collapse. `White/Caucasian` -> `White`; >1 tick -> `Two or more races` (IDs 107, 285). |
-| `ethnicity` | 3 checkbox columns | Collapse only — labels already match, no relabel, no derived value. |
-| `bac` | blood alcohol concentration | Numeric string passthrough; blank/`Unknown` -> null. **224 null (60%)**. |
-| `od_manner` | `Manner of overdose?` | 4-entry map. `Unintentional/Accidental` -> `Unintentional`, `Intentional/Suicide` -> `Intentional`. 9 blanks -> `Unknown`. |
-| `discharge_status` | 10 checkbox columns | Collapse 10 -> 5, see below. |
-| `hospital_stay_length` | `How long was the hospital stay` | `int` floored at 1; blank/`Unknown` -> null. **56 null**. |
+| Template column        | From                             | Rule                                                                                                                       |
+| ---------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `record_id`            | `Record ID`                      | Copy. String — do not zero-pad; the mapping and v1/v2 all use bare integers.                                               |
+| `spec_date`            | `Date form completed`            | ISO -> `MM/DD/YYYY`. **219 null (59%)** — see caveats.                                                                     |
+| `location`             | `To which facility...`           | Copy. All 3 values already match the template byte-for-byte.                                                               |
+| `age`                  | `Patient's age`                  | `int`. 100% populated, 0-94.                                                                                               |
+| `sex`                  | `Patient's sex `                 | 2-entry map, total: `Male (transgender male)` -> `M`, `Female (transgender female)` -> `F`.                                |
+| `race`                 | 6 checkbox columns               | Collapse. `White/Caucasian` -> `White`; >1 tick -> `Two or more races` (IDs 107, 285).                                     |
+| `ethnicity`            | 3 checkbox columns               | Collapse only — labels already match, no relabel, no derived value.                                                        |
+| `bac`                  | blood alcohol concentration      | Numeric string passthrough; blank/`Unknown` -> null. **224 null (60%)**.                                                   |
+| `od_manner`            | `Manner of overdose?`            | 4-entry map. `Unintentional/Accidental` -> `Unintentional`, `Intentional/Suicide` -> `Intentional`. 9 blanks -> `Unknown`. |
+| `discharge_status`     | 10 checkbox columns              | Collapse 10 -> 5, see below.                                                                                               |
+| `hospital_stay_length` | `How long was the hospital stay` | `int` floored at 1; blank/`Unknown` -> null. **56 null**.                                                                  |
 
 `discharge_status`, the agreed 10 -> 5 assignment:
 
-| Bucket | n | Source checkboxes |
-| --- | --- | --- |
-| `Admitted` | 240 | hospital 169, ICU 44, psychiatric 20, detox 9 |
-| `Discharged` | 103 | official discharge 99, discharged to law enforcement 5 |
-| `Transferred` | 18 | transferred to another facility 12, **left AMA 6** |
-| `Other` | 8 | **death 8 — the only source** |
-| `Unknown` | 4 | unknown 4 |
+| Bucket        | n   | Source checkboxes                                      |
+| ------------- | --- | ------------------------------------------------------ |
+| `Admitted`    | 240 | hospital 169, ICU 44, psychiatric 20, detox 9          |
+| `Discharged`  | 103 | official discharge 99, discharged to law enforcement 5 |
+| `Transferred` | 18  | transferred to another facility 12, **left AMA 6**     |
+| `Other`       | 8   | **death 8 — the only source**                          |
+| `Unknown`     | 4   | unknown 4                                              |
 
 Precedence `Other > Admitted > Transferred > Discharged > Unknown` applies only
 when one patient's ticks land in two buckets. It fires **once**: Record 428
@@ -436,8 +439,8 @@ when one patient's ticks land in two buckets. It fires **once**: Record 428
 One sidecar (prefix `sc_`, **not** part of the template — a downstream
 `build_validate.py` selects the 11 template columns and ignores it):
 
-| Sidecar | Carries |
-| --- | --- |
+| Sidecar              | Carries                                                 |
+| -------------------- | ------------------------------------------------------- |
 | `sc_specimen_number` | The lab's own sample label; secondary join key to qtof. |
 
 Everything the collapse destroys stays recoverable from v2, which is immutable.
@@ -447,7 +450,7 @@ Re-join on `record_id` rather than re-deriving:
   behind `discharge_status`;
 - the 9 blank `Manner of overdose?` cells, now reported as `Unknown` alongside
   the 87 clinician-recorded ones;
-- the below-detection-limit split behind `bac = 0.000` — though note v2 *also*
+- the below-detection-limit split behind `bac = 0.000` — though note v2 _also_
   cannot separate that one, since `<0.010` (72), `Negative` (14) and a bare `0`
   (8) are already collapsed there. Recovering it means going back to v1 or
   changing `clean_specimen.py` — see Open items.
@@ -458,16 +461,16 @@ Text normalization only. This pass does **not** canonicalize analyte names
 against the mapping, collapse metabolites, merge the 23 second instances, or
 explode to one row per analyte.
 
-| Change | Detail |
-| --- | --- |
-| Whitespace | 152 edge-dirty cells -> 0; 27 cells with internal double spaces -> 0 |
-| Trailing commas | 131 cells -> 0 (no more empty tokens) |
-| Unbalanced parenthesis | ID 60 `Negative Ion Mode` gained its closing `)` |
-| Paren-aware splitting | Commas inside a parenthetical qualifier are not delimiters, e.g. `lidocaine-M (MEGX, N deethylated metabolite)` |
-| Missing delimiters | 6 repairs: a period used as a comma (IDs 176, 178), a double space after a name (IDs 91, 145, 239), and one single-space fusion (ID 238, `fentanyl 1-(3-chlorophenyl)piperazine (mCPP)`) |
-| Sentinels | 6 spellings (`None`, `-`, `None detected.`, `None observed`, `Negative`, `None detected`) collapsed onto `None detected`, 39 cells |
-| Repeated analytes | Dropped 2 in-cell duplicates (ID 214 `THC-M (carboxy THC metabolite)`, ID 269 `acetaminophen`) |
-| `Sample matrix` | Now carried through from the export: 94 urine, 54 plasma, 248 blank. Values validated; an unexpected value raises. |
+| Change                 | Detail                                                                                                                                                                                   |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Whitespace             | 152 edge-dirty cells -> 0; 27 cells with internal double spaces -> 0                                                                                                                     |
+| Trailing commas        | 131 cells -> 0 (no more empty tokens)                                                                                                                                                    |
+| Unbalanced parenthesis | ID 60 `Negative Ion Mode` gained its closing `)`                                                                                                                                         |
+| Paren-aware splitting  | Commas inside a parenthetical qualifier are not delimiters, e.g. `lidocaine-M (MEGX, N deethylated metabolite)`                                                                          |
+| Missing delimiters     | 6 repairs: a period used as a comma (IDs 176, 178), a double space after a name (IDs 91, 145, 239), and one single-space fusion (ID 238, `fentanyl 1-(3-chlorophenyl)piperazine (mCPP)`) |
+| Sentinels              | 6 spellings (`None`, `-`, `None detected.`, `None observed`, `Negative`, `None detected`) collapsed onto `None detected`, 39 cells                                                       |
+| Repeated analytes      | Dropped 2 in-cell duplicates (ID 214 `THC-M (carboxy THC metabolite)`, ID 269 `acetaminophen`)                                                                                           |
+| `Sample matrix`        | Now carried through from the export: 94 urine, 54 plasma, 248 blank. Values validated; an unexpected value raises.                                                                       |
 
 A slash is part of an analyte **name**, never a delimiter —
 `4-ANPP/despropionylfentanyl` and `citalopram/escitalopram` are alias pairs for
@@ -483,17 +486,17 @@ those were added in v3. See the qtof_v3 section for the rung breakdown.
 **2709 rows x 9 columns**, from 396 screens over 373 records. The QToF side in
 the validation template's shape, with everything resolved.
 
-| Column | Source | Content |
-| --- | --- | --- |
-| `Record ID` | v2 | 373 patients, 1-21 rows each (median 7). |
-| `Specimen number` | v2 | Must agree across a record's instances; a disagreement raises. |
-| `Sample matrix` | v2 + fill | **Fully populated**: urine 2477, plasma 232. Becomes `wslh_matrix` at the join (rename + Title Case). |
-| `analyte_name` | ion columns -> mapping | One `Canonical_Analyte` per row. 2703 rows, **281 distinct canonicals**. 6 blank. |
-| `analyte_group_1` | mapping | **16 values** including the `Other` fill. Sums to 2703 — the one clean partition. |
-| `analyte_group_2` | mapping | 647 rows. 5 values: Cocaine 203, NPSOpioids 178, Fentanyl 160, Amphetamines 97, Cathinones 9. |
-| `analyte_group_3` | mapping | **3 rows** — mdma and mda only. |
-| `metabolite_flag` | mapping `Flag` | `True` 866 / `False` 1837. Real data, not a pipeline rule. |
-| `unmatched_analytes` | ion columns | **Empty on every row**; kept as the guard that makes a future export's new junk visible. |
+| Column               | Source                 | Content                                                                                               |
+| -------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------- |
+| `Record ID`          | v2                     | 373 patients, 1-21 rows each (median 7).                                                              |
+| `Specimen number`    | v2                     | Must agree across a record's instances; a disagreement raises.                                        |
+| `Sample matrix`      | v2 + fill              | **Fully populated**: urine 2477, plasma 232. Becomes `wslh_matrix` at the join (rename + Title Case). |
+| `analyte_name`       | ion columns -> mapping | One `Canonical_Analyte` per row. 2703 rows, **281 distinct canonicals**. 6 blank.                     |
+| `analyte_group_1`    | mapping                | **16 values** including the `Other` fill. Sums to 2703 — the one clean partition.                     |
+| `analyte_group_2`    | mapping                | 647 rows. 5 values: Cocaine 203, NPSOpioids 178, Fentanyl 160, Amphetamines 97, Cathinones 9.         |
+| `analyte_group_3`    | mapping                | **3 rows** — mdma and mda only.                                                                       |
+| `metabolite_flag`    | mapping `Flag`         | `True` 866 / `False` 1837. Real data, not a pipeline rule.                                            |
+| `unmatched_analytes` | ion columns            | **Empty on every row**; kept as the guard that makes a future export's new junk visible.              |
 
 Only 6 blanks exist anywhere in the template-bound columns, all on the same 6
 rows. `Sample matrix` and `unmatched_analytes` are both fully resolved.
@@ -506,7 +509,7 @@ different classifications, and a single `analyte_group_1` cell cannot hold them.
 The 23 records with two QToF rows are **merged**: analytes unioned, then
 deduplicated. A union rather than "keep instance 1" is required — 16 of the 23
 carry analytes on instance 2 that instance 1 lacks (24 canonicals), so discarding
-an instance would lose real detections. Merging is only safe *after*
+an instance would lose real detections. Merging is only safe _after_
 canonicalization, because the instances differ mainly by spelling. Records 329
 and 366 had no analytes on their first instance and gain them from their second.
 
@@ -520,13 +523,13 @@ instances. The run asserts every output row is a unique
 
 #### Resolution: a four-rung chain, first hit wins
 
-| Rung | Detections | Cumulative |
-| --- | --- | --- |
-| 1. exact `Analyte` key | 2246 | 76.52% |
-| 2. `Analyte` key, casefolded + whitespace-collapsed | 686 | **99.90%** |
-| 3. `Canonical_Analyte`, likewise | 3 | **100.00%** |
-| 4. `Known_Variants`, likewise | **0** | 100.00% |
-| unmatched | **0** | — |
+| Rung                                                | Detections | Cumulative  |
+| --------------------------------------------------- | ---------- | ----------- |
+| 1. exact `Analyte` key                              | 2246       | 76.52%      |
+| 2. `Analyte` key, casefolded + whitespace-collapsed | 686        | **99.90%**  |
+| 3. `Canonical_Analyte`, likewise                    | 3          | **100.00%** |
+| 4. `Known_Variants`, likewise                       | **0**      | 100.00%     |
+| unmatched                                           | **0**      | —           |
 
 Rung 2 is nearly the whole gain. Rung 3 exists because many canonicals are not
 themselves `Analyte` keys, so a correctly spelled canonical would otherwise miss.
@@ -544,7 +547,7 @@ keys are likewise never edited; normalization happens at lookup only.
 Also handled:
 
 - The 39 `None detected` sentinels are stripped before lookup. They are
-  per-*column* markers: a screen can carry one in negative mode while positive
+  per-_column_ markers: a screen can carry one in negative mode while positive
   mode lists a dozen real detections.
 - `F-alpha-PPP` is dropped from the variant index as **ambiguous** — it is listed
   against both `3'-fluoro-` and `4'-fluoro-alpha-pyrrolidinopropiophenone`.
@@ -553,18 +556,18 @@ Also handled:
 
 `analyte_group_1`, the only column that partitions the 2703 analyte rows exactly:
 
-| Category | Rows | Share | | Category | Rows | Share |
-| --- | --- | --- | --- | --- | --- | --- |
-| **Other** | 601 | **22.2%** | | MOUD | 63 | 2.3% |
-| NarcoticAnalgesics | 436 | 16.1% | | Naloxone | 53 | 2.0% |
-| CNSStimulants | 342 | 12.7% | | Anesthetics | 44 | 1.6% |
-| Cannabinoids | 308 | 11.4% | | MuscleRelaxers | 24 | 0.9% |
-| Antidepressants | 250 | 9.2% | | Barbiturates | 16 | 0.6% |
-| Benzodiazepines | 146 | 5.4% | | Hallucinogens | 3 | 0.1% |
-| Antihistamines | 124 | 4.6% | | | | |
-| Anticonvulsants | 107 | 4.0% | | | | |
-| DissociativeAnesthetics | 103 | 3.8% | | | | |
-| Antipsychotics | 83 | 3.1% | | | | |
+| Category                | Rows | Share     |     | Category       | Rows | Share |
+| ----------------------- | ---- | --------- | --- | -------------- | ---- | ----- |
+| **Other**               | 601  | **22.2%** |     | MOUD           | 63   | 2.3%  |
+| NarcoticAnalgesics      | 436  | 16.1%     |     | Naloxone       | 53   | 2.0%  |
+| CNSStimulants           | 342  | 12.7%     |     | Anesthetics    | 44   | 1.6%  |
+| Cannabinoids            | 308  | 11.4%     |     | MuscleRelaxers | 24   | 0.9%  |
+| Antidepressants         | 250  | 9.2%      |     | Barbiturates   | 16   | 0.6%  |
+| Benzodiazepines         | 146  | 5.4%      |     | Hallucinogens  | 3    | 0.1%  |
+| Antihistamines          | 124  | 4.6%      |     |                |      |       |
+| Anticonvulsants         | 107  | 4.0%      |     |                |      |       |
+| DissociativeAnesthetics | 103  | 3.8%      |     |                |      |       |
+| Antipsychotics          | 83   | 3.1%      |     |                |      |       |
 
 The three levels use **disjoint vocabularies**, not one shared list: no value
 appears in both `analyte_group_1` and `analyte_group_2`. So filtering for
@@ -574,35 +577,35 @@ returns zero. Only `Hallucinogens` crosses levels (1 and 3).
 `metabolite_flag` is 32% overall but **wildly uneven by class**, which matters
 more than the headline:
 
-| Class | Metabolite share | | Class | Metabolite share |
-| --- | --- | --- | --- | --- |
-| **Cannabinoids** | **98%** (301/308) | | CNSStimulants | 19% |
-| MOUD | 59% | | Other | 9% |
-| Benzodiazepines | 49% | | Anesthetics | 9% |
-| DissociativeAnesthetics | 44% | | Antihistamines | 4% |
-| Antidepressants | 42% | | MuscleRelaxers | 4% |
-| NarcoticAnalgesics | 36% | | Anticonvulsants / Naloxone / Barbiturates | **0%** |
-| Antipsychotics | 24% | | | |
+| Class                   | Metabolite share  |     | Class                                     | Metabolite share |
+| ----------------------- | ----------------- | --- | ----------------------------------------- | ---------------- |
+| **Cannabinoids**        | **98%** (301/308) |     | CNSStimulants                             | 19%              |
+| MOUD                    | 59%               |     | Other                                     | 9%               |
+| Benzodiazepines         | 49%               |     | Anesthetics                               | 9%               |
+| DissociativeAnesthetics | 44%               |     | Antihistamines                            | 4%               |
+| Antidepressants         | 42%               |     | MuscleRelaxers                            | 4%               |
+| NarcoticAnalgesics      | 36%               |     | Anticonvulsants / Naloxone / Barbiturates | **0%**           |
+| Antipsychotics          | 24%               |     |                                           |                  |
 
 Filtering `metabolite_flag = False` does **not** scale the data down evenly — it
 nearly erases cannabis (308 rows -> 7) while leaving anticonvulsants, naloxone
 and barbiturates untouched. Any "excluding metabolites" view changes the drug
-*mix*, not just the totals. 307 of 373 patients (82%) carry at least one
+_mix_, not just the totals. 307 of 373 patients (82%) carry at least one
 metabolite.
 
 #### Three decisions encoded as constants
 
 **Category spelling — the mapping wins** (Aug 2026). Where the mapping and the
-template disagree, the mapping's spelling is emitted and the *template* gains it.
+template disagree, the mapping's spelling is emitted and the _template_ gains it.
 Tracked in `TEMPLATE_ADDITIONS_REQUESTED`; any category in neither the template
 nor that set **raises**. Four values are pending, covering 617 rows:
 
-| Value | Rows | Template needs |
-| --- | --- | --- |
-| `CNSStimulants` | 342 | rename from `CSNSStimulants` (a typo) |
-| `Antihistamines` | 124 | add |
-| `Anticonvulsants` | 107 | add |
-| `Anesthetics` | 44 | add |
+| Value             | Rows | Template needs                        |
+| ----------------- | ---- | ------------------------------------- |
+| `CNSStimulants`   | 342  | rename from `CSNSStimulants` (a typo) |
+| `Antihistamines`  | 124  | add                                   |
+| `Anticonvulsants` | 107  | add                                   |
+| `Anesthetics`     | 44   | add                                   |
 
 **`Sample matrix`: unrecorded means urine.** The study team confirmed no plasma
 was collected during the earlier part of the study, so 2031 rows / 248 patients
@@ -624,14 +627,14 @@ rather than be papered over by a tie-break.
 Deliberate, but they are **not all the same thing** and must not be read as "no
 drugs detected":
 
-| Record | `qtof_v1` ion columns | Meaning |
-| --- | --- | --- |
-| 190 | `'None'` / `'None'` | genuine negative — the screen ran and found nothing |
-| 142, 143, 365, 433, 447 | **both empty** | **no result was ever entered** |
+| Record                  | `qtof_v1` ion columns | Meaning                                             |
+| ----------------------- | --------------------- | --------------------------------------------------- |
+| 190                     | `'None'` / `'None'`   | genuine negative — the screen ran and found nothing |
+| 142, 143, 365, 433, 447 | **both empty**        | **no result was ever entered**                      |
 
 Only **one** of the six is a true negative. The other five have completely empty
 ion-mode cells in the raw export — no analytes and no sentinel — so their screen
-is *missing*, not negative. Three of them (365, 433, 447) are MCW specimens with
+is _missing_, not negative. Three of them (365, 433, 447) are MCW specimens with
 a recorded `Sample matrix`, which suggests the sample was collected and run.
 
 Keeping the rows preserves those patients' demographics. But **counting the five
@@ -645,15 +648,15 @@ as missing. `qtof_v1` has 7 all-empty rows; two are second instances of Records
 `data/Analyte_Category_Mapping.xlsx` is the study team's file and is never
 modified. v2 repairs:
 
-| Change | Detail |
-| --- | --- |
-| Whitespace | 30 `Canonical_Analyte` cells had a trailing space, making e.g. `'cathine '` and `'cathine'` distinct keys. Now 0 dirty cells. |
-| Category spellings | 8 cells across 5 typo clusters, so 23 category strings collapse to **17** real categories: `NarcoticAnalgesic`/`NarcoticAnagesics` -> `NarcoticAnalgesics`, `CNSSimulants` -> `CNSStimulants`, `DissociativeAnesthetic` -> `DissociativeAnesthetics`, `NSPOpioids` -> `NPSOpioids`, `Hallucinogen` -> `Hallucinogens` |
-| Canonical spellings | 15 cells. Canonicals that were themselves misspelled, so correct input produced wrong output: `disulfram` -> `disulfiram`, `lorsartan` -> `losartan`, `aspirin-salicyclic acid` -> `aspirin-salicylic acid`. Three others differed from an existing twin only by case. |
-| `metaprolol` merge | `metaprolol` was a misspelling given its own canonical, splitting one beta blocker across two names with ~5 detections on the wrong branch. Study team confirmed (Heather, Aug 2026): `metaprolol` -> `metoprolol`, and its metabolite row's doubly-typo'd canonical `metaprolol-hydorxy` -> `metoprolol-hydroxy`. |
-| Flag repair | 1 row. The merge above left `metaprolol-hydroxy` sharing a canonical with a `Flag=Metabolite` twin while blank itself; set to `Metabolite`. A **targeted** fix via `FLAG_FIXES`, not a general backfill — the five pre-existing Flag disagreements stay visible and unresolved. |
-| Duplicate row | Removed the blank-`Flag` twin of the mCPP row, keeping the `Flag=Metabolite` one. 445 -> 444 rows. |
-| Category backfill | `olazapine` (variant of `olanzapine`) had no category; filled with `Antipsychotics` from its sibling row. 0 category conflicts remain. |
+| Change              | Detail                                                                                                                                                                                                                                                                                                                |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Whitespace          | 30 `Canonical_Analyte` cells had a trailing space, making e.g. `'cathine '` and `'cathine'` distinct keys. Now 0 dirty cells.                                                                                                                                                                                         |
+| Category spellings  | 8 cells across 5 typo clusters, so 23 category strings collapse to **17** real categories: `NarcoticAnalgesic`/`NarcoticAnagesics` -> `NarcoticAnalgesics`, `CNSSimulants` -> `CNSStimulants`, `DissociativeAnesthetic` -> `DissociativeAnesthetics`, `NSPOpioids` -> `NPSOpioids`, `Hallucinogen` -> `Hallucinogens` |
+| Canonical spellings | 15 cells. Canonicals that were themselves misspelled, so correct input produced wrong output: `disulfram` -> `disulfiram`, `lorsartan` -> `losartan`, `aspirin-salicyclic acid` -> `aspirin-salicylic acid`. Three others differed from an existing twin only by case.                                                |
+| `metaprolol` merge  | `metaprolol` was a misspelling given its own canonical, splitting one beta blocker across two names with ~5 detections on the wrong branch. Study team confirmed (Heather, Aug 2026): `metaprolol` -> `metoprolol`, and its metabolite row's doubly-typo'd canonical `metaprolol-hydorxy` -> `metoprolol-hydroxy`.    |
+| Flag repair         | 1 row. The merge above left `metaprolol-hydroxy` sharing a canonical with a `Flag=Metabolite` twin while blank itself; set to `Metabolite`. A **targeted** fix via `FLAG_FIXES`, not a general backfill — the five pre-existing Flag disagreements stay visible and unresolved.                                       |
+| Duplicate row       | Removed the blank-`Flag` twin of the mCPP row, keeping the `Flag=Metabolite` one. 445 -> 444 rows.                                                                                                                                                                                                                    |
+| Category backfill   | `olazapine` (variant of `olanzapine`) had no category; filled with `Antipsychotics` from its sibling row. 0 category conflicts remain.                                                                                                                                                                                |
 
 **The `Analyte` lookup keys are never corrected.** Misspelled keys are the point
 of that column — they are what lets a typo in the raw QToF text find the right
@@ -679,11 +682,11 @@ the 18 it allows today.
 The additions came back from the study team (Heather, Aug 2026) in three tiers,
 which differ in what had to be decided:
 
-| Tier | Rows | What it is | Who decided |
-| --- | --- | --- | --- |
-| **A** | 15 | The substance was already in the vocabulary; only this *spelling* was missing. Each new row is an `Analyte` key pointing at an existing canonical. | Study team confirmed all 15 |
-| **B** | 8 | Genuinely new substances that merely **resemble** something already mapped. Confirmed as NOT the same analytes. | Canonical names follow standard toxicology nomenclature |
-| **C** | 12 | Absent from the vocabulary entirely. | Study team supplied canonical + `Known_Variants` verbatim |
+| Tier  | Rows | What it is                                                                                                                                         | Who decided                                               |
+| ----- | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| **A** | 15   | The substance was already in the vocabulary; only this _spelling_ was missing. Each new row is an `Analyte` key pointing at an existing canonical. | Study team confirmed all 15                               |
+| **B** | 8    | Genuinely new substances that merely **resemble** something already mapped. Confirmed as NOT the same analytes.                                    | Canonical names follow standard toxicology nomenclature   |
+| **C** | 12   | Absent from the vocabulary entirely.                                                                                                               | Study team supplied canonical + `Known_Variants` verbatim |
 
 Tier A rows **inherit** their categories and `Flag` from the target canonical
 rather than being retyped, so a new key can never disagree with the rows already
@@ -693,16 +696,16 @@ existing rows already disagree.
 Tier B records what each substance must **not** be confused with, because that is
 the expensive failure mode:
 
-| Analyte | Canonical | Not to be confused with |
-| --- | --- | --- |
-| `DL-cathinone` | `cathinone` | `cathine` — which is norpseudoephedrine |
-| `Chloroquine` | `chloroquine` | `hydroxychloroquine` — this is the parent drug |
-| `N-piperidinyl etonitazene` | `n-piperidinyl etonitazene` | `n-piperidinyl 4-hydroxy nitazene` |
-| `etonitazene` | `etonitazene` | `metonitazene` — 96% similar string, different opioid |
-| `chlordiazepoxide` | `chlordiazepoxide` | `chlordiazepoxide-metabolite` — this is the parent |
-| `MDA` | `mda` | `mdma` |
-| `meta-methyl fentanyl` | `meta-methyl fentanyl` | `meta-methyl acetyl fentanyl` — note the acetyl |
-| `mirtazapine-n-desmethyl` | `mirtazapine-n-desmethyl` (Flag=Metabolite) | `olanzapine-n-desmethyl` |
+| Analyte                     | Canonical                                   | Not to be confused with                               |
+| --------------------------- | ------------------------------------------- | ----------------------------------------------------- |
+| `DL-cathinone`              | `cathinone`                                 | `cathine` — which is norpseudoephedrine               |
+| `Chloroquine`               | `chloroquine`                               | `hydroxychloroquine` — this is the parent drug        |
+| `N-piperidinyl etonitazene` | `n-piperidinyl etonitazene`                 | `n-piperidinyl 4-hydroxy nitazene`                    |
+| `etonitazene`               | `etonitazene`                               | `metonitazene` — 96% similar string, different opioid |
+| `chlordiazepoxide`          | `chlordiazepoxide`                          | `chlordiazepoxide-metabolite` — this is the parent    |
+| `MDA`                       | `mda`                                       | `mdma`                                                |
+| `meta-methyl fentanyl`      | `meta-methyl fentanyl`                      | `meta-methyl acetyl fentanyl` — note the acetyl       |
+| `mirtazapine-n-desmethyl`   | `mirtazapine-n-desmethyl` (Flag=Metabolite) | `olanzapine-n-desmethyl`                              |
 
 The study team reviewed the whole file and returned it (Heather, Aug 2026;
 her returned workbook is no longer kept in the repo). Her answers
@@ -732,12 +735,12 @@ three. Adopting a class **requires** classifying the drugs of that class already
 in the vocabulary, or a chart would report the two newest additions as if they
 were the whole class. `CATEGORY_BACKFILL` fills 43 rows that had no category:
 
-| Category | Rows | Substances |
-| --- | --- | --- |
-| `Antihistamines` | 18 | 12 — diphenhydramine, hydroxyzine, cetirizine (+2 metabolites), doxylamine, chlorpheniramine (+2), promethazine (+1), chlorcyclizine |
-| `Anticonvulsants` | 16 | 12 — carbamazepine, oxcarbazepine, lamotrigine, levetiracetam, topiramate, phenytoin, zonisamide, lacosamide, gabapentin, pregabalin, valproic acid, eslicarbazepine |
-| `Anesthetics` | 8 | 6 — propofol, etomidate, lidocaine (+2 metabolites), bupivacaine/levobupivacaine |
-| `Antidepressants` | 1 | paroxetine (the one study-team proposal the template already allowed) |
+| Category          | Rows | Substances                                                                                                                                                           |
+| ----------------- | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Antihistamines`  | 18   | 12 — diphenhydramine, hydroxyzine, cetirizine (+2 metabolites), doxylamine, chlorpheniramine (+2), promethazine (+1), chlorcyclizine                                 |
+| `Anticonvulsants` | 16   | 12 — carbamazepine, oxcarbazepine, lamotrigine, levetiracetam, topiramate, phenytoin, zonisamide, lacosamide, gabapentin, pregabalin, valproic acid, eslicarbazepine |
+| `Anesthetics`     | 8    | 6 — propofol, etomidate, lidocaine (+2 metabolites), bupivacaine/levobupivacaine                                                                                     |
+| `Antidepressants` | 1    | paroxetine (the one study-team proposal the template already allowed)                                                                                                |
 
 It only fills rows with **no** category, so a study-team assignment is never
 overwritten, and it **raises** if a named canonical is absent so the list cannot
@@ -764,12 +767,12 @@ output is rebuilt from scratch on every run.
 
 By this point the work is mechanical — the shaping happened upstream:
 
-| Step | Detail |
-| --- | --- |
-| `Record ID` -> `record_id` | rename, then join. The key is a perfect 1:1 — no specimen-only or qtof-only ids, so no patient is lost and no analyte row orphaned. |
-| `Sample matrix` -> `wslh_matrix` | rename + Title Case (`urine` -> `Urine`) |
-| Dropped | `sc_specimen_number`, `Specimen number`, `unmatched_analytes` |
-| Reordered | to the template's 17-column order |
+| Step                             | Detail                                                                                                                              |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `Record ID` -> `record_id`       | rename, then join. The key is a perfect 1:1 — no specimen-only or qtof-only ids, so no patient is lost and no analyte row orphaned. |
+| `Sample matrix` -> `wslh_matrix` | rename + Title Case (`urine` -> `Urine`)                                                                                            |
+| Dropped                          | `sc_specimen_number`, `Specimen number`, `unmatched_analytes`                                                                       |
+| Reordered                        | to the template's 17-column order                                                                                                   |
 
 The join is **one-to-many**: 373 patients fan out to 2709 rows, so every
 demographic value repeats down its patient's rows. `race == 'White'` matches
@@ -792,19 +795,19 @@ into the one true negative and the five with no screen on file.
 `KEEP_ANALYTE_LESS_ROWS` keeps them so those patients stay in the demographic
 denominators, at the cost of 6 rows the template has no value for.
 
-## The one-pager
+---
 
-Three scripts. `onepager_stats.py` and `build_onepager.py` are **standard
-library only** — matplotlib, pandas, numpy and jinja2 are all absent from this
-environment, so nothing is assumed. `dashboard.py` adds `weasyprint` for the PDF
-export, and nothing else. `output/` is git-ignored; the rendered page is a build
-artefact, not a snapshot.
+## Output reference
 
-| Script | Job |
-| --- | --- |
-| `src/onepager_stats.py` | Computes every figure. Prints them; `--json` hands them over for review. |
-| `src/build_onepager.py` | Layout only — no arithmetic beyond scaling bars to pixels. |
-| `src/dashboard.py` | Local picker: choose a body, live preview, download PDF. Binds 127.0.0.1 only. |
+Three scripts. `onepager_stats.py` and `build_onepager.py` are standard library
+only; `dashboard.py` adds WeasyPrint for PDF export and nothing else. A rendered
+page is a build artefact rather than a snapshot, and is git-ignored.
+
+| Script                  | Job                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| `src/onepager_stats.py` | Computes every figure. Prints them; `--json` hands them over for review.       |
+| `src/build_onepager.py` | Layout only — no arithmetic beyond scaling bars to pixels.                     |
+| `src/dashboard.py`      | Local picker: choose a body, live preview, download PDF. Binds 127.0.0.1 only. |
 
 The split is deliberate: the study team can sign off on **the numbers** before
 anyone argues about **the layout**, and the layout can be re-cut without touching
@@ -817,10 +820,10 @@ body rather than selectable — what needs explaining depends on what is shown,
 and leaving the caveat selectable invited a sheet whose footnotes did not match
 its charts.
 
-| `--body` | Sheet |
-| --- | --- |
-| `classes` | Opioids vs stimulants — two panels, then WHO above OUTCOME. |
-| `overview` | All sixteen drug classes ranked, then an 8x8 co-occurrence grid. |
+| `--body`   | Sheet                                                                               |
+| ---------- | ----------------------------------------------------------------------------------- |
+| `classes`  | Opioids vs stimulants — two panels, then WHO above OUTCOME.                         |
+| `overview` | All sixteen drug classes ranked, then an 8x8 co-occurrence grid.                    |
 | `facility` | Madison / Milwaukee / Green Bay, each with the same two classes, under a state map. |
 
 `BODIES` in `build_onepager.py` holds each one's title, footnote and caveat
@@ -864,30 +867,30 @@ shipping a truncated sheet.
 
 The sheet is 816 x 1056 CSS px with 0.3in margins, leaving **998px of printable
 height**, and all three bodies sit within ~12px of that. Every size on the page
-is therefore a *measured* constant, not a chosen one — each was found by
+is therefore a _measured_ constant, not a chosen one — each was found by
 sweeping values and taking the largest that still rendered on one page:
 
-| Constant | What it sizes |
-| --- | --- |
-| `HEADER_PAD`, `HEADER_LEAD` | Masthead: gap below the org line; space above the eyebrow (facility only). |
-| `BLOCK_GAP` | Rhythm between the sheet's top-level blocks. |
-| `STACK_GAP` | Separation between the stacked WHO and OUTCOME blocks. |
-| `BAND_ROW_H`, `OBAR_H` | WHO/OUTCOME chart heights — **per body**, because the sheets have different room. |
-| `WHO_STAT_PAD` | The three demographic rows, classes sheet only. |
-| `FACILITY_LEAD`, `MAP_INDENT`, `MAP_KEY_INSET` | The facility sheet's map band. |
-| `DISCHARGE_BAR_H`, `DISCHARGE_LABEL_MIN` | The outcome bar and the smallest share that still gets an inline number. |
+| Constant                                       | What it sizes                                                                     |
+| ---------------------------------------------- | --------------------------------------------------------------------------------- |
+| `HEADER_PAD`, `HEADER_LEAD`                    | Masthead: gap below the org line; space above the eyebrow (facility only).        |
+| `BLOCK_GAP`                                    | Rhythm between the sheet's top-level blocks.                                      |
+| `STACK_GAP`                                    | Separation between the stacked WHO and OUTCOME blocks.                            |
+| `BAND_ROW_H`, `OBAR_H`                         | WHO/OUTCOME chart heights — **per body**, because the sheets have different room. |
+| `WHO_STAT_PAD`                                 | The three demographic rows, classes sheet only.                                   |
+| `FACILITY_LEAD`, `MAP_INDENT`, `MAP_KEY_INSET` | The facility sheet's map band.                                                    |
+| `DISCHARGE_BAR_H`, `DISCHARGE_LABEL_MIN`       | The outcome bar and the smallest share that still gets an inline number.          |
 
-**Consequence worth internalising: adding anything means removing something.**
-The contact line in the footer cost ~19px and pushed all three sheets to two
-pages; it was paid for by shrinking charts. If a sheet needs to grow, the
-cheapest sources are the footnote prose and the `classes` KPI strip (64.5px,
-whose four numbers all appear elsewhere on that sheet).
+**Adding anything to a sheet means removing something else.** Adding the
+footer contact line cost roughly 19px and pushed all three sheets to two pages;
+it was paid for by reducing chart heights. The cheapest space to reclaim is the
+footnote prose and the `classes` KPI strip (about 64px, whose four figures all
+appear elsewhere on that sheet).
 
 ### WeasyPrint is not a browser
 
-Five separate bugs on this page came from assuming it behaves like Chrome. All
-of them rendered correctly in the browser preview and wrongly in the PDF, so
-**the PDF is the thing to check, not the preview**:
+WeasyPrint renders the PDF; a browser renders the dashboard preview. They
+disagree in five ways that matter here, and in every case the browser was
+correct and the PDF was not — so **verify against the PDF, not the preview**:
 
 - **Document CSS does not cascade into inline SVG.** Class-styled chart text
   fell back to ~16px. Every SVG element carries presentation attributes instead
@@ -917,12 +920,12 @@ spacing was decided by the renderer and differed between bodies. `.sheet` is
 bound to `127.0.0.1` on port 8000, serving a two-column page — controls on the
 left, a live preview iframe on the right.
 
-| Part | Detail |
-| --- | --- |
-| Body selector | The three `BODIES` keys, by label. Changing it re-renders immediately. |
-| Reporting period | Free text, debounced 400ms, passed through as `--period`. |
-| Preview | The real sheet, scaled to fit by **both** width and height via a CSS `transform`. |
-| Download | Re-renders server-side and returns `application/pdf`, named after the sheet's headline. |
+| Part             | Detail                                                                                  |
+| ---------------- | --------------------------------------------------------------------------------------- |
+| Body selector    | The three `BODIES` keys, by label. Changing it re-renders immediately.                  |
+| Reporting period | Free text, debounced 400ms, passed through as `--period`.                               |
+| Preview          | The real sheet, scaled to fit by **both** width and height via a CSS `transform`.       |
+| Download         | Re-renders server-side and returns `application/pdf`, named after the sheet's headline. |
 
 Two things that are easy to get wrong here, both fixed:
 
@@ -946,7 +949,7 @@ The preview iframe only re-renders when the form submits. After editing the
 renderer, switch bodies and back, or hard-reload — the PDF path always
 re-renders, so a download is the reliable check.
 
-### Two safeguards built in
+### Disclosure control
 
 **Patient-level counting is enforced in the stats layer.** Every helper counts
 distinct `record_id`; there is no path by which a row count reaches the page.
@@ -983,14 +986,16 @@ PHI-derived counts and must not be published to an external service.
 
 ### Known placeholders
 
-`--period` still needs the study team's wording. `benzoylecgonine` (101) tops the
+`--period` needs the study team's wording. `benzoylecgonine` (101) tops the
 stimulant chart because it is cocaine's metabolite, so it outranks `cocaine`
-(67) while being the same people — correct as lab output, but worth deciding
-whether cocaine-type should collapse to a single bar. The **"Cohort." footnote
-still says "three Wisconsin hospitals"** while the facility title now says
-"participating"; if more sites are expected, that line wants the same wording.
+(67) while describing the same patients — correct as lab output, but worth
+deciding whether cocaine-type should collapse to a single bar. The footnote
+reads "three Wisconsin hospitals" while the facility headline reads
+"participating"; align these if further sites are expected.
 
-## Caveats for anyone charting these
+---
+
+## Known limitations
 
 - **Cohort size is 373, not 448.** `Record ID` runs 1-448 with 75 values
   missing; those IDs appear nowhere in the export (deleted or never created in
@@ -1002,7 +1007,7 @@ still says "three Wisconsin hospitals"** while the facility title now says
   random.
 - **qtof_v3 `Other` is 22% of analyte rows (601).** It is the template's fill for
   a substance carrying no `Drug_Category_`, not a real drug class, and it is a
-  *mix*: mostly drugs with an obvious class the vocabulary lacks — analgesics and
+  _mix_: mostly drugs with an obvious class the vocabulary lacks — analgesics and
   NSAIDs 215 rows (acetaminophen alone 150), antiemetics 67, xanthines 59, beta
   blockers 47 — plus genuinely unclassifiable one-offs. It also still hides
   `quinine` (26), `xylazine` (12) and `levamisole` (3), which are markers of the
@@ -1022,14 +1027,14 @@ still says "three Wisconsin hospitals"** while the facility title now says
   to collapse, and note that nothing in the template distinguishes a treatment
   drug from an exposure.
 - **specimen_v3 `bac`: `0.0` is a measurement, empty is not.** `0.0` (94) means
-  *tested, at or below the detection limit*; an empty cell (224) means *not
-  tested or not recorded*. Any `fillna(0)` downstream silently turns 224
+  _tested, at or below the detection limit_; an empty cell (224) means _not
+  tested or not recorded_. Any `fillna(0)` downstream silently turns 224
   untested patients into zero-BAC patients. **The denominator for alcohol is
   149, not 373** — among those tested, 55 (37%) were positive, median 0.183
   g/dL, 46 at or above 0.08. Testing was not random, so that 37% cannot be
   extrapolated to the untested.
 - **specimen_v3 `race`: the collapse empties a category.** `Native Hawaiian or
-  Pacific Islander` comes out at **0** because its only patient (ID 285) is also
+Pacific Islander` comes out at **0** because its only patient (ID 285) is also
   White and is absorbed by `Two or more races`. The true count is 1, not 0.
   Four of seven race values are at or below n=7 — never publish a raw race
   table, and never cross race with `location` or `od_manner` for publication.
@@ -1054,7 +1059,7 @@ still says "three Wisconsin hospitals"** while the facility title now says
   have 1 screen and 23 have 2, so a join fans those 23 out.
 - **The 23 second screens are mostly re-entries, not new screens.** All are
   urine; 22 of 23 pair urine with urine. Comparing analyte sets, only 2 are
-  identical and the other 21 differ mostly by *spelling*. They contribute just
+  identical and the other 21 differ mostly by _spelling_. They contribute just
   28 genuinely new positive analytes. Union them only after canonicalizing, or
   spelling variants will double-count.
 - **Metabolites inflate any "substances detected" count.** 186 mapping rows are
@@ -1087,9 +1092,11 @@ still says "three Wisconsin hospitals"** while the facility title now says
   published output.
 - **Three discharge rows still have two boxes checked** (331, 343, 428), all
   pairing a primary disposition with `Admitted to detox or substance abuse
-  treatment program`.
+treatment program`.
 
-## Open items
+---
+
+## Project status
 
 ### Blocking — waiting on the study team
 
@@ -1100,8 +1107,7 @@ still says "three Wisconsin hospitals"** while the facility title now says
   `Anticonvulsants` (107) and `Anesthetics` (44). Until then those rows are
   reported as **pending additions**, not errors.
 - **Five patients have no QToF result on file** — Records 142, 143, 365, 433,
-  447 have completely empty ion-mode cells in the raw export. Three (365, 433,
-  447) are MCW specimens with a recorded matrix, so the sample was probably run
+  447 have completely empty ion-mode cells in the raw export. Three (365, 433, 447) are MCW specimens with a recorded matrix, so the sample was probably run
   and the result simply never entered. Worth asking whether it can be recovered;
   otherwise they must be excluded from analyte-based denominators.
 - **Review the category backfill.** 43 rows were classified into the three new
@@ -1115,26 +1121,6 @@ still says "three Wisconsin hospitals"** while the facility title now says
 - **`spec_date` is a data-entry stamp, not a collection date**, and is absent for
   every Record ID below 234. If no true collection date exists, the one-pager
   cannot carry a time axis.
-
-### Loose ends in the working tree
-
-- **The REDCap export is in git history and has been pushed.** Blob `d2aa42c`,
-  added in `8a60896` and removed from tracking in `03e2129` — but removal from
-  tracking is not removal from history. It is reachable today from `origin/dev`,
-  `origin/main` and `origin/feature/split-specimen-qtof-csv` via
-  `git cat-file -p d2aa42c`, which returns all 373 patients. `.gitignore`
-  prevents new commits of it and does nothing about the one already there.
-  **This is a disclosure question, not a technical one** — report it before
-  rewriting history, because a rewrite destroys the evidence of scope.
-- **`data/validation_set.xlsx` was circulated as a template.** Its example row
-  is a real 16-year-old's record. If it went out by email or shared drive, that
-  record went with it. Worth reissuing with a fabricated example.
-- **The study team's returned review is no longer on disk.** Deleted Sep 2026,
-  along with its byte-identical duplicate `versioned/analyte_mapping_v3_hb.xlsx`.
-  Her answers survive only as constants — `FLAG_FIXES`, `TIER_B`,
-  `CATEGORY_BACKFILL` — which record the *interpretation*, not the original. If
-  anyone asks whether a specific assignment was really hers, the email thread is
-  now the only evidence.
 
 ### Worth raising, not blocking
 
@@ -1166,19 +1152,16 @@ still says "three Wisconsin hospitals"** while the facility title now says
 
 ### Next steps
 
-**Ahead of anything below — two PHI exposures are open.** Both are in *Loose
-ends*: the REDCap export sitting in pushed git history, and
-`data/validation_set.xlsx` carrying a real patient in its example sheet. Neither
-is a code change, and both are likely reportable before they are remediable.
-
 - **The reporting period** needs the study team's wording; `--period` is a CLI
   argument because `spec_date` cannot supply it. The three headlines are settled
   (Sep 2026), but the **"Cohort." footnote still reads "three Wisconsin
   hospitals"** while the facility headline now says "participating" — worth
   aligning if more sites are expected to join.
-- **Declare the `weasyprint` dependency.** The PDF export is the project's only
-  non-stdlib requirement and it is not written down anywhere but here; it broke
-  silently in Sep 2026 when Homebrew moved `python3` from 3.13 to 3.14.
+- **Pin the dependency.** WeasyPrint is the project's only non-stdlib
+  requirement and is declared in prose rather than in a manifest. A
+  `requirements.txt` or `pyproject.toml` would make the environment
+  reproducible and surface a missing or mismatched install at setup rather
+  than at first use.
 - **Decide whether cocaine-type collapses to one bar.** `benzoylecgonine` (101)
   currently outranks `cocaine` (67) on the stimulant chart while being the same
   people, because it is cocaine's metabolite.
@@ -1235,18 +1218,20 @@ is a code change, and both are likely reportable before they are remediable.
 - **`assets/` reduced to what is used** — one map, named for what it shows,
   plus the pipeline diagram.
 
-## Git
+---
 
-| Path | Tracked? | Why |
-| --- | --- | --- |
-| `src/`, `README.md` | yes | The pipeline and its documentation. |
-| `assets/` | yes | The state map and the pipeline diagram. Aggregate figures only. |
-| `data/Analyte_Category_Mapping.xlsx` | yes | Reference drug vocabulary, not patient data. The one file in `data/` that is. |
-| `data/*.csv` | **no** | The REDCap export. PHI. |
-| `data/validation_set.xlsx` | **no** | Looks like a template; its `example` sheet is a real patient. PHI. |
-| `~$*` | **no** | Excel lock files. Not content, just whoever had the workbook open. |
-| `versioned/*` | **no** | Derived and reproducible from `data/` via `src/`, and PHI-sensitive. |
-| `output/` | **no** | Build artefact. Carries cohort counts derived from PHI. |
+## Contributing
+
+| Path                                 | Tracked? | Why                                                                           |
+| ------------------------------------ | -------- | ----------------------------------------------------------------------------- |
+| `src/`, `README.md`                  | yes      | The pipeline and its documentation.                                           |
+| `assets/`                            | yes      | The state map and the pipeline diagram. Aggregate figures only.               |
+| `data/Analyte_Category_Mapping.xlsx` | yes      | Reference drug vocabulary, not patient data. The one file in `data/` that is. |
+| `data/*.csv`                         | **no**   | The REDCap export. PHI.                                                       |
+| `data/validation_set.xlsx`           | **no**   | Looks like a template; its `example` sheet is a real patient. PHI.            |
+| `~$*`                                | **no**   | Excel lock files. Not content, just whoever had the workbook open.            |
+| `versioned/*`                        | **no**   | Derived and reproducible from `data/` via `src/`, and PHI-sensitive.          |
+| `output/`                            | **no**   | Build artefact. Carries cohort counts derived from PHI.                       |
 
 Every rule above is asserted, not assumed: `git check-ignore` was run across
 these paths in Sep 2026 and each behaved as intended.
