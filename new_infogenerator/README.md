@@ -65,8 +65,7 @@ new_infogenerator/
     build_onepager.py          renders layout only, three selectable bodies
     dashboard.py               local picker + live preview + PDF export
   versioned/                   numbered data snapshots (git-ignored)
-  output/                      scratch, created on demand (git-ignored).
-                               Nothing reads it; safe to delete at any time.
+  output/                      only if you point --dest at it (git-ignored)
 ```
 
 **The export is git-ignored, so a fresh checkout will not have it.** Restore it
@@ -113,7 +112,7 @@ Run from `new_infogenerator/`. Order matters in one place: `clean_qtof_v3.py`
 reads `analyte_mapping_v3.csv`, so the mapping chain must run first.
 
 ```
-python3 src/split_data.py             # -> output/*_v1.csv, promote by hand
+python3 src/split_data.py             # -> versioned/{specimen,qtof}_v1.csv
 python3 src/clean_specimen.py         # specimen_v1 -> specimen_v2
 python3 src/clean_qtof.py             # qtof_v1     -> qtof_v2
 python3 src/clean_analyte_mapping.py  # data/*.xlsx -> analyte_mapping_v2
@@ -129,31 +128,46 @@ python3.13 src/dashboard.py                    # http://127.0.0.1:8000
 Every run prints the full old -> new change list so the transformation can be
 audited before the output is trusted.
 
-### The one manual step
+### The v1 baselines, and why the split refuses to overwrite them
 
-`split_data.py` writes `output/specimen_v1.csv` and `output/qtof_v1.csv`. It
-**never writes to `versioned/`** — promoting a split to a baseline is a
-deliberate copy, because the `vN` snapshots are immutable and every later
-version was derived from the ones already there.
+`split_data.py` writes `versioned/specimen_v1.csv` and `versioned/qtof_v1.csv`
+directly — no scratch copy, no manual promote.
 
-The output carries the same filename as its destination, which makes the copy
-obvious but also makes it easy to overwrite a baseline by reflex. So each run
-compares against `versioned/` and says which it is:
+That lands on the snapshot **every later version was derived from**, so the
+immutability rule needs enforcing rather than merely stating. If a re-run could
+quietly rewrite `v1`, then `v2`, `v3`, `validate_v1` and the one-pager would all
+still build and still render — on a foundation that had moved underneath them,
+with nothing anywhere saying so.
+
+So the write is conditional:
+
+| Situation | What happens |
+| --- | --- |
+| No baseline yet | `+ specimen_v1.csv created` |
+| Baseline exists, bytes identical | `= specimen_v1.csv unchanged` — a no-op |
+| Baseline exists, bytes differ | **Stops.** Nothing is written. |
+| Differ, and `--force` given | `! specimen_v1.csv REPLACED (--force)` |
+
+The refusal names the consequence rather than just the conflict:
 
 ```
-  specimen_v1.csv: identical to the baseline, nothing to promote
-  qtof_v1.csv: DIFFERS from .../versioned/qtof_v1.csv
-      every vN above it was derived from the current baseline;
-      diff before copying, and re-run the chain if you do
+versioned/specimen_v1.csv already exists and this split differs from it.
+  Every later version was derived from the current baseline, so
+  overwriting it silently would leave v2/v3/validate_v1 built on
+  a snapshot that no longer exists.
+  Diff the two, then re-run with --force and rebuild the chain.
 ```
 
-Provenance of the current baselines: produced by this script on **31 Jul 2026**
-and copied in by hand. Re-running it today against the same export reproduces
-them **byte for byte**, so they are verified rather than merely trusted.
+A new export is therefore a deliberate act: diff, `--force`, then re-run the
+whole chain. Re-running against the same export as often as you like is free.
 
-`output/` holds nothing else of consequence — no script reads it, and both
-writers recreate it on demand (`split_data.py` via `out_dir.mkdir`,
-`build_onepager.py` via `dest.parent.mkdir`). Deleting it costs a re-run.
+Provenance of the current baselines: produced by this script on **31 Jul 2026**.
+Re-running it today reproduces them **byte for byte**, so they are verified
+rather than merely trusted.
+
+`output/` no longer exists. It held the scratch split and a stale
+`onepager.html`; nothing read it, and `build_onepager.py --dest` recreates it on
+demand if you point a render back there.
 
 ---
 
@@ -228,10 +242,10 @@ it reflects what the code does rather than what the comments say.
 | --- | --- | --- |
 | `data/NonFatalOverdose...DATA_LABELS_*.csv` | `split_data` | — |
 | `data/Analyte_Category_Mapping.xlsx` | `clean_analyte_mapping` | — |
-| `versioned/specimen_v1.csv` | `clean_specimen` | `split_data` -> `output/`, promoted by hand |
+| `versioned/specimen_v1.csv` | `clean_specimen` | `split_data` (refuses to overwrite) |
 | `versioned/specimen_v2.csv` | `clean_specimen_v3` | `clean_specimen` |
 | `versioned/specimen_v3.csv` | `build_validate` | `clean_specimen_v3` |
-| `versioned/qtof_v1.csv` | `clean_qtof` | `split_data` -> `output/`, promoted by hand |
+| `versioned/qtof_v1.csv` | `clean_qtof` | `split_data` (refuses to overwrite) |
 | `versioned/qtof_v2.csv` | `clean_qtof_v3` | `clean_qtof` |
 | `versioned/qtof_v3.csv` | `build_validate` | `clean_qtof_v3` |
 | `versioned/analyte_mapping_v2.csv` | `extend_analyte_mapping` | `clean_analyte_mapping` |

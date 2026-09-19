@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import io
 from pathlib import Path
 
 # REDCap tags the two row types in this column.
@@ -90,7 +91,7 @@ def _require_columns(fieldnames: list[str], needed: list[str], src: Path) -> Non
         )
 
 
-def split(source: Path, out_dir: Path, baseline_dir: Path) -> tuple[Path, Path]:
+def split(source: Path, out_dir: Path, force: bool = False) -> tuple[Path, Path]:
     with source.open(newline="", encoding="utf-8-sig") as fh:
         reader = csv.DictReader(fh)
         fieldnames = reader.fieldnames or []
@@ -110,28 +111,30 @@ def split(source: Path, out_dir: Path, baseline_dir: Path) -> tuple[Path, Path]:
         r[KEY_COL]: r[SPEC_NUM_COL] for r in specimen_rows if r[KEY_COL]
     }
 
-    # Named for the version they become. This script writes to a scratch
-    # directory, never to versioned/ -- promoting a split to a baseline is a
-    # deliberate copy, because the vN snapshots are immutable and everything
-    # downstream was derived from the ones already there.
     out_dir.mkdir(parents=True, exist_ok=True)
     specimen_path = out_dir / "specimen_v1.csv"
     qtof_path = out_dir / "qtof_v1.csv"
 
-    with specimen_path.open("w", newline="", encoding="utf-8") as fh:
-        writer = csv.DictWriter(fh, fieldnames=SPECIMEN_COLS, extrasaction="ignore")
-        writer.writeheader()
-        for r in specimen_rows:
-            writer.writerow({c: r.get(c, "") for c in SPECIMEN_COLS})
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=SPECIMEN_COLS, extrasaction="ignore",
+                            lineterminator="\r\n")
+    writer.writeheader()
+    for r in specimen_rows:
+        writer.writerow({c: r.get(c, "") for c in SPECIMEN_COLS})
+    specimen_text = buf.getvalue()
 
-    with qtof_path.open("w", newline="", encoding="utf-8") as fh:
-        writer = csv.DictWriter(fh, fieldnames=QTOF_COLS)
-        writer.writeheader()
-        for r in qtof_rows:
-            out = {c: r.get(c, "") for c in QTOF_COLS}
-            if not out.get(SPEC_NUM_COL):
-                out[SPEC_NUM_COL] = spec_num_by_id.get(r[KEY_COL], "")
-            writer.writerow(out)
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=QTOF_COLS, lineterminator="\r\n")
+    writer.writeheader()
+    for r in qtof_rows:
+        out = {c: r.get(c, "") for c in QTOF_COLS}
+        if not out.get(SPEC_NUM_COL):
+            out[SPEC_NUM_COL] = spec_num_by_id.get(r[KEY_COL], "")
+        writer.writerow(out)
+    qtof_text = buf.getvalue()
+
+    _write_baseline(specimen_path, specimen_text, force)
+    _write_baseline(qtof_path, qtof_text, force)
 
     print(f"Read {len(rows)} rows from {source.name}")
     print(f"  -> {specimen_path}  ({len(specimen_rows)} rows)")
@@ -141,32 +144,39 @@ def split(source: Path, out_dir: Path, baseline_dir: Path) -> tuple[Path, Path]:
     if orphans:
         print(f"WARNING: {len(orphans)} qtof Record IDs have no specimen row: {orphans}")
 
-    _report_against_baselines(specimen_path, qtof_path, baseline_dir)
-
     return specimen_path, qtof_path
 
 
-def _report_against_baselines(
-    specimen_path: Path, qtof_path: Path, baseline_dir: Path
-) -> None:
-    """Say whether this split matches the baselines already in versioned/.
+def _write_baseline(dest: Path, text: str, force: bool) -> None:
+    """Write a v1 baseline, refusing to change one that already exists.
 
-    The promote step is a manual copy, and the output now carries the same name
-    as its destination, so a copy can silently replace the baseline that every
-    downstream version was derived from. Saying up front whether the bytes
-    differ turns that into a decision instead of an accident.
+    This writes straight into ``versioned/``, so a re-run lands on the snapshot
+    every later version was derived from. ``vN`` is immutable by convention, and
+    the convention is worth nothing if a re-run can quietly rewrite it: v2, v3,
+    validate_v1 and the one-pager would all still render, on a foundation that
+    had moved underneath them.
+
+    So an identical re-run is a no-op and says so, and a differing one stops.
+    Re-running after a fresh export is meant to be a decision -- diff it, then
+    pass --force and re-run the whole chain.
     """
-    print()
-    for produced in (specimen_path, qtof_path):
-        baseline = baseline_dir / produced.name
-        if not baseline.exists():
-            print(f"  {produced.name}: no baseline yet -- copy it to {baseline}")
-        elif baseline.read_bytes() == produced.read_bytes():
-            print(f"  {produced.name}: identical to the baseline, nothing to promote")
-        else:
-            print(f"  {produced.name}: DIFFERS from {baseline}")
-            print(f"      every vN above it was derived from the current baseline;")
-            print(f"      diff before copying, and re-run the chain if you do")
+    new = text.encode("utf-8")
+    if dest.exists():
+        if dest.read_bytes() == new:
+            print(f"  = {dest.name} unchanged ({len(new):,} bytes)")
+            return
+        if not force:
+            raise SystemExit(
+                f"\n{dest} already exists and this split differs from it.\n"
+                f"  Every later version was derived from the current baseline, so\n"
+                f"  overwriting it silently would leave v2/v3/validate_v1 built on\n"
+                f"  a snapshot that no longer exists.\n"
+                f"  Diff the two, then re-run with --force and rebuild the chain."
+            )
+        print(f"  ! {dest.name} REPLACED (--force)")
+    else:
+        print(f"  + {dest.name} created")
+    dest.write_bytes(new)
 
 
 def main() -> None:
@@ -181,20 +191,19 @@ def main() -> None:
     parser.add_argument(
         "--out-dir",
         type=Path,
-        default=root / "output",
-        help="Scratch directory for the split. Never versioned/.",
+        default=root / "versioned",
+        help="Where to write specimen_v1.csv and qtof_v1.csv.",
     )
     parser.add_argument(
-        "--baseline-dir",
-        type=Path,
-        default=root / "versioned",
-        help="Where the vN baselines live; the split is compared against them.",
+        "--force",
+        action="store_true",
+        help="Replace an existing v1 baseline that this split disagrees with.",
     )
     args = parser.parse_args()
 
     if not args.source.exists():
         raise SystemExit(f"Source file not found: {args.source}")
-    split(args.source, args.out_dir, args.baseline_dir)
+    split(args.source, args.out_dir, args.force)
 
 
 if __name__ == "__main__":
