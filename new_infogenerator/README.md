@@ -18,6 +18,7 @@ so a rendered sheet opens offline and prints identically everywhere.
 | [Design conventions](#design-conventions) | Rules to follow when changing it |
 | [Dataset reference](#dataset-reference) · [Output reference](#output-reference) | What each file and sheet contains |
 | [Known limitations](#known-limitations) · [Project status](#project-status) | Before drawing conclusions |
+| [Contributing](#contributing) · [Authorship](#authorship) | Working on it, and who wrote it |
 
 ---
 
@@ -595,17 +596,27 @@ metabolite.
 
 #### Three decisions encoded as constants
 
-**Category spelling — the mapping wins** (Aug 2026). Where the mapping and the
-template disagree, the mapping's spelling is emitted and the _template_ gains it.
-Tracked in `TEMPLATE_ADDITIONS_REQUESTED`; any category in neither the template
-nor that set **raises**. Four values are pending, covering 617 rows:
+**Category spelling — the mapping wins.** Where the mapping and the template
+disagreed, the mapping's spelling was emitted and the _template_ gained it. Four
+values went through this route and were granted in Sep 2026, covering 617 rows:
 
-| Value             | Rows | Template needs                        |
-| ----------------- | ---- | ------------------------------------- |
-| `CNSStimulants`   | 342  | rename from `CSNSStimulants` (a typo) |
-| `Antihistamines`  | 124  | add                                   |
-| `Anticonvulsants` | 107  | add                                   |
-| `Anesthetics`     | 44   | add                                   |
+| Value             | Rows | Outcome                                      |
+| ----------------- | ---- | -------------------------------------------- |
+| `CNSStimulants`   | 342  | template corrected from `CSNSStimulants` (a transposition) |
+| `Antihistamines`  | 124  | added                                        |
+| `Anticonvulsants` | 107  | added                                        |
+| `Anesthetics`     | 44   | added                                        |
+
+All four now sit in `GROUP_VALUES`, so they validate as ordinary values. The
+typo spelling is deliberately **not** accepted: a file still carrying
+`CSNSStimulants` raises rather than passing as a twenty-second category.
+
+`TEMPLATE_ADDITIONS_REQUESTED` remains as the mechanism for the next round — a
+category emitted by decision that the template has not published yet is
+reported on every run rather than raised, so a granted-but-unpublished decision
+never blocks the chain. It is currently empty, and the reporting either side of
+it degrades to silence while that is true. Any category in neither set
+**raises**.
 
 **`Sample matrix`: unrecorded means urine.** The study team confirmed no plasma
 was collected during the earlier part of the study, so 2031 rows / 248 patients
@@ -675,9 +686,9 @@ rows, 295 -> 315 canonicals**. QToF coverage goes to **100%**.
 
 Category vocabulary after all edits: the mapping uses **20** distinct categories
 (15 in `Drug_Category_1`, 5 in `Drug_Category_2`, 1 in `Drug_Category_3`; the
-columns are disjoint apart from `Hallucinogens`). The template needs those 20
-plus `Other`, which exists only as the template's fill — **21 options**, up from
-the 18 it allows today.
+columns are disjoint apart from `Hallucinogens`). With `Other`, which exists
+only as the template's fill, that is **21 allowed values** — the count the
+template now carries, up from the 18 it listed before the Sep 2026 additions.
 
 The additions came back from the study team (Heather, Aug 2026) in three tiers,
 which differ in what had to be decided:
@@ -789,9 +800,8 @@ Four guards, each of which stops the run rather than writing something wrong:
 - **Partially-blank analyte fields** raise; they must be blank together or not
   at all. An analyte-less record not in the known set of six also raises.
 
-Two things are **reported, not raised**: the 617 rows using a category the
-template has yet to list (see Open items), and the 6 analyte-less rows, split
-into the one true negative and the five with no screen on file.
+One thing is **reported, not raised**: the 6 analyte-less rows, split into the
+one true negative and the five with no screen on file.
 `KEEP_ANALYTE_LESS_ROWS` keeps them so those patients stay in the demographic
 denominators, at the cost of 6 rows the template has no value for.
 
@@ -1100,12 +1110,6 @@ treatment program`.
 
 ### Blocking — waiting on the study team
 
-- **Four template additions, 617 rows.** Caitlin's validation template allows 18
-  `analyte_group` values; the pipeline emits **21** (the mapping's 20 plus the
-  `Other` fill). Needed: rename `CSNSStimulants` -> `CNSStimulants` (342 rows,
-  the `CSNS` form is a typo), and add `Antihistamines` (124),
-  `Anticonvulsants` (107) and `Anesthetics` (44). Until then those rows are
-  reported as **pending additions**, not errors.
 - **Five patients have no QToF result on file** — Records 142, 143, 365, 433,
   447 have completely empty ion-mode cells in the raw export. Three (365, 433, 447) are MCW specimens with a recorded matrix, so the sample was probably run
   and the result simply never entered. Worth asking whether it can be recovered;
@@ -1118,9 +1122,7 @@ treatment program`.
   in `discharge_status`, on a project titled **non-fatal** overdose
   biosurveillance. Either the template gains a `Death` value or this is
   documented as intended. Note `Other` is now an exact proxy for the death count.
-- **`spec_date` is a data-entry stamp, not a collection date**, and is absent for
-  every Record ID below 234. If no true collection date exists, the one-pager
-  cannot carry a time axis.
+
 
 ### Worth raising, not blocking
 
@@ -1149,6 +1151,18 @@ treatment program`.
   in the mapping, so the pipeline's tie-break rule is retired.
 - **Adopt `Anticonvulsants` / `Antihistamines` / `Anesthetics`** and backfill the
   existing drugs of those classes.
+- **The four template additions are granted** (Sep 2026). `CSNSStimulants` was a
+  transposition rather than a distinct value and the template was corrected to
+  `CNSStimulants`; `Anticonvulsants`, `Antihistamines` and `Anesthetics` were
+  added. All four now sit in `GROUP_VALUES`, the template allows 21 values, and
+  the 617 rows that used to report as pending validate normally. The typo
+  spelling is deliberately not accepted, so a file still carrying it raises
+  rather than passing as a twenty-second category.
+- **`spec_date` is absent below Record ID 234 by design.** The field entered use
+  partway through the study, so the gap is a fact about collection rather than a
+  defect to repair. It remains a data-entry stamp and cannot support a time
+  axis — see [Known limitations](#known-limitations) — and `--period` stays a
+  command-line argument for that reason.
 
 ### Next steps
 
@@ -1239,3 +1253,20 @@ these paths in Sep 2026 and each behaved as intended.
 Feature work goes on a branch off `dev`; `main` is the default branch. Stage
 files explicitly — **never `git add .`** — and do not add `Co-Authored-By:`
 lines to commits, PR bodies or issue comments.
+
+---
+
+## Authorship
+
+Written and maintained by **Abanish Khatry**
+([@abanishkhatry](https://github.com/abanishkhatry)) for the Wisconsin State
+Laboratory of Hygiene — the data pipeline, the statistics layer, the renderer
+and the dashboard.
+
+Domain input, the drug vocabulary and the validation template come from the
+WSLH study team, whose rulings are recorded against the decisions they settle
+throughout this document.
+
+Charting conventions and the navy palette follow the earlier
+`biosurveillance-main` project (CDC OD2A submission tooling) in the parent
+directory.

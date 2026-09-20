@@ -278,9 +278,7 @@ def report(
         print(f"\nPENDING TEMPLATE ADDITIONS — {total} row(s) use a category the "
               f"template does not list yet:")
         for value, count in sorted(pending.items(), key=lambda kv: -kv[1]):
-            note = ("rename from 'CSNSStimulants'" if value == "CNSStimulants"
-                    else "add")
-            print(f"  {count:5d}  {value:18s} ({note})")
+            print(f"  {count:5d}  {value}")
         print("  Correct data by decision; the template needs these values.")
 
     blank_rows = [r for r in out_rows if not r["analyte_name"].strip()]
@@ -295,8 +293,9 @@ def report(
         print("  The second group is MISSING, not negative — exclude from "
               "analyte-based denominators.")
 
-    print(f"\nvalidation: every value is in the template's allowed set "
-          f"(or an agreed pending addition)")
+    suffix = (" (or an agreed pending addition)"
+              if TEMPLATE_ADDITIONS_REQUESTED else "")
+    print(f"\nvalidation: every value is in the template's allowed set{suffix}")
 
 
 def main() -> None:

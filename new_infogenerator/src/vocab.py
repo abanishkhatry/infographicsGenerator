@@ -71,22 +71,35 @@ SPECIMEN_ALLOWED: dict[str, set[str]] = {
 #: Allowed values for every ``analyte_group_*`` column. ``Other`` is the
 #: template's fill for a substance carrying no ``Drug_Category_``, not a class
 #: anyone assigns.
+#:
+#: ``CNSStimulants`` is spelt as the mapping spells it. The template carried
+#: ``CSNSStimulants``, which was a transposition rather than a different value;
+#: the study team corrected the template (Sep 2026) rather than the data. The
+#: typo spelling is deliberately absent, so a file still carrying it now raises
+#: instead of being silently accepted as a twentieth category.
+#:
+#: ``Anticonvulsants``, ``Antihistamines`` and ``Anesthetics`` were added to the
+#: template in the same round. See ``CATEGORY_BACKFILL`` in
+#: extend_analyte_mapping: adopting a class also meant classifying the drugs of
+#: that class already in the vocabulary, or a chart would report the newest two
+#: entries as though they were the whole class.
 GROUP_VALUES: set[str] = {
-    "Amphetamines", "Antidepressants", "Antipsychotics", "Barbiturates",
-    "Benzodiazepines", "Cannabinoids", "Cathinones", "CSNSStimulants", "Cocaine",
+    "Amphetamines", "Anesthetics", "Antidepressants", "Antihistamines",
+    "Anticonvulsants", "Antipsychotics", "Barbiturates", "Benzodiazepines",
+    "Cannabinoids", "Cathinones", "CNSStimulants", "Cocaine",
     "DissociativeAnesthetics", "Fentanyl", "Hallucinogens", "MOUD",
     "MuscleRelaxers", "Naloxone", "NarcoticAnalgesics", "NPSOpioids", "Other",
 }
 
-#: Categories the pipeline emits by decision (Aug 2026) that the template has
-#: yet to list. Where the mapping and the template disagreed, the mapping won
-#: and the template gains its spelling. Reported, never raised.
-TEMPLATE_ADDITIONS_REQUESTED: set[str] = {
-    "CNSStimulants",    # template currently spells this 'CSNSStimulants'
-    "Anticonvulsants",
-    "Antihistamines",
-    "Anesthetics",
-}
+#: Categories the pipeline emits by decision that the template does not list
+#: yet. Reported on every run, never raised, so a granted-but-not-yet-published
+#: decision does not block the chain.
+#:
+#: Empty: the four values that lived here were granted in Sep 2026 and moved
+#: into GROUP_VALUES above. Kept because the situation recurs -- a new substance
+#: class arrives before the template catches up -- and the reporting either side
+#: of it degrades to silence while this is empty.
+TEMPLATE_ADDITIONS_REQUESTED: set[str] = set()
 
 #: Every category the pipeline may legitimately emit today.
 EMITTABLE_GROUPS: set[str] = GROUP_VALUES | TEMPLATE_ADDITIONS_REQUESTED
