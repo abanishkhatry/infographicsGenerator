@@ -18,6 +18,7 @@ so a rendered sheet opens offline and prints identically everywhere.
 | [Design conventions](#design-conventions) | Rules to follow when changing it |
 | [Dataset reference](#dataset-reference) · [Output reference](#output-reference) | What each file and sheet contains |
 | [Known limitations](#known-limitations) · [Project status](#project-status) | Before drawing conclusions |
+| [Contributing](#contributing) · [Authorship](#authorship) | Working on it, and who wrote it |
 
 ---
 
@@ -595,17 +596,27 @@ metabolite.
 
 #### Three decisions encoded as constants
 
-**Category spelling — the mapping wins** (Aug 2026). Where the mapping and the
-template disagree, the mapping's spelling is emitted and the _template_ gains it.
-Tracked in `TEMPLATE_ADDITIONS_REQUESTED`; any category in neither the template
-nor that set **raises**. Four values are pending, covering 617 rows:
+**Category spelling — the mapping wins.** Where the mapping and the template
+disagreed, the mapping's spelling was emitted and the _template_ gained it. Four
+values went through this route and were granted in Sep 2026, covering 617 rows:
 
-| Value             | Rows | Template needs                        |
-| ----------------- | ---- | ------------------------------------- |
-| `CNSStimulants`   | 342  | rename from `CSNSStimulants` (a typo) |
-| `Antihistamines`  | 124  | add                                   |
-| `Anticonvulsants` | 107  | add                                   |
-| `Anesthetics`     | 44   | add                                   |
+| Value             | Rows | Outcome                                      |
+| ----------------- | ---- | -------------------------------------------- |
+| `CNSStimulants`   | 342  | template corrected from `CSNSStimulants` (a transposition) |
+| `Antihistamines`  | 124  | added                                        |
+| `Anticonvulsants` | 107  | added                                        |
+| `Anesthetics`     | 44   | added                                        |
+
+All four now sit in `GROUP_VALUES`, so they validate as ordinary values. The
+typo spelling is deliberately **not** accepted: a file still carrying
+`CSNSStimulants` raises rather than passing as a twenty-second category.
+
+`TEMPLATE_ADDITIONS_REQUESTED` remains as the mechanism for the next round — a
+category emitted by decision that the template has not published yet is
+reported on every run rather than raised, so a granted-but-unpublished decision
+never blocks the chain. It is currently empty, and the reporting either side of
+it degrades to silence while that is true. Any category in neither set
+**raises**.
 
 **`Sample matrix`: unrecorded means urine.** The study team confirmed no plasma
 was collected during the earlier part of the study, so 2031 rows / 248 patients
@@ -675,9 +686,9 @@ rows, 295 -> 315 canonicals**. QToF coverage goes to **100%**.
 
 Category vocabulary after all edits: the mapping uses **20** distinct categories
 (15 in `Drug_Category_1`, 5 in `Drug_Category_2`, 1 in `Drug_Category_3`; the
-columns are disjoint apart from `Hallucinogens`). The template needs those 20
-plus `Other`, which exists only as the template's fill — **21 options**, up from
-the 18 it allows today.
+columns are disjoint apart from `Hallucinogens`). With `Other`, which exists
+only as the template's fill, that is **21 allowed values** — the count the
+template now carries, up from the 18 it listed before the Sep 2026 additions.
 
 The additions came back from the study team (Heather, Aug 2026) in three tiers,
 which differ in what had to be decided:
@@ -747,13 +758,13 @@ overwritten, and it **raises** if a named canonical is absent so the list cannot
 rot silently. Effect on qtof_v3: `Other` falls from 876 rows to 601, and
 uncategorised canonicals from 132 to 102.
 
-These assignments are a **first pass for review, not the study team's ruling**.
-Three judgment calls worth checking: `gabapentin` (59 patients) and `pregabalin`
-(7) are gabapentinoids, also prescribed for neuropathic pain, and gabapentin
-alone is over half its class; `lidocaine` (37) is a local anaesthetic but also an
-antiarrhythmic and in this cohort more likely clinical than ingested;
-`promethazine` is an antihistamine, an antiemetic and a phenothiazine.
-Metabolites inherit their parent's class throughout.
+These assignments were reviewed and accepted by the study team (Sep 2026),
+including three that could reasonably have gone otherwise: `gabapentin` (59
+patients) and `pregabalin` (7) are gabapentinoids, also prescribed for
+neuropathic pain, and gabapentin alone is over half its class; `lidocaine` (37)
+is a local anaesthetic but also an antiarrhythmic, and in this cohort more
+likely clinical than ingested; `promethazine` is an antihistamine, an antiemetic
+and a phenothiazine. Metabolites inherit their parent's class throughout.
 
 The script refuses to write if an addition duplicates an existing `Analyte` key
 (case-insensitively), or if it would introduce a **new** `Flag` disagreement.
@@ -789,9 +800,8 @@ Four guards, each of which stops the run rather than writing something wrong:
 - **Partially-blank analyte fields** raise; they must be blank together or not
   at all. An analyte-less record not in the known set of six also raises.
 
-Two things are **reported, not raised**: the 617 rows using a category the
-template has yet to list (see Open items), and the 6 analyte-less rows, split
-into the one true negative and the five with no screen on file.
+One thing is **reported, not raised**: the 6 analyte-less rows, split into the
+one true negative and the five with no screen on file.
 `KEEP_ANALYTE_LESS_ROWS` keeps them so those patients stay in the demographic
 denominators, at the cost of 6 rows the template has no value for.
 
@@ -1098,32 +1108,14 @@ treatment program`.
 
 ## Project status
 
-### Blocking — waiting on the study team
-
-- **Four template additions, 617 rows.** Caitlin's validation template allows 18
-  `analyte_group` values; the pipeline emits **21** (the mapping's 20 plus the
-  `Other` fill). Needed: rename `CSNSStimulants` -> `CNSStimulants` (342 rows,
-  the `CSNS` form is a typo), and add `Antihistamines` (124),
-  `Anticonvulsants` (107) and `Anesthetics` (44). Until then those rows are
-  reported as **pending additions**, not errors.
-- **Five patients have no QToF result on file** — Records 142, 143, 365, 433,
-  447 have completely empty ion-mode cells in the raw export. Three (365, 433, 447) are MCW specimens with a recorded matrix, so the sample was probably run
-  and the result simply never entered. Worth asking whether it can be recovered;
-  otherwise they must be excluded from analyte-based denominators.
-- **Review the category backfill.** 43 rows were classified into the three new
-  classes as a first pass, not a ruling. Specifically: `gabapentin` (59
-  patients) and `pregabalin` as Anticonvulsants, `lidocaine` (37) as an
-  Anesthetic, and `promethazine` as an Antihistamine.
-- **`Death` (8 patients) has no template value** and currently becomes `Other`
-  in `discharge_status`, on a project titled **non-fatal** overdose
-  biosurveillance. Either the template gains a `Death` value or this is
-  documented as intended. Note `Other` is now an exact proxy for the death count.
-- **`spec_date` is a data-entry stamp, not a collection date**, and is absent for
-  every Record ID below 234. If no true collection date exists, the one-pager
-  cannot carry a time axis.
-
 ### Worth raising, not blocking
 
+- **Five patients have no QToF result on file** — Records 142, 143, 365, 433 and
+  447 have completely empty ion-mode cells in the raw export. Three (365, 433,
+  447) are MCW specimens with a recorded matrix, so the sample was probably run
+  and the result never entered. Worth asking whether it can be recovered;
+  until then they are excluded from analyte-based denominators and counted only
+  in demographics, which the pipeline already does.
 - **`Other` is still 601 rows (22%)**, and it is a mix rather than a residue.
   Most of it has an obvious class the vocabulary lacks: analgesics/NSAIDs 215
   rows (acetaminophen alone 150), antiemetics 67, xanthines 59, beta blockers
@@ -1149,33 +1141,32 @@ treatment program`.
   in the mapping, so the pipeline's tie-break rule is retired.
 - **Adopt `Anticonvulsants` / `Antihistamines` / `Anesthetics`** and backfill the
   existing drugs of those classes.
-
-### Next steps
-
-- **The reporting period** needs the study team's wording; `--period` is a CLI
-  argument because `spec_date` cannot supply it. The three headlines are settled
-  (Sep 2026), but the **"Cohort." footnote still reads "three Wisconsin
-  hospitals"** while the facility headline now says "participating" — worth
-  aligning if more sites are expected to join.
-- **Pin the dependency.** WeasyPrint is the project's only non-stdlib
-  requirement and is declared in prose rather than in a manifest. A
-  `requirements.txt` or `pyproject.toml` would make the environment
-  reproducible and surface a missing or mismatched install at setup rather
-  than at first use.
-- **Decide whether cocaine-type collapses to one bar.** `benzoylecgonine` (101)
-  currently outranks `cocaine` (67) on the stimulant chart while being the same
-  people, because it is cocaine's metabolite.
-- Move the below-LOD / `Negative` / true-zero distinction into
-  `clean_specimen.py` so v2 carries it and `sc_bac_below_lod` becomes derivable.
-  Today all three are `0.000` and the split is unrecoverable downstream.
-- Confirm `Left against medical advice` -> `Transferred` (agreed, 6 records).
-  AMA is self-discharge, not a planned handoff, so `Transferred` mixes the two.
-- The mapping must be applied **exactly once** — many canonicals are not
-  themselves `Analyte` keys, so re-running a canonicalized file through it is not
-  a no-op.
-- Decide whether Record 190 (the one true negative) belongs in `validate.csv` as
-  a row with a blank `analyte_name`, given the template wants a value on every
-  row.
+- **The four template additions are granted** (Sep 2026). `CSNSStimulants` was a
+  transposition rather than a distinct value and the template was corrected to
+  `CNSStimulants`; `Anticonvulsants`, `Antihistamines` and `Anesthetics` were
+  added. All four now sit in `GROUP_VALUES`, the template allows 21 values, and
+  the 617 rows that used to report as pending validate normally. The typo
+  spelling is deliberately not accepted, so a file still carrying it raises
+  rather than passing as a twenty-second category.
+- **The category backfill stands as final.** The 43 rows classified into the
+  three new classes are accepted, including the three judgment calls:
+  `gabapentin` and `pregabalin` as Anticonvulsants, `lidocaine` as an
+  Anesthetic, `promethazine` as an Antihistamine. Reviewed against the 94
+  substances still carrying `Other` (Sep 2026): none of them belongs to those
+  three classes, so the backfill is complete rather than merely agreed. What
+  remains in `Other` is cardiovascular, analgesic, antiemetic, antimicrobial
+  and adulterant — classes the vocabulary does not have.
+- **`Death` maps to `discharge_status = Other`.** The template has no `Death`
+  value and will not gain one; the eight patients are carried under `Other`.
+  Note the consequence recorded under
+  [Known limitations](#known-limitations): `Death` is `Other`'s only source, so
+  publishing that slice discloses the death count under a label that does not
+  say so, and it falls below the reporting threshold in any case.
+- **`spec_date` is absent below Record ID 234 by design.** The field entered use
+  partway through the study, so the gap is a fact about collection rather than a
+  defect to repair. It remains a data-entry stamp and cannot support a time
+  axis — see [Known limitations](#known-limitations) — and `--period` stays a
+  command-line argument for that reason.
 
 ### Done
 
@@ -1239,3 +1230,37 @@ these paths in Sep 2026 and each behaved as intended.
 Feature work goes on a branch off `dev`; `main` is the default branch. Stage
 files explicitly — **never `git add .`** — and do not add `Co-Authored-By:`
 lines to commits, PR bodies or issue comments.
+
+---
+
+## Authorship
+
+Written and maintained by **Abanish Khatry**
+([@abanishkhatry](https://github.com/abanishkhatry)) for the Wisconsin State
+Laboratory of Hygiene — the data pipeline, the statistics layer, the renderer
+and the dashboard.
+
+### Study team
+
+Domain input, the drug vocabulary, the validation template and every
+classification ruling recorded in this document come from:
+
+| | |
+| --- | --- |
+| **Heather Barkholtz** | Wisconsin State Laboratory of Hygiene — [hbarkholtz@wisc.edu](mailto:hbarkholtz@wisc.edu) |
+| **Caitlin A. Murphy** | Wisconsin Department of Health Services — [caitlin.murphy@dhs.wisconsin.gov](mailto:caitlin.murphy@dhs.wisconsin.gov) |
+
+Their decisions are folded into the scripts rather than applied to the data by
+hand, so the chain still reproduces from source — see `FLAG_FIXES`, `TIER_B`
+and `CATEGORY_BACKFILL`, and the [Decided](#decided) list.
+
+General enquiries about the surveillance programme:
+[NFODbiosurveillance@dhs.wisconsin.gov](mailto:NFODbiosurveillance@dhs.wisconsin.gov),
+which is also the contact printed on every generated sheet.
+
+### Prior work
+
+Charting conventions and the navy palette follow the earlier
+`biosurveillance-main` project (CDC OD2A submission tooling) in the parent
+directory. The sheet layout is modelled on the Milwaukee Toxicology Project
+one-pager (Dec 2022).
