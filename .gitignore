@@ -13,6 +13,12 @@ Desktop.ini
 # only the username of whoever has it open, and is left behind if Excel crashes.
 ~$*
 
+# Agent tooling — local working configuration, not part of the project.
+# The conventions that matter to contributors live in
+# new_infogenerator/README.md ("Data privacy", "Design conventions").
+CLAUDE.md
+.claude/
+
 # Python
 __pycache__/
 *.py[cod]
