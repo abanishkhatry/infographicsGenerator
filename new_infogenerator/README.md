@@ -83,9 +83,20 @@ afterwards.
 
 ### Troubleshooting PDF export
 
-Preview and HTML export never need WeasyPrint. If only **PDF** fails, the
-dashboard answers with `503` and the reason. There are two, and they need
-different fixes:
+Preview and HTML export never need WeasyPrint. If only **PDF** fails, ask the
+dashboard what is wrong rather than guessing:
+
+```bash
+python3 src/dashboard.py --check
+```
+
+It reports the interpreter in use, whether WeasyPrint imports, whether the
+native libraries are installed and whether this interpreter can see them, then
+prints the one command that fixes the case you are actually in. It exits `0`
+when PDF export works.
+
+The two failures below produce the *same* error text, so the check exists to
+tell them apart:
 
 **`ImportError`** — the package is absent. Install it, into the interpreter you
 actually run: `python3 -c "import weasyprint"` should succeed with the same
@@ -93,24 +104,22 @@ actually run: `python3 -c "import weasyprint"` should succeed with the same
 commonly install into one and run another.
 
 **`OSError: cannot load library 'libgobject-2.0-0'`** — WeasyPrint is installed
-and cannot reach its native libraries. Install them with the command above. If
-that alone does not fix it on macOS, check which Python you are running:
+and cannot reach its native libraries. This means one of two things, and
+`--check` distinguishes them:
 
-```bash
-python3 -c "import sys; print(sys.executable)"
-```
+*Pango is not installed.* Install it with the command above.
 
-Homebrew's Python (`/opt/homebrew/…` or `/usr/local/…`) searches Homebrew's
-library directory and will find Pango once it is installed. **python.org's
-Python (`/Library/Frameworks/Python.framework/…`) does not**, so the libraries
-are present and still unreachable. Either run the dashboard with the path
-supplied:
+*Pango is installed but this interpreter does not look where it lives.* On
+macOS, Homebrew's Python (`/opt/homebrew/…`, `/usr/local/…`) searches
+Homebrew's library directory; **python.org's Python
+(`/Library/Frameworks/Python.framework/…`) does not**, so `brew install pango`
+appears to change nothing. Either supply the path:
 
 ```bash
 DYLD_FALLBACK_LIBRARY_PATH=$(brew --prefix)/lib python3 src/dashboard.py
 ```
 
-or use Homebrew's Python for this project.
+or run the project under Homebrew's Python, which finds it unaided.
 
 ### Input files
 
