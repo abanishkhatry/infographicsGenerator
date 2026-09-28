@@ -465,6 +465,17 @@ def main() -> None:
     if stats["suppressed"]:
         print(f"suppressed (< 11): {len(stats['suppressed'])} cell(s)")
 
+    # Say at startup whether PDF export will work. It used to fail only when
+    # the download button was pressed, several minutes in, with a message that
+    # could not tell a missing package from an unreachable one -- so the same
+    # diagnosis got repeated on every attempt.
+    try:
+        import weasyprint  # noqa: F401
+    except (ImportError, OSError) as exc:
+        print(f"\n  ! PDF export unavailable — {type(exc).__name__}")
+        print(f"    preview and HTML export still work.")
+        print(f"    run:  {sys.executable} {sys.argv[0]} --check")
+
     server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     print(f"\n  builder on http://127.0.0.1:{args.port}   (ctrl-c to stop)")
     print("  local only — the rendered page carries PHI-derived counts\n")

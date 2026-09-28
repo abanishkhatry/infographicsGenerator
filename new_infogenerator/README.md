@@ -183,6 +183,9 @@ dataset has no usable collection date — see [Known limitations](#known-limitat
 python3 src/dashboard.py     # http://127.0.0.1:8000
 ```
 
+It prints a warning at startup if PDF export is unavailable, naming the
+interpreter to run `--check` with. Preview and HTML export work regardless.
+
 A local page to pick a sheet, preview it live, and download it as PDF. Bound to
 localhost; it is not a service and has no authentication.
 
