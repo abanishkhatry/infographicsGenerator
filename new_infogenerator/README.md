@@ -70,15 +70,47 @@ Everything except PDF export runs as-is. For PDF export:
 python3 -m pip install weasyprint
 ```
 
-WeasyPrint has native dependencies (Pango, cairo); see the
-[WeasyPrint installation guide](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html)
-if the import fails.
+**`pip install` is not enough on its own.** WeasyPrint draws through Pango,
+cairo and GObject, which are C libraries and are not installed by pip:
 
-> **If the dashboard reports that WeasyPrint is unavailable**, confirm the
-> interpreter running it is the one you installed into —
-> `python3 -c "import weasyprint"`. Systems with several Python installations
-> commonly install into one and run another. Preview and HTML export work
-> without WeasyPrint; only PDF export needs it.
+```bash
+brew install pango                                    # macOS
+sudo apt install libpango-1.0-0 libpangoft2-1.0-0     # Debian / Ubuntu
+```
+
+Windows needs the GTK3 runtime installed separately; reopen the terminal
+afterwards.
+
+### Troubleshooting PDF export
+
+Preview and HTML export never need WeasyPrint. If only **PDF** fails, the
+dashboard answers with `503` and the reason. There are two, and they need
+different fixes:
+
+**`ImportError`** — the package is absent. Install it, into the interpreter you
+actually run: `python3 -c "import weasyprint"` should succeed with the same
+`python3` that starts the dashboard. Systems with several Python installations
+commonly install into one and run another.
+
+**`OSError: cannot load library 'libgobject-2.0-0'`** — WeasyPrint is installed
+and cannot reach its native libraries. Install them with the command above. If
+that alone does not fix it on macOS, check which Python you are running:
+
+```bash
+python3 -c "import sys; print(sys.executable)"
+```
+
+Homebrew's Python (`/opt/homebrew/…` or `/usr/local/…`) searches Homebrew's
+library directory and will find Pango once it is installed. **python.org's
+Python (`/Library/Frameworks/Python.framework/…`) does not**, so the libraries
+are present and still unreachable. Either run the dashboard with the path
+supplied:
+
+```bash
+DYLD_FALLBACK_LIBRARY_PATH=$(brew --prefix)/lib python3 src/dashboard.py
+```
+
+or use Homebrew's Python for this project.
 
 ### Input files
 

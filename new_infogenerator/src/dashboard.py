@@ -178,6 +178,41 @@ def form_page(selected: dict) -> str:
 """
 
 
+def pdf_unavailable_message(exc: BaseException) -> str:
+    """Explain a PDF failure in terms of what to install.
+
+    Two failures need two different fixes, and conflating them wastes time.
+    A missing package raises ImportError. A package that is present but cannot
+    load Pango, cairo or GObject raises OSError from cffi -- the usual result of
+    `pip install weasyprint` on a machine without those system libraries. Saying
+    "not installed" for the second sends people to reinstall something that is
+    already there.
+    """
+    if isinstance(exc, ImportError):
+        return (
+            "PDF export needs WeasyPrint, which is not installed.\n\n"
+            "    python3 -m pip install weasyprint\n\n"
+            "Preview and HTML export work without it.\n\n"
+            f"({type(exc).__name__}: {exc})"
+        )
+    return (
+        "WeasyPrint is installed, but cannot load the native libraries it "
+        "draws with (Pango, cairo, GObject).\n\n"
+        "  macOS    brew install pango\n"
+        "           If it still fails, the interpreter is probably python.org's\n"
+        "           rather than Homebrew's, and does not search Homebrew's lib\n"
+        "           directory. Either run it with\n"
+        "               DYLD_FALLBACK_LIBRARY_PATH=$(brew --prefix)/lib \\\n"
+        "                   python3 src/dashboard.py\n"
+        "           or use Homebrew's Python, which finds them itself.\n\n"
+        "  Debian   sudo apt install libpango-1.0-0 libpangoft2-1.0-0\n"
+        "  Windows  install the GTK3 runtime, then reopen the terminal\n\n"
+        "  https://doc.courtbouillon.org/weasyprint/stable/first_steps.html\n\n"
+        "Preview and HTML export work without it.\n\n"
+        f"({type(exc).__name__}: {exc})"
+    )
+
+
 def render_pdf(page: str) -> bytes:
     """The sheet as a print-ready PDF, checked to be exactly one page.
 
@@ -260,8 +295,9 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):  # quieter than the default
         print(f"  {self.command} {self.path}")
 
-    def _send(self, body: bytes, content_type: str, filename: str = "") -> None:
-        self.send_response(200)
+    def _send(self, body: bytes, content_type: str, filename: str = "",
+              status: int = 200) -> None:
+        self.send_response(status)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
         # Never cache. The builder re-renders on every change, so a stale copy
@@ -310,11 +346,21 @@ class Handler(BaseHTTPRequestHandler):
         if choice["format"] == "pdf":
             try:
                 pdf = render_pdf(page)
-            except ImportError:
-                self._send(
-                    b"weasyprint is not installed; choose HTML or Preview.",
-                    "text/plain; charset=utf-8",
-                )
+            except (ImportError, OSError) as exc:
+                # Only ImportError was caught here before. The more common
+                # failure is OSError: WeasyPrint imports fine and then cannot
+                # dlopen Pango/GObject. That escaped, took the request down
+                # with a traceback, and told the reader nothing actionable.
+                print(f"    PDF export unavailable: {type(exc).__name__}: {exc}")
+                self._send(pdf_unavailable_message(exc).encode("utf-8"),
+                           "text/plain; charset=utf-8", status=503)
+                return
+            except SystemExit as exc:
+                # The one-page assertion. Report it; do not tear the server
+                # down underneath the browser.
+                print(f"    PDF export refused: {exc}")
+                self._send(str(exc).encode("utf-8"),
+                           "text/plain; charset=utf-8", status=500)
                 return
             self._send(pdf, "application/pdf",
                        download_name(choice["body"], "pdf"))
