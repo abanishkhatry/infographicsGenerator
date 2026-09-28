@@ -29,6 +29,7 @@ from __future__ import annotations
 import argparse
 import html
 import io
+import sys
 import re
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -372,6 +373,71 @@ class Handler(BaseHTTPRequestHandler):
                        "text/html; charset=utf-8")
 
 
+def check_pdf_support() -> int:
+    """Diagnose PDF export and name the one command that fixes it.
+
+    The OSError WeasyPrint raises is the same whether Pango is absent or merely
+    unreachable, and those need opposite fixes: install it, or tell this
+    interpreter where it already is. Guessing wastes a round trip each time, so
+    this looks at the machine instead.
+    """
+    import ctypes.util
+    import subprocess
+
+    print(f"interpreter   {sys.executable}")
+    print(f"platform      {sys.platform}")
+
+    try:
+        import weasyprint
+        print(f"weasyprint    {weasyprint.__version__} — PDF export works")
+        return 0
+    except ImportError as exc:
+        print(f"weasyprint    NOT INSTALLED ({exc})")
+        print("\nfix:  python3 -m pip install weasyprint")
+        return 1
+    except OSError as exc:
+        print(f"weasyprint    installed, cannot load native libraries")
+        print(f"              {exc}")
+
+    found = ctypes.util.find_library("gobject-2.0")
+    print(f"libgobject    {found or 'not found on the library search path'}")
+
+    if sys.platform != "darwin":
+        print("\nfix:  sudo apt install libpango-1.0-0 libpangoft2-1.0-0")
+        print("      (Debian/Ubuntu; other systems, see the WeasyPrint docs)")
+        return 1
+
+    try:
+        prefix = subprocess.run(["brew", "--prefix"], capture_output=True,
+                                text=True, timeout=10).stdout.strip()
+    except (OSError, subprocess.SubprocessError):
+        prefix = ""
+
+    if not prefix:
+        print("homebrew      not found")
+        print("\nfix:  install Homebrew, then:  brew install pango")
+        return 1
+
+    lib = Path(prefix) / "lib" / "libgobject-2.0.dylib"
+    print(f"homebrew      {prefix}")
+    print(f"pango libs    {'present at ' + str(lib.parent) if lib.exists() else 'NOT INSTALLED'}")
+
+    if not lib.exists():
+        print("\nfix:  brew install pango")
+        return 1
+
+    # Installed but unreachable: this interpreter does not search that
+    # directory. python.org builds do not; Homebrew's own Python does.
+    print("\nPango is installed, but this interpreter does not search "
+          f"{lib.parent} for it.")
+    print("\nfix, either:")
+    print(f"      DYLD_FALLBACK_LIBRARY_PATH={lib.parent} \\")
+    print(f"          {sys.executable} src/dashboard.py")
+    print("\n  or run the project under Homebrew's Python, which finds it:")
+    print(f"      brew install python@3.13 && {prefix}/bin/python3.13 src/dashboard.py")
+    return 1
+
+
 def main() -> None:
     root = Path(__file__).resolve().parents[1]
     parser = argparse.ArgumentParser(description=__doc__)
@@ -379,7 +445,14 @@ def main() -> None:
         "--source", type=Path, default=root / "versioned/validate_v1.csv"
     )
     parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument(
+        "--check", action="store_true",
+        help="Diagnose PDF export and exit, without starting the server.",
+    )
     args = parser.parse_args()
+
+    if args.check:
+        raise SystemExit(check_pdf_support())
 
     if not args.source.exists():
         raise SystemExit(f"File not found: {args.source}")
