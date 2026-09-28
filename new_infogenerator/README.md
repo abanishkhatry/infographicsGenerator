@@ -47,9 +47,10 @@ committed to version control or sent to any external service.**
 
 ## Requirements
 
-- **Python 3.10 or later.** No virtual environment is required; the pipeline
-  imports only the standard library.
-- **WeasyPrint** — optional, and needed only for PDF export from the dashboard.
+- **Python 3.10 or later.** The pipeline itself imports only the standard
+  library, so it runs against a bare interpreter with nothing installed.
+- **WeasyPrint** — needed only for PDF export from the dashboard, and the sole
+  reason a virtual environment is worth creating.
 
 Deliberately **not** dependencies: `pandas`, `numpy`, `matplotlib`, `seaborn`,
 `plotly`, `jinja2`, `openpyxl`. Excel files are read and written as raw OOXML
@@ -64,14 +65,15 @@ git clone https://github.com/abanishkhatry/infographicsGenerator.git
 cd infographicsGenerator/new_infogenerator
 ```
 
-Everything except PDF export runs as-is. For PDF export:
+Everything except PDF export runs as-is against any Python 3.10+.
 
-```bash
-python3 -m pip install weasyprint
-```
+### PDF export
 
-**`pip install` is not enough on its own.** WeasyPrint draws through Pango,
-cairo and GObject, which are C libraries and are not installed by pip:
+Two things are needed, and they are different kinds of thing. Miss either and
+the same unhelpful error appears.
+
+**1. The native libraries.** WeasyPrint draws through Pango, cairo and GObject,
+which are C libraries. `pip` cannot install them:
 
 ```bash
 brew install pango                                    # macOS
@@ -80,6 +82,47 @@ sudo apt install libpango-1.0-0 libpangoft2-1.0-0     # Debian / Ubuntu
 
 Windows needs the GTK3 runtime installed separately; reopen the terminal
 afterwards.
+
+**2. WeasyPrint itself, in a virtual environment.** On macOS, create the
+environment from **Homebrew's** Python. That is what makes the libraries
+installed in step 1 reachable — a virtual environment inherits its base
+interpreter's library search path, and Homebrew's Python searches Homebrew's
+library directory while python.org's does not:
+
+```bash
+/opt/homebrew/bin/python3.13 -m venv .venv    # or your Homebrew prefix
+source .venv/bin/activate
+pip install weasyprint
+```
+
+Elsewhere, any Python 3.10+ will do as the base:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install weasyprint
+```
+
+Confirm before going further:
+
+```bash
+python src/dashboard.py --check      # expect: PDF export works
+```
+
+`.venv/` is git-ignored. Once the environment is active, plain `python` and
+`pip` are the right ones, which avoids the commonest failure here — installing
+into one interpreter and running another. Re-activate it in each new terminal:
+
+```bash
+source .venv/bin/activate
+```
+
+A virtual environment is **not** optional on a Homebrew Python: it enforces
+[PEP 668](https://peps.python.org/pep-0668/) and refuses a system-wide
+`pip install` with `error: externally-managed-environment`. Two alternatives it
+suggests are worth skipping — `brew install weasyprint` installs a standalone
+command-line tool that your Python cannot import, and `--break-system-packages`
+does what its name says.
 
 ### Troubleshooting PDF export
 
@@ -95,7 +138,7 @@ native libraries are installed and whether this interpreter can see them, then
 prints the one command that fixes the case you are actually in. It exits `0`
 when PDF export works.
 
-The two failures below produce the *same* error text, so the check exists to
+The three failures below overlap in what they print, so the check exists to
 tell them apart:
 
 **`ImportError`** — the package is absent. Install it, into the interpreter you
@@ -119,7 +162,12 @@ appears to change nothing. Either supply the path:
 DYLD_FALLBACK_LIBRARY_PATH=$(brew --prefix)/lib python3 src/dashboard.py
 ```
 
-or run the project under Homebrew's Python, which finds it unaided.
+or, better, build the virtual environment on Homebrew's Python as above, which
+removes the mismatch instead of working around it at every launch.
+
+**`error: externally-managed-environment`** — not a failure of the dashboard but
+of the install. Homebrew's Python refuses system-wide `pip install` under PEP
+668. Use the virtual environment described above.
 
 ### Input files
 
@@ -180,7 +228,8 @@ dataset has no usable collection date — see [Known limitations](#known-limitat
 ### Dashboard
 
 ```bash
-python3 src/dashboard.py     # http://127.0.0.1:8000
+source .venv/bin/activate    # if PDF export is set up
+python src/dashboard.py      # http://127.0.0.1:8000
 ```
 
 It prints a warning at startup if PDF export is unavailable, naming the
