@@ -124,6 +124,48 @@ suggests are worth skipping — `brew install weasyprint` installs a standalone
 command-line tool that your Python cannot import, and `--break-system-packages`
 does what its name says.
 
+#### Why two steps, and why a virtual environment
+
+Think of it as cooking in a **shared kitchen**.
+
+**Homebrew's Python is a managed kitchen.** The building manager stocks the
+pantry and keeps an exact inventory, so you cannot add your own jar to their
+shelf — that is `externally-managed-environment`. Not broken; that pantry is
+simply not yours to add to.
+
+**The virtual environment is your own shelf**, brought into the kitchen.
+`pip install weasyprint` puts your jar on it.
+
+**So you cook at your own shelf.** That is what activating does. Stand at the
+manager's counter instead and your jar is not within reach — it exists, just
+not where that interpreter looks. That is `ImportError`.
+
+**Pango is the oven**, bolted to the wall and part of the building. No jar you
+can buy puts an oven in the room, which is why `pip install` never fixes it and
+`brew install pango` does. Ovens come from the building manager.
+
+**And there are two buildings.** Homebrew's kitchen is at `/opt/homebrew`;
+python.org's is at `/usr/local` or `/Library/Frameworks`. Install the oven in
+one and set your shelf up in the other, and you have the right ingredient, the
+right recipe, and **no oven in the room** — the same error however many times
+you reinstall Pango.
+
+Building the virtual environment on Homebrew's Python settles both at once: a
+legal place for the jar, in a room that has the oven.
+
+| Kitchen                            | Reality                          |
+| ---------------------------------- | -------------------------------- |
+| Managed pantry you cannot add to   | Homebrew Python, PEP 668         |
+| Your own shelf                     | the `.venv`                      |
+| Cooking where your shelf is        | `source .venv/bin/activate`      |
+| The oven, bolted to the wall       | Pango / cairo / GObject          |
+| Two buildings                      | `/opt/homebrew` vs `/usr/local`  |
+
+**Most of this project needs no oven.** The pipeline is a cold recipe: standard
+library throughout, running on any Python 3.10+ with an empty pantry. Only PDF
+export bakes, which is why everything else works on a fresh machine before any
+of this is set up.
+
 ### Troubleshooting PDF export
 
 Preview and HTML export never need WeasyPrint. If only **PDF** fails, ask the
