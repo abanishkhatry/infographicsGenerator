@@ -384,8 +384,15 @@ def check_pdf_support() -> int:
     import ctypes.util
     import subprocess
 
+    root = Path(__file__).resolve().parents[1]
+    venv = root / ".venv"
+    in_venv = sys.prefix != sys.base_prefix
+
     print(f"interpreter   {sys.executable}")
     print(f"platform      {sys.platform}")
+    print(f"virtualenv    {sys.prefix if in_venv else 'not active'}"
+          + ("" if in_venv or not venv.exists()
+             else f"   ({venv} exists but is not in use)"))
 
     try:
         import weasyprint
@@ -393,7 +400,7 @@ def check_pdf_support() -> int:
         return 0
     except ImportError as exc:
         print(f"weasyprint    NOT INSTALLED ({exc})")
-        print("\nfix:  python3 -m pip install weasyprint")
+        print(_venv_instructions(root, venv, in_venv))
         return 1
     except OSError as exc:
         print(f"weasyprint    installed, cannot load native libraries")
@@ -405,6 +412,7 @@ def check_pdf_support() -> int:
     if sys.platform != "darwin":
         print("\nfix:  sudo apt install libpango-1.0-0 libpangoft2-1.0-0")
         print("      (Debian/Ubuntu; other systems, see the WeasyPrint docs)")
+        print(_venv_instructions(root, venv, in_venv))
         return 1
 
     try:
@@ -427,15 +435,60 @@ def check_pdf_support() -> int:
         return 1
 
     # Installed but unreachable: this interpreter does not search that
-    # directory. python.org builds do not; Homebrew's own Python does.
+    # directory. python.org builds do not; Homebrew's own Python does. A
+    # virtual environment inherits its base interpreter's search path, so one
+    # built on Homebrew's Python solves this without any variable.
     print("\nPango is installed, but this interpreter does not search "
           f"{lib.parent} for it.")
-    print("\nfix, either:")
+    print(_venv_instructions(root, venv, in_venv, prefix=prefix))
+    print(f"\n  Alternatively, keep this interpreter and supply the path each run:")
     print(f"      DYLD_FALLBACK_LIBRARY_PATH={lib.parent} \\")
     print(f"          {sys.executable} src/dashboard.py")
-    print("\n  or run the project under Homebrew's Python, which finds it:")
-    print(f"      brew install python@3.13 && {prefix}/bin/python3.13 src/dashboard.py")
     return 1
+
+
+def _venv_instructions(root: Path, venv: Path, in_venv: bool,
+                       prefix: str = "") -> str:
+    """The venv steps, adjusted to how far along the machine already is.
+
+    Telling someone to create a virtual environment they already have, or to
+    install into one they have not activated, is the same wasted round trip the
+    rest of this function exists to avoid. Naming a bare interpreter is worse:
+    a Homebrew Python refuses `pip install` under PEP 668, so that advice ends
+    at an error rather than a fix.
+    """
+    activate = f"source {venv.relative_to(root)}/bin/activate"
+    if venv.exists() and not in_venv:
+        return (
+            "\nfix:  the project's virtual environment exists but is not active."
+            f"\n\n      cd {root}"
+            f"\n      {activate}"
+            "\n      python src/dashboard.py --check"
+        )
+    if in_venv:
+        return (
+            "\nfix:  this virtual environment has no working WeasyPrint."
+            "\n\n      pip install weasyprint"
+            "\n\n      If that succeeds and PDF export still fails, the "
+            "environment was built\n      on an interpreter that cannot see "
+            "the native libraries. Rebuild it:"
+            f"\n\n      rm -rf {venv.relative_to(root)}"
+            f"\n      {(prefix + '/bin/python3.13') if prefix else 'python3'}"
+            f" -m venv {venv.relative_to(root)}"
+            f"\n      {activate} && pip install weasyprint"
+        )
+    base = f"{prefix}/bin/python3.13" if prefix else "python3"
+    return (
+        "\nfix:  create the project's virtual environment and install into it."
+        f"\n\n      cd {root}"
+        f"\n      {base} -m venv .venv"
+        f"\n      {activate}"
+        "\n      pip install weasyprint"
+        "\n      python src/dashboard.py --check"
+        + (f"\n\n      {base} is used as the base deliberately: a virtual"
+           "\n      environment inherits its search path, and that one finds"
+           "\n      the native libraries." if prefix else "")
+    )
 
 
 def main() -> None:

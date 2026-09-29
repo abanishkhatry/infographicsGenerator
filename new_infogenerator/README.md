@@ -175,10 +175,11 @@ dashboard what is wrong rather than guessing:
 python3 src/dashboard.py --check
 ```
 
-It reports the interpreter in use, whether WeasyPrint imports, whether the
-native libraries are installed and whether this interpreter can see them, then
-prints the one command that fixes the case you are actually in. It exits `0`
-when PDF export works.
+It reports the interpreter in use, whether the project's virtual environment is
+active, whether WeasyPrint imports, whether the native libraries are installed
+and whether this interpreter can see them — then prints the commands that fix
+the case you are actually in, adjusted to how far along the machine already is.
+It exits `0` when PDF export works.
 
 The three failures below overlap in what they print, so the check exists to
 tell them apart:
