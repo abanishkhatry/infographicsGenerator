@@ -207,7 +207,8 @@ def pdf_unavailable_message(exc: BaseException) -> str:
         "                   python3 src/dashboard.py\n"
         "           or use Homebrew's Python, which finds them itself.\n\n"
         "  Debian   sudo apt install libpango-1.0-0 libpangoft2-1.0-0\n"
-        "  Windows  install the GTK3 runtime, then reopen the terminal\n\n"
+        "  Windows  install the GTK3 runtime, then open a NEW terminal so the\n"
+        "           updated PATH is picked up\n\n"
         "  https://doc.courtbouillon.org/weasyprint/stable/first_steps.html\n\n"
         "Preview and HTML export work without it.\n\n"
         f"({type(exc).__name__}: {exc})"
@@ -406,12 +407,28 @@ def check_pdf_support() -> int:
         print(f"weasyprint    installed, cannot load native libraries")
         print(f"              {exc}")
 
+    if sys.platform == "win32":
+        # Pango and friends ship as part of the GTK3 stack on Windows, and the
+        # DLLs have to be on PATH for cffi to find them. There is no package
+        # manager to assume, so this names the requirement rather than a
+        # command that may not exist.
+        print("\nfix:  install the GTK3 runtime, which provides Pango, cairo")
+        print("      and GObject as DLLs, then open a NEW terminal so the")
+        print("      updated PATH is picked up.")
+        print("      https://doc.courtbouillon.org/weasyprint/stable/"
+              "first_steps.html#windows")
+        print("\n      If the DLLs are installed somewhere not on PATH, point")
+        print("      WeasyPrint at them directly:")
+        print("          set WEASYPRINT_DLL_DIRECTORIES=C:\\path\\to\\gtk\\bin")
+        print(_venv_instructions(root, venv, in_venv))
+        return 1
+
     found = ctypes.util.find_library("gobject-2.0")
     print(f"libgobject    {found or 'not found on the library search path'}")
 
     if sys.platform != "darwin":
         print("\nfix:  sudo apt install libpango-1.0-0 libpangoft2-1.0-0")
-        print("      (Debian/Ubuntu; other systems, see the WeasyPrint docs)")
+        print("      (Debian/Ubuntu; adapt for your distribution)")
         print(_venv_instructions(root, venv, in_venv))
         return 1
 
