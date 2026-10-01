@@ -80,8 +80,13 @@ brew install pango                                    # macOS
 sudo apt install libpango-1.0-0 libpangoft2-1.0-0     # Debian / Ubuntu
 ```
 
-Windows needs the GTK3 runtime installed separately; reopen the terminal
-afterwards.
+On **Windows** these ship together as the **GTK3 runtime**, installed from
+[WeasyPrint's Windows
+instructions](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#windows)
+rather than from a package manager. Afterwards, **open a new terminal** — the
+installer extends `PATH`, and Windows locates DLLs through `PATH`, but an
+already-open terminal keeps the `PATH` it started with. Retrying in the same
+window produces the identical error and looks like the install failed.
 
 **2. WeasyPrint itself, in a virtual environment.** On macOS, create the
 environment from **Homebrew's** Python. That is what makes the libraries
@@ -101,6 +106,16 @@ Elsewhere, any Python 3.10+ will do as the base:
 python3 -m venv .venv
 source .venv/bin/activate
 pip install weasyprint
+```
+
+On **Windows**, the virtual environment is good practice but not required:
+PEP 668 is a Homebrew policy, and a python.org Python accepts `pip install`
+directly. The activation command differs:
+
+```powershell
+py -m venv .venv
+.venv\Scripts\activate
+py -m pip install weasyprint
 ```
 
 Confirm before going further:
@@ -161,6 +176,16 @@ legal place for the jar, in a room that has the oven.
 | The oven, bolted to the wall       | Pango / cairo / GObject          |
 | Two buildings                      | `/opt/homebrew` vs `/usr/local`  |
 
+The same shape holds on every platform; only the names change:
+
+| | macOS | Debian / Ubuntu | Windows |
+| --- | --- | --- | --- |
+| Native libraries from | `brew install pango` | `apt install libpango…` | GTK3 runtime |
+| Library files | `.dylib` | `.so` | `.dll` |
+| Found via | the interpreter's search path | `ld` search path | `PATH` |
+| Override | `DYLD_FALLBACK_LIBRARY_PATH` | `LD_LIBRARY_PATH` | `WEASYPRINT_DLL_DIRECTORIES` |
+| Virtual environment required? | yes, on a Homebrew Python | no | no |
+
 **Most of this project needs no oven.** The pipeline is a cold recipe: standard
 library throughout, running on any Python 3.10+ with an empty pantry. Only PDF
 export bakes, which is why everything else works on a fresh machine before any
@@ -199,7 +224,9 @@ and cannot reach its native libraries. This means one of two things, and
 macOS, Homebrew's Python (`/opt/homebrew/…`, `/usr/local/…`) searches
 Homebrew's library directory; **python.org's Python
 (`/Library/Frameworks/Python.framework/…`) does not**, so `brew install pango`
-appears to change nothing. Either supply the path:
+appears to change nothing. On Windows the equivalent is DLLs installed
+somewhere not on `PATH`; point WeasyPrint at them with
+`set WEASYPRINT_DLL_DIRECTORIES=C:\path\to\gtk\bin`. Either supply the path:
 
 ```bash
 DYLD_FALLBACK_LIBRARY_PATH=$(brew --prefix)/lib python3 src/dashboard.py
